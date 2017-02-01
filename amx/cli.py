@@ -2,7 +2,7 @@
 
 import os,sys,subprocess,re,time,glob,shutil
 
-__all__ = ['locate','flag_search','config','watch','layout','gromacs_config']
+__all__ = ['locate','flag_search','config','watch','layout','gromacs_config','bootstrap']
 
 from datapack import asciitree,delve,delveset
 
@@ -111,3 +111,40 @@ def gromacs_config(where=None):
 			"run `make gromacs_config home` or `make gromacs_config local` to write a default configuration to "+
 			"either location. then you can continue to use automacs.")
 		raise Exception('\n'.join(['[ERROR] %s'%i for i in textwrap.wrap(msg,width=80)]))
+
+###---KICKSTART SCRIPTS
+
+kickstarters = {'full':"""
+make set module source="$up/amx-proteins.git" spot="amx/proteins"
+make set module source="$up/amx-extras.git" spot="inputs/extras"
+make set module source="$up/amx-docs.git" spot="inputs/docs"
+make set commands inputs/docs/docs.py
+make set module source="$up/amx-vmd.git" spot="inputs/vmd"
+make set module source="$up/amx-bilayers.git" spot="inputs/bilayers"
+make set module source="$up/amx-martini.git" spot="inputs/martini"
+""",
+'proteins':"""
+make set module source="$up/amx-proteins.git" spot="amx/proteins"
+make set module source="$up/amx-extras.git" spot="inputs/extras"
+make set module source="$up/amx-docs.git" spot="inputs/docs"
+make set commands inputs/docs/docs.py
+make set module source="$up/amx-vmd.git" spot="inputs/vmd"
+"""
+}
+
+def bootstrap(name):
+	"""
+	Run this after cloning a fresh copy of automacs in order to clone some standard
+	"""
+	#---! hard-coding the source for now, but it would be good to put this in config.py
+	upstream_source = "http://github.com/bradleyrp"
+	if name not in kickstarters: raise Exception('cannot find kickstarter script: %s'%name)
+	with open('kickstart.sh','w') as fp:
+		fp.write("#!/bin/bash\n\nset -e\n\nup=%s\n\n"%upstream_source+kickstarters[name])
+	subprocess.check_call('bash kickstart.sh',shell=True)
+	os.remove('kickstart.sh')
+	print('[WARNING] bootstrap also runs `make gromacs_config local`\n'+
+		'so you are ready to simulate. consider using `make gromacs_config home`\n'+
+		'to make a machine-specific configuration for future simulations.')
+	subprocess.check_call('make gromacs_config home',shell=True)
+	print('[STATUS] you just pulled yourself up by your bootstraps!')

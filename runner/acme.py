@@ -152,7 +152,7 @@ def connect(source,spot):
 	"""
 	if bool(source)^bool(spot): raise Exception('connect requires spot and source')
 	if not add_config('modules',value=(source,spot),many=True): 
-		print('[NOTE] already connected to that module. Remove it manually and re-add it if you want.')
+		raise Exception('[NOTE] already connected to that module. Remove it manually and re-add it if you want.')
 	else:
 		config = read_config()
 		mods = config.get('modules',[])
