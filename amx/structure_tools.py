@@ -6,7 +6,9 @@ import scipy
 import json
 
 #---! note that within the main module we import the normal way
-from common import dotplace
+from common import dotplace,contiguous_encode
+from topology_tools import GMXTopology
+from force_field_tools import Landscape
 
 #---SELECTIONS
 
@@ -53,8 +55,7 @@ def parse(text,structure):
 		else: text = re.sub(regex_operator,Tokenize(),text)
 	return operator_abstract(*sentence[-1],sentence=sentence,structure=structure)
 
-#---CLASSES
-#-------------------------------------------------------------------------------------------------------------
+###---CLASSES
 
 class GMXStructure:
 
@@ -91,7 +92,7 @@ class GMXStructure:
 			box_vectors = ''.join(['  %.05f'%x for x in box_vectors])+'\n'
 		#---format and store
 		self.__dict__.update(**{
-			'box':box_vectors,
+			'box':self.read_box_vectors(box_vectors),
 			'points':np.array([i[:3] for i in pts]),
 			'atom_names':np.array(atom_names),
 			'residue_names':np.array(residue_names),
@@ -99,9 +100,11 @@ class GMXStructure:
 			})
 		self.fix_residue_numbering()
 
-	def get_landscape(self,fn):
+	def get_landscape(self,fn=None):
 		"""
+		REPLACE WITH force_field_tools.py
 		"""
+		if not fn: fn = state.landscape_metadata
 		#---identify molecule types from the landscape for the bilayer_sorter
 		if os.path.splitext(fn)[1]=='.yaml':
 			import yaml
@@ -110,6 +113,18 @@ class GMXStructure:
 			with open(fn) as fp: land = json.loads(fp.read())
 		else: raise Exception('landscape file at %s must be either json or yaml'%fn)
 		return land
+
+	def read_box_vectors(self,string):
+		"""
+		Interpret box vectors. The GRO box vector is a list of space-separated reals.
+		"""
+		return [float(j) for j in string.strip().split()]
+
+	def write_box(self):
+		"""
+		Turn the box vectors from a triplet into a string.
+		"""
+		return ''.join([' %.5f'%j for j in self.box])+'\n'
 
 	def regroup(self):
 		"""
@@ -120,16 +135,11 @@ class GMXStructure:
 		note that this is designed for lipids
 			WILL NEED ALTERNATE METHOD FOR PROTEINS BECAUSE OF THE RESIDUE ISSUE INVOLVED
 			because the structure is:
-				system
-					molecule -- not properly identified in the gro
-						residue
-
+				system > molecule -- not properly identified in the gro > residue
 		pseudocode:
 			first identify all of the components of the system using the composition reader
 			pull them out of the main list in order
-
 		for dope debugging: !import code; code.interact(local=vars())
-
 		"""
 
 		#---get the name changes ???
@@ -155,17 +165,21 @@ class GMXStructure:
 		#import pdb;pdb.set_trace()
 
 	def fix_residue_numbering(self):
-
 		"""
 		Ensure coherent residue numbering.
 		"""
-
-		#---! optimize this
+		#---identify the indices where a residue number (already) changed
 		changed_resnum = np.concatenate((np.where(self.residue_indices[1:]!=
 			self.residue_indices[:-1])[0]+1,[len(self.residue_indices)]))
-		self.residue_indices = (np.concatenate([np.ones(i)*ii for ii,i in 
-			enumerate(np.concatenate((changed_resnum[:1],
-			changed_resnum[1:]-changed_resnum[:-1])))])+1).astype(int)
+		#---see if we have sequential residue numbering (even if it starts above 1)
+		is_coherent = np.all(self.residue_indices[changed_resnum-1]==
+			np.arange(len(np.unique(self.residue_indices)))+self.residue_indices[0])
+		if not is_coherent:
+			#---! note that this method will reset the residue numbers to zero 
+			#---! ...if they are not already coherent. this should be fixed
+			self.residue_indices = (np.concatenate([np.ones(i)*ii for ii,i in 
+				enumerate(np.concatenate((changed_resnum[:1],
+				changed_resnum[1:]-changed_resnum[:-1])))])+1).astype(int)
 
 	def add(self,another,before=False,**kwargs):
 
@@ -210,7 +224,7 @@ class GMXStructure:
 				for kk,k in enumerate(['residue_indices','residue_names','atom_names'])
 				)+'%5d'%((ii+1)%100000)+''.join([dotplace(y) for y in self.points[ii]])
 			lines.append(line)
-		lines += [self.box]
+		lines += [self.write_box()]
 		with open(out_fn,'w') as fp: fp.write('\n'.join(lines))
 		self.residue_indices = residue_inds_abs
 
@@ -223,19 +237,16 @@ class GMXStructure:
 		return np.array([self.points[i].mean(axis=0) for i in inds]).mean(axis=0)
 
 	def select(self,text,return_bools=False):
-
 		"""
-		DEVELOPING!!!
 		Return atom indices for items that match a particular selection.
 		"""
-
-		import yaml
-		land = yaml.load(open('inputs/charmm/landscape.yaml').read())
+		land = Landscape
 
 		#---match residue specifications with a range e.g. "resid 56-76"
 		regex_all = '^\s*all\s*$'
 		regex_protein = '^\s*protein\s*$'
 		regex_resid = '^(not)?\s*resid\s+([0-9]+)-([0-9]+)\s*$'
+		regex_resid_single = '^(not)?\s*resid\s+([0-9]+)\s*$'
 		regex_resname = '^(not)?\s*resname\s+(.*?)\s*$'
 
 		#---advanced processing if parentheses
@@ -245,8 +256,10 @@ class GMXStructure:
 		elif re.match(regex_all,text): target = np.arange(len(self.points))
 		elif re.match(regex_protein,text): 
 			target = np.in1d(self.residue_names,land['alias']['protein'])
-		elif re.match(regex_resid,text):
-			invert,lower,upper = re.match(regex_resid,text).groups()
+		elif re.match(regex_resid,text) or re.match(regex_resid_single,text):
+			if re.match(regex_resid,text):
+				invert,lower,upper = re.match(regex_resid,text).groups()
+			else: invert,lower = invert,upper = re.match(regex_resid_single,text).groups()
 			target = np.in1d(self.residue_indices,np.arange(int(lower),int(upper)+1).astype(int))
 			if invert: target = ~target
 		elif re.match(regex_resname,text):
@@ -255,9 +268,57 @@ class GMXStructure:
 			if invert: target = ~target
 		#---intuitive matching from the landscape if the text fails all other regexes
 		else:
-			target = np.array([self.residue_names==i for i in 
-				[kk for kk,k in land['objects'].items() if k['is']==text 
-				and 'resname' in k['parts']]]).any(axis=0)
+			#---! previously used the objects in a somewhat crude way
+			if False:
+				#---intuitive matching from the landscape if the text fails all other regexes
+				target = np.array([self.residue_names==i for i in 
+					[kk for kk,k in land['objects'].items() if k['is']==text 
+					and 'resname' in k['parts']]]).any(axis=0)
+			#---! make this block first. remove the protein regex.
+			#---! hard-coded martini landscape
+			land = Landscape('martini')
+			if text not in land.categories: 
+				raise Exception('selection %s is not a category in the landscape'%text)
+			names = land.objects_by_category(text)
+			#---we wish to check every residue-atom name pair to see if it's in the selection list
+			#---we cannot use a pure in1d because we have two dimensions
+			#---we cannot even use all on two separate in1d items because this will return a true value
+			#---...whenever the residue name and the atom name can be found anywhere in the list
+			#---for this reason we encode things and then use the in1d lookup
+			#---assemble all valid residue,atom name pairs for this selection
+			residue_atom_pairs = np.concatenate([np.array([[land.objects[n]['resname'],a] 
+				for a in land.objects[n]['atoms']]) for n in names])
+
+			if False:
+				def encoder(x): return np.ascontiguousarray(x).view([('',x.dtype)]*x.shape[-1]).ravel()
+				name_pairs = encoder(residue_atom_pairs)
+				my_pairs = encoder(np.transpose((self.residue_names,self.atom_names)))
+
+			if False:
+				import time
+				st = time.time()
+				yeses = np.array([np.any(np.all(i==residue_atom_pairs,axis=1)) for i in np.transpose((self.residue_names,self.atom_names))])
+				print(time.time()-st)
+
+			#---! somewhat hackish pair encoder
+			def encoder(x,y):
+				return np.core.defchararray.add(np.core.defchararray.add(x,'|'),y)
+
+			name_pairs = encoder(*np.transpose(residue_atom_pairs))
+			my_pairs = encoder(self.residue_names,self.atom_names)
+
+			if False:
+				#---! need to add restraint lipids !!!
+				name_pairs = contiguous_encode(residue_atom_pairs)
+				rap_alt = np.ascontiguousarray(rap).view([('',rap.dtype)]*rap.shape[-1]).ravel()
+				np.transpose((self.residue_names,self.atom_names))
+
+			#---! this is somewhat wrong -- string concatenation might be somewhat hackish
+			#---this method is extremely robust because it checks all valid names in the landscape
+			#---it is also fast thanks to the excellent numpy in1d function
+
+			#--- note that without the encoding method above, where would picking out elements not rows
+			target = np.in1d(my_pairs,name_pairs)
 		if return_bools: return target
 		else: return np.where(target)[0]
 
@@ -279,14 +340,14 @@ class GMXStructure:
 		The discard
 		"""
 
-		if not subject: not_water_inds = self.select('resname %s'%wordspace.sol)
+		if not subject: not_water_inds = self.select('resname %s'%state.sol)
 		else: not_water_inds = self.select(subject)
-		if not discard: water_inds = self.select('not resname %s'%wordspace.sol)
+		if not discard: water_inds = self.select('not resname %s'%state.sol)
 		else: water_inds = self.select(discard)
-		status('[COMPUTE] KDTree for close waters')
+		print('[COMPUTE] KDTree for close waters')
 		tree_not_water = scipy.spatial.KDTree(self.points[not_water_inds])
 		close_dists,neighbors = tree_not_water.query(self.points[water_inds],distance_upper_bound=gap)
-		status('[COMPUTE] done')
+		print('[COMPUTE] done')
 		#---get all close points, reindex from water to absolute, perform "same residue as"
 		waters_in_zone = np.where(np.in1d(self.residue_indices,np.unique(
 			self.residue_indices[water_inds[np.where(close_dists<=gap)]])))[0]
@@ -313,7 +374,7 @@ class GMXStructure:
 				self.residue_indices[np.where(self.residue_names==r)[0]]))) for r in resnames]
 			for ion_name in ions: 
 				composition.append((ion_name,np.sum(self.atom_names==ion_name)))
-		land = self.get_landscape(state.landscape_metadata)
+		land = self.get_landscape()
 		#---! should we be manipulating lipids here?
 		#state.lipids = [i for i in list(zip(*composition))[0] if i in list(zip(*filter(lambda x: x[1].get('is',False)=='lipid',land['objects'].items())))[0]]
 
@@ -326,6 +387,34 @@ class GMXStructure:
 		#---! ...add a converter in the statesave function !!!
 		composition = [[str(i),int(j)] for i,j in composition]
 		return composition
+
+	def detect_composition_NEWISH(self):
+		"""
+		Detect the composition of a system in order to write an accurate topology file.
+		pseudocode:
+			see if there are blocks with proteins
+			if PROTEINS
+				search for ITP files
+				if multiple ITP files throw an error
+				if itp then 
+					read in distinct protein objects
+					scan resnames for residues that correspond to them
+					if any gaps/etc throw an error
+					otherwise log the proteins in their position in the sequence
+					then recapitulate the original composition method
+
+		"""
+		#---! DITCHING THIS FOR NOW!!!
+		collected_protein_itps = [GMXTopology(state.here+fn) for fn in state.itp]
+		molecules = dict([j for k in [i.molecules.items() for i in collected_protein_itps] for j in k])
+
+		#---try to find one ///???
+		seq = np.array([i['resname'] for i in molecules['Protein']['atoms']])
+
+		#wheres = [ii for ii,i in enumerate(self.residue_names) if np.all(self.residue_names[ii:ii+len(seq)]==seq)]
+
+		import ipdb;ipdb.set_trace()
+		#---wanted to do a whole subsequence searching thing with a big is-it-a-match? table
 
 	def renumber(self):
 

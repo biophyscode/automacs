@@ -441,7 +441,7 @@ def trim_waters_deprecated(structure='solvate-dense',gro='solvate',gap=3,boxvecs
 
 ###---SIMULATION POST-PROCESSING
 
-def get_last_frame(basename='system-previous',dest=None,source=None,tpr=False):
+def get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 	"""
 	Prepare or locate a snapshot of the last state of the system.
 
@@ -455,6 +455,9 @@ def get_last_frame(basename='system-previous',dest=None,source=None,tpr=False):
 	explicitly set the `source` keyword to `state.here`. If no previous state is available, we fall back to
 	using `state.here`.
 	"""
+
+	#___! changed BASENAME TO GRO IN ARGUMENTS./ probably need to fix "out" below
+
 	#---default source is state.here
 	if not source: 
 		#---DEFAULT behavior: if previous states are available we use them as the source
@@ -477,7 +480,7 @@ def get_last_frame(basename='system-previous',dest=None,source=None,tpr=False):
 	if os.path.isfile(last_written_gro):
 		if transmit:
 			#---if the source differs from the destination copy the file and save the path
-			state.last_frame = os.path.join(dest,basename+'.gro')
+			state.last_frame = os.path.join(dest,gro+'.gro')
 			shutil.copyfile(last_written_gro,state.last_frame)
 		#---if we are not copying the last frame, it is enough just to store its path
 		else: state.last_frame = last_written_gro

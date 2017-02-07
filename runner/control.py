@@ -255,7 +255,7 @@ def metarun():
 	for num in ranges[0]:
 		#---expt needs to be global and it is imported at the end of acme.py so we place it
 		shutil.copyfile('expt_%d.json'%num,'expt.json')
-		print(fab('[ACME] starting metarun step %d'%num,'red_black'))
+		print(fab('[ACME] starting metarun step %d'%num,'white_black'))
 		success = run(over='expt_%d.json'%num,script='script_%d.py')
 		#---previously we handled the exception with a simple not and just exited for some reason
 		#except Exception as e: 

@@ -35,7 +35,7 @@ class GMXTopology:
 	#---abstract definition of different ITP entries
 	_entry_abstracted = {
 		'moleculetype':{'records':'molname nrexcl','lines':1},
-		'atoms':{'records':'id type resnr resname atom cgnr charge'},
+		'atoms':{'records':'id type resnr resname atom cgnr charge mass typeB chargeB massB'},
 		'bonds':{'records':'i j funct length force'},
 		'constraints':{'records':'i j funct length'},
 		'angles':{'records':'i j k funct angle force'},
@@ -46,11 +46,19 @@ class GMXTopology:
 		}
 	_entry_order = "moleculetype atoms bonds angles dihedrals constraints position_restraints".split()
 	#---specify the ITP format for a molecule type
-	_entry_defns = dict([(name,{'lines':details.get('lines','many'),'regex':
+	_entry_defns_original = dict([(name,{'lines':details.get('lines','many'),'regex':
 		'^\s*%s$'%(''.join(["(?P<"+kw+">.*?)\s"+('+' if dd<len(details['records'].split())-1 else '*') 
 			for dd,kw in enumerate(details['records'].split())])),
 		}) for name,details in _entry_abstracted.items()])
-	#---drop any lines that only have comments
+	#---! note that some topology definitions include varying numbers of arguments, sometimes including the 
+	#---! ...mass, sometimes excluding it, etc. which means that if we want to pick off the items with the 
+	#---! ...original automatic-regex for records, we have to detect the number of items and only then create
+	#---! ...the appropriate regex. for that reason we now save the regex as a list, detect the number of 
+	#---! ...space-separated arguments, and then construct the regex on the fly, for each argument
+	_entry_defns = dict([(name,{'lines':details.get('lines','many'),'regex':
+		["(?P<"+kw+">.*?)\s" for dd,kw in enumerate(details['records'].split())],
+		}) for name,details in _entry_abstracted.items()])
+		#---drop any lines that only have comments
 	_lam_strip_commented_lines = lambda self,x:[i.strip() for i in x.split('\n') 
 		if not re.match(self._regex_commented_line,i)]
 	#---amino acid codes
@@ -73,10 +81,13 @@ class GMXTopology:
 		#---extract definition lines
 		defines = re.findall(r"^\s*(\#define.+)$",self.itp_raw,re.M)
 		self.defines = list(set(defines))
+
 		#---! need to add a check in case the defines are sequential and they override each other
 		#---extract raw molecule types and process them
 		for match in re.findall(self._regex_molecule,self.itp_raw,re.M+re.DOTALL):
-			match_proc = self.entry_pre_proc(match)			
+			#---note that comment-only lines are stripped elsewhere, but here we remove comment tails
+			match_no_comment_tails = re.sub('[^\n;];.*?\n','\n',match,flags=re.M)
+			match_proc = self.entry_pre_proc(match_no_comment_tails)	
 			moldef = self.process_moleculetype(match_proc)
 			self.molecules[moldef['moleculetype']['molname']] = moldef
 
@@ -112,12 +123,33 @@ class GMXTopology:
 		lines = spec.get('lines',None)
 		if lines and lines!='many':
 			assert len(valids)==lines,'too many lines in %s'%name
-		if lines == 1: 
-			return {name:re.search(spec['regex'],valids[0]).groupdict()}
-		else: 
-			out = {name:[re.search(spec['regex'],v).groupdict() 
-				for v in valids if not re.match('^\s*;',v)]}
-			return out
+
+		#---! removed after changing the entry defs for a flexible number of columns
+		if False:
+			if lines == 1: 
+				return {name:re.search(spec['regex'],valids[0]).groupdict()}
+			else: 
+				out = {name:[re.search(spec['regex'],v).groupdict() 
+					for v in valids if not re.match('^\s*;',v)]}
+				return out
+
+		#---the following handles both one-line and many-line entries
+		atoms = []
+		for v in [i for i in valids if not re.match('^\s*;',i)]:
+			if re.search(';',v): raise Exception('coomment-strippper failed in %s'%name)
+			n_cols = len(v.split())
+			regex_all = spec['regex'][:n_cols]
+			#---since the regex is dynamic depending on the number of columns, we have to assign 
+			#---...regex plus/star wildcards dynamically too
+			this_regex = '^\s*%s$'%(''.join([
+				r+('+' if dd<len(regex_all)-1 else '*') for dd,r in enumerate(regex_all)]))
+			if not re.search(this_regex,v):
+				import ipdb;ipdb.set_trace()
+			atoms.append(re.search(this_regex,v).groupdict())
+		## if not atoms: raise Exception('no atoms (!) in molecule %s'%name)
+		#---! cannot stop if no atoms because sometimes e.g. dihedrals are just blank
+		if lines==1: atoms = atoms[0]
+		return {name:atoms}
 
 	def process_moleculetype(self,text):
 

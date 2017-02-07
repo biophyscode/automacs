@@ -10,7 +10,7 @@ Note: this docstring is not caught by sphinx.
 """
 
 #---import the runner and auto-import this module (if not sphinx)
-import os,sys
+import os,sys,shutil
 if not os.path.basename(sys.argv[0])=='sphinx-build':
 	#---find config.py in a parent directory
 	root_dns = [os.path.abspath(os.path.join(__file__,*('..' for j in range(i+1)))) for i in range(5)]

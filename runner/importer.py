@@ -17,7 +17,7 @@ simplifies your import statements, and the latter saves you from sending data be
 
 """
 #---import the runner and auto-import this module (if not sphinx)
-import os,sys
+import os,sys,shutil
 if not os.path.basename(sys.argv[0])=='sphinx-build':
 	#---find config.py in a parent directory
 	root_dns = [os.path.abspath(os.path.join(__file__,*('..' for j in range(i+1)))) for i in range(5)]
@@ -146,12 +146,12 @@ for sub in sub_scripts_valid + sub_scripts_valid_extras:
 			if _use_call_reporter and hasattr(test.__dict__[key],'__code__'): 
 				stable[key] = globals()[key] = call_reporter(test.__dict__[key],state)
 			else:
-				globals()[key] = test.__dict__[key]
+				stable[key] = globals()[key] = test.__dict__[key]
 				#---only pass main modules back to the stable for later
 				if sub not in sub_scripts_valid_extras: stable[key] = test.__dict__[key]
 		#---import everything else into this global namespace
 		elif callable(test.__dict__[key]): 
-			globals()[key] = test.__dict__[key]
+			stable[key] = globals()[key] = test.__dict__[key]
 			#---only pass main modules back to the stable for later
 			if sub not in sub_scripts_valid_extras: stable[key] = test.__dict__[key]
 	#---! should we have an else here to send variables from e.g. amx submodules to the extensions?

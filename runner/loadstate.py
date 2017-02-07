@@ -25,11 +25,20 @@ from acme import get_path_to_module
 def yamlb_special(yamlb,text,style=None,ignore_json=False):
 	unpacked = yamlb(text,style=style,ignore_json=ignore_json)
 	#---unpack all leafs in the tree, see if any use pathfinder syntax, and replace the paths
-	ununpacked = [(i,j) for i,j in catalog(unpacked) if type(j)==str and re.match('^@',j)]
+	str_types = [str,unicode] if sys.version_info<(3,0) else [str]
+	cataloged = list(catalog(unpacked))
+	ununpacked = [(i,j) for i,j in cataloged if type(j) in str_types and re.match('^@',j)]
+	#---note that catalog treats lists as terminal items, so we have to check for strings in lists
+	alts = [(i,j) for i,j in cataloged if type(j)==list and len(j)>0 
+		and all([type(k) in str_types for k in j ])]
+	for alt in alts:
+		for ii,i in enumerate(alt[1]):
+			if re.match('^@',i): ununpacked.append((alt[0]+[ii],alt[1][ii]))
 	for route,value in ununpacked:
 		#---imports are circular so we put this here
 		new_value = get_path_to_module(value)
 		delveset(unpacked,*route,value=new_value)
+	#import ipdb;ipdb.set_trace()
 	return unpacked
 
 if not os.path.isfile(state_fn): state = DotDict()
