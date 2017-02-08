@@ -122,6 +122,7 @@ make set commands inputs/docs/docs.py
 make set module source="$up/amx-vmd.git" spot="inputs/vmd"
 make set module source="$up/amx-bilayers.git" spot="inputs/bilayers"
 make set module source="$up/amx-martini.git" spot="inputs/martini"
+make set module source="$up/amx-structures.git" spot="inputs/structure-repo"
 """,
 'proteins':"""
 make set module source="$up/amx-proteins.git" spot="amx/proteins"
