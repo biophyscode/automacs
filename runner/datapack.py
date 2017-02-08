@@ -70,7 +70,7 @@ def jsonify(text):
 	#---note that this fails if you use hashes inside of dictionary values
 	text = re.sub(r'(#.*?)\n','',text,flags=re.M+re.DOTALL)
 	#---strip trailing commas because they violate JSON rules
-	text = re.sub(r",[ \t\r\n]*}","}",text.replace("'","\""))
+	text = re.sub(r",[ \t\r\n]*([}\]])",r"\1",text.replace("'","\""))
 	#---fix the case on all booleans
 	text = re.sub("True","true",text)
 	text = re.sub("False","false",text)
@@ -192,7 +192,9 @@ def yamlb(text,style=None,ignore_json=False):
 				raise Exception('keyword argument repeated in: "%s"'%val_raw)
 			else: val = val_raw
 		except: val = val_raw
-		if type(val)==list: result = val
+		#---protect against sending e.g. "all" as a string and evaluating to builtin all function
+		if val.__class__.__name__=='builtin_function_or_method': result = str(val_raw)
+		elif type(val)==list: result = val
 		elif type(val)==dict:
 			if not ignore_json and not check_repeated_keys(val_raw):
 				raise Exception(_control['msg']['json']+' problem was found in: "%s"'%val_raw)

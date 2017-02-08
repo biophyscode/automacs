@@ -14,12 +14,14 @@ controlspec = {
 		'metarun':{('metarun','cwd'):True},
 		'metarun_steps':{
 			('step','do'):'simple',
+			('quick','settings'):'quick',
 			('step','do','settings'):'settings',},
 		'quick':{
 			('quick',):'quick',
-			('settings','cwd','quick'):'basic',
-			('settings','cwd','quick','params','extensions','tags'):'extensions',
-			('settings','cwd','quick','params','extensions','tags','imports'):'extensions_imports'},},
+			('quick','cwd',):'quick',
+			('quick','settings','cwd'):'basic',
+			('quick','settings','cwd','params','extensions','tags'):'extensions',
+			('quick','settings','cwd','params','extensions','tags','imports'):'extensions_imports'},},
 	'msg':{
 		'json':'found either (a) repeated keys or (b) JSON error in a string. '+
 			'we require incoming dict literals to be convertible to JSON '+

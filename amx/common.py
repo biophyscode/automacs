@@ -127,7 +127,8 @@ def extract_itp(topfile,cwd=None):
 	Note that parts of this function was poached to read_top in common.
 	"""
 	topfile_fn = state.here+topfile
-	if not os.path.isfile(topfile_fn) and os.path.isfile(topfile): topfile_fn = topfile
+	if os.path.isfile(topfile_fn): pass
+	elif not os.path.isfile(topfile_fn) and os.path.isfile(topfile): topfile_fn = topfile
 	else: raise Exception('cannot find %s or %s'%(topfile_fn,topfile))
 	with open(topfile_fn,'r') as f: topfile = f.read()
 	chains = {}
@@ -177,6 +178,8 @@ def write_top(topfile):
 	"""
 	Write a topology.
 	"""
+	#---remove redundancies 
+	if 'itp' in state: state.itp = list(set(state.itp))
 	#---if the force field is local we automatically detect its files and add itps to it
 	if state.force_field and os.path.isdir(state.here+state.force_field+'.ff'):
 		includes = glob.glob(os.path.join(state.here+state.force_field+'.ff','*.itp'))
@@ -192,7 +195,7 @@ def write_top(topfile):
 			for fn in [os.path.relpath(i,state.here) for i in includes_reorder]:
 				fp.write('#include "%s"\n'%fn)
 			#---additional itp files
-			for itp in state.q('itp',[]): fp.write('#include "'+itp+'"\n')
+			for itp in list(set(state.q('itp',[]))): fp.write('#include "'+itp+'"\n')
 			#---write system name
 			fp.write('[ system ]\n%s\n\n[ molecules ]\n'%state.q('system_name'))
 			for key,val in state.composition: fp.write('%s %d\n'%(key,val))
@@ -538,21 +541,21 @@ def solvate(structure,gro):
 	state.water_without_ions = nwaters
 
 def counterions(structure,top=None,includes=None,ff_includes=None,gro='counterions'):
-
 	"""
 	counterions(structure,top)
 	Standard procedure for adding counterions.
 	The resname must be understandable by "r RESNAME" in make_ndx and writes to the top file.
 	Note that the ``top`` argument is not used and should be removed after checking downstream.
 	"""
-
 	#---we store the water resname in the wordspace as "sol"
 	resname =  state.q('sol','SOL')
-	#---clean up the composition in case this is a restart
-	for key in ['cation','anion',resname]:
-		try: state.composition.pop(list(zip(*state.composition))[0].index(state.q(key)))
-		except: pass
-	component(resname,count=state.water_without_ions)
+	#---! the following section fails on the helix-0 test set which tracks water accurately
+	if False:
+		#---clean up the composition in case this is a restart
+		for key in ['cation','anion',resname]:
+			try: state.composition.pop(list(zip(*state.composition))[0].index(state.q(key)))
+			except: pass
+		component(resname,count=state.water_without_ions)
 	#---write the topology file as of the solvate step instead of copying them (genion overwrites top)
 	write_top('counterions.top')
 	gmx('grompp',base='genion',structure=structure,
@@ -784,6 +787,19 @@ def atomistic_or_coarse():
 	if not 'cgmd' in state.expt['tags'] and not 'aamd' in state.expt['tags']:
 		raise Exception('neither `aamd` nor `cgmd` can be found in your `tags` key in your experiment')
 	return 'cgmd' if 'cgmd' in state.expt['tags'] else 'aamd'
+
+def force_field_family():
+	"""
+	Get the family name for the force field i.e. charmm or martini.
+	"""
+	if not state.force_field: raise Exception('force_field_family needs to find force field in settings or state')
+	is_charmm = re.search('charmm',state.force_field)
+	is_martini = re.search('martini',state.force_field)
+	if is_charmm and is_martini: 
+		raise Exception('force field matches both charmm and martini somehow: %s'%state.force_field)
+	elif not is_charmm and not is_martini:
+		raise Exception('force field matches neither charmm nor martini: %s'%state.force_field)
+	else: return 'charmm' if is_charmm else 'martini'
 	
 #---alternate naming
 write_topology = write_top

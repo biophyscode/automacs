@@ -60,7 +60,7 @@ def parse(text,structure):
 class GMXStructure:
 
 	meta_keys = ['atom_names','residue_names','residue_indices','points']
-	
+
 	def __init__(self,fn=None,center=False,**kwargs):
 
 		"""
@@ -87,7 +87,9 @@ class GMXStructure:
 		#---require remaining specification from kwargs if no input file
 		else:
 			reqs = ['pts','atom_names','residue_names','residue_indices','box']
-			assert all(i in kwargs for i in reqs),'missing a required parameter in reqs'
+			if not all(i in kwargs for i in reqs):
+				raise Exception('missing a required parameter in reqs: %s'%
+					[i for i in reqs if i not in kwargs])
 			pts,atom_names,residue_names,residue_indices,box_vectors = [kwargs[i] for i in reqs]
 			box_vectors = ''.join(['  %.05f'%x for x in box_vectors])+'\n'
 		#---format and store
@@ -229,12 +231,27 @@ class GMXStructure:
 		self.residue_indices = residue_inds_abs
 
 	def cog(self,*inds):
-
 		"""
 		Given a set of index lists (presumably returned from select), return the centroid of centroids.
 		"""
-
+		#---extra check to make sure the selection indices are nonempty
+		if all([len(i)==0 for i in inds]): 
+			raise Exception('incoming selection indices are empty: %s'%str(inds))
 		return np.array([self.points[i].mean(axis=0) for i in inds]).mean(axis=0)
+
+	def select_center(self,selections):
+		"""
+		Wraps a common call to cog which retrieves the center of geometry for a list of selections.
+		"""
+		#---prepare selections
+		make_list = lambda x : x if type(x)==list else [x]
+		selected_inds = []
+		for sel in make_list(selections): 
+			selected_inds.append(self.select(sel))
+		#---check for invalid selections
+		if all([len(i)==0 for i in selected_inds]): 
+			raise Exception('selection request to GMXStructure "%s" returned empty'%str(selections))
+		return self.cog(*selected_inds)
 
 	def select(self,text,return_bools=False):
 		"""
@@ -275,8 +292,7 @@ class GMXStructure:
 					[kk for kk,k in land['objects'].items() if k['is']==text 
 					and 'resname' in k['parts']]]).any(axis=0)
 			#---! make this block first. remove the protein regex.
-			#---! hard-coded martini landscape
-			land = Landscape('martini')
+			land = Landscape()
 			if text not in land.categories: 
 				raise Exception('selection %s is not a category in the landscape'%text)
 			names = land.objects_by_category(text)

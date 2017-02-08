@@ -42,7 +42,9 @@ class GMXTopology:
 		'dihedrals':{'records':'i j k l funct angle force'},
 		'position_restraints':{'records':'ai  funct  fcx    fcy    fcz'},
 		'exclusions':{'records':'i j'},
-		'virtual_sites3':{'records':'site n0 n1 n2 funct a b'}
+		'virtual_sites3':{'records':'site n0 n1 n2 funct a b'},
+		'pairs':{'records':'ai aj funct c0 c1 c2 c3'},
+		'cmap':{'records':'ai aj ak al am funct'},
 		}
 	_entry_order = "moleculetype atoms bonds angles dihedrals constraints position_restraints".split()
 	#---specify the ITP format for a molecule type
@@ -86,7 +88,7 @@ class GMXTopology:
 		#---extract raw molecule types and process them
 		for match in re.findall(self._regex_molecule,self.itp_raw,re.M+re.DOTALL):
 			#---note that comment-only lines are stripped elsewhere, but here we remove comment tails
-			match_no_comment_tails = re.sub('[^\n;];.*?\n','\n',match,flags=re.M)
+			match_no_comment_tails = re.sub('[^\n;];.*?(\n|\Z)','\n',match,flags=re.M)
 			match_proc = self.entry_pre_proc(match_no_comment_tails)	
 			moldef = self.process_moleculetype(match_proc)
 			self.molecules[moldef['moleculetype']['molname']] = moldef
@@ -117,12 +119,14 @@ class GMXTopology:
 		Process a single entry type in ???
 		"""
 
-		assert name in self._entry_defns,'developing GMXTopology. missing entry for "%s"'%name
+		if name not in self._entry_defns:
+			import ipdb;ipdb.set_trace()
+			raise Exception('developing GMXTopology. missing entry for "%s"'%name)
 		spec = self._entry_defns[name]
 		valids = self._lam_strip_commented_lines(text)
 		lines = spec.get('lines',None)
 		if lines and lines!='many':
-			assert len(valids)==lines,'too many lines in %s'%name
+			if len(valids)!=lines: raise Exception('too many lines in %s'%name)
 
 		#---! removed after changing the entry defs for a flexible number of columns
 		if False:
@@ -136,7 +140,9 @@ class GMXTopology:
 		#---the following handles both one-line and many-line entries
 		atoms = []
 		for v in [i for i in valids if not re.match('^\s*;',i)]:
-			if re.search(';',v): raise Exception('coomment-strippper failed in %s'%name)
+			if re.search(';',v): 
+				import ipdb;ipdb.set_trace()
+				raise Exception('comment-strippper failed in %s'%name)
 			n_cols = len(v.split())
 			regex_all = spec['regex'][:n_cols]
 			#---since the regex is dynamic depending on the number of columns, we have to assign 
@@ -178,7 +184,13 @@ class GMXTopology:
 				over = [molspec[entry]] if type(molspec[entry])!=list else molspec[entry]
 				for o in over:
 					line = ''
-					for key in self._entry_abstracted[entry]['records'].split():
+					#---changed _entry_abstracted to handle a flexible stopping point in that list
+					#---...here we check that the items on the list are present
+					header_keys = self._entry_abstracted[entry]['records'].split()
+					if not set(header_keys[:len(o.keys())])==set(o.keys()):
+						raise Exception('the set of keys in this entry does not match a starting subsequence '+
+							'from the header. the available keys are %s and the header is %s'%(o.keys(),header_keys))
+					for key in header_keys[:len(o.keys())]:
 						line += '%s '%str(o[key])
 					text.append(line)
 			mol_entries.append('\n'.join(text))

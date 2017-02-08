@@ -23,7 +23,6 @@ except (KeyboardInterrupt,Exception) as e:
 		else: this_state = amx.state
 		#---DO NOT CHANGE THE STOPPER WITHOUT CONSULTING EXECUTOR FUNCTION
 		stopper(this_state,e,last_lineno=last_lineno)
-		sys.exit(1)
 	else: 
 		import sys,traceback
 		exc_type,exc_obj,exc_tb = sys.exc_info()
@@ -31,5 +30,10 @@ except (KeyboardInterrupt,Exception) as e:
 		tracetext = '[TRACEBACK]'+tracetext.strip()
 		sys.stdout.write(tracetext+'\\n')
 		sys.stdout.write('[ERROR] exception before state is available: %s\\n'%e)
-		sys.exit(1)
+	#---this error lacks the fancy formatting but tells you if the problem is in the parent script
+	#---! note that this will only catch functions, not e.g. shutil.copyfile
+	#---! note that sometimes the lineno is off by one, which is hard to explain? tried correcting below
+	try: print('[NOTE] caught exception on script function: %s'%code_ready.body[last_lineno-1].value.func.id)
+	except: pass
+	sys.exit(1)
 else: finished(state)

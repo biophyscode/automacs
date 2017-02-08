@@ -22,7 +22,7 @@ from acme import get_path_to_module
 #---...thankfully this only happens twice: once here (where most imports of expt.json happen)
 #---...and once in acme itself, when the experiment is written and the settings are updated
 #---...!!! that is temporarily disabled for now
-def yamlb_special(yamlb,text,style=None,ignore_json=False):
+def yamlb_special(text,style=None,ignore_json=False):
 	unpacked = yamlb(text,style=style,ignore_json=ignore_json)
 	#---unpack all leafs in the tree, see if any use pathfinder syntax, and replace the paths
 	str_types = [str,unicode] if sys.version_info<(3,0) else [str]
@@ -38,7 +38,6 @@ def yamlb_special(yamlb,text,style=None,ignore_json=False):
 		#---imports are circular so we put this here
 		new_value = get_path_to_module(value)
 		delveset(unpacked,*route,value=new_value)
-	#import ipdb;ipdb.set_trace()
 	return unpacked
 
 if not os.path.isfile(state_fn): state = DotDict()
@@ -48,7 +47,10 @@ else:
 if not os.path.isfile(expt_fn): settings,expt = DotDict(),DotDict()
 else: 
 	expt = DotDict(**json.load(open(expt_fn)))
-	try: settings = DotDict(**yamlb_special(yamlb,expt.settings))
+	try: 
+		settings = DotDict(**yamlb_special(expt.settings))
+		#---apply overrides to the settings
+		if 'settings_overrides' in expt: settings.update(**yamlb_special(expt.settings_overrides))
 	except: 
 		print('[WARNING] settings was broken, now blanked!')
 		settings = DotDict()

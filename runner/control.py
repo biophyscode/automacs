@@ -47,7 +47,7 @@ def look(state='state.json'):
 	if not os.path.isfile(state): raise Exception('cannot find %s'%state)
 	bname = os.path.splitext(state)[0]
 	#---! no tab completion in python 2 for some reason
-	os.system('python -B -i -c "import json;from acme import DotDict;'
+	os.system('python -B -i -c "import json,sys;sys.path.insert(0,\'runner\');from datapack import DotDict;'
 		'%s = DotDict(**json.load(open(\'%s\')));"'%(bname,state))
 
 def quick(procname,**kwargs):
@@ -58,11 +58,14 @@ def quick(procname,**kwargs):
 	"""
 	#---note that stepno is indexed from one
 	stepno = int(kwargs.pop('stepno',-1))
+	settings = kwargs.pop('settings',None)
 	if kwargs: raise Exception('invalid kwargs: %s'%kwargs)
 	inputlib = read_inputs(procname)
-	quick_type = _keysets('quick',*inputlib.keys(),check=True)
+	#quick_type = _keysets('quick',*inputlib.keys(),check=True)
 	ins = dict(inputlib)
 	ins.update(cwd_source=ins.pop('cwd'))
+	#---some quick calls from metarun have their own settings
+	if settings: ins['settings'] = settings
 	if stepno>-1: ins['script'] = script_fn = 'script_%d.py'%stepno
 	else: ins['script'] = script_fn = 'script.py'
 	#---if extensions are not present we avoid using the state
@@ -123,7 +126,7 @@ def preplist(silent=False):
 	if not silent: asciitree({'menu':toc})
 	return expt_order
 
-def prep_single(inputlib,scriptname='script',exptname='expt',noscript=False):
+def prep_single(inputlib,scriptname='script',exptname='expt',noscript=False,overrides=None):
 	"""
 	Prepare a single-step program.
 	"""
@@ -137,6 +140,8 @@ def prep_single(inputlib,scriptname='script',exptname='expt',noscript=False):
 	ins.update(cwd_source=ins.pop('cwd'))
 	#---pass along amx_extras so they can be imported
 	ins['EXTENSIONS'] = inputlib.get('extensions',None)
+	#---allow settings overrides so metarun settings overrides can use original run settings
+	if overrides: ins['settings_overrides'] = overrides
 	#---! consoldiate script and experiment name to just use a number. run will use this naming convention
 	write_expt(ins,fn='%s.json'%exptname)
 	#---copy the script file into place 
@@ -161,10 +166,17 @@ def prep_metarun(inputlib):
 		elif _keysets('metarun_steps',*item.keys())=='settings': 
 			ins = read_inputs(item['do'])
 			#---override settings in the default experiment with those in this step of the metarun
-			ins['settings'] = item['settings']
-			prep_single(ins,scriptname=scriptname,exptname=exptname)
-		#---run a quick script, but only write the script
+			#---note that the metarun overrides do not have to be complete. the metarun settings
+			#---...block will always be attached as settings_overrides and applied after the settings
+			#---...are loaded, which means that metaruns can make changes without redundant settings text
+			prep_single(ins,scriptname=scriptname,exptname=exptname,overrides=item['settings'])
+		#---quick to script with settings
+		elif _keysets('metarun_steps',*item.keys())=='quick': 
+			quick(item['quick'],settings=item['settings'],stepno=stepno+1)
+		#---run a quick script, but only write the script, no incoming settings
 		elif _keysets('quick',*item.keys())=='quick': quick(item['quick'],stepno=stepno+1)
+		#---write the quick script with no additional settings
+		elif _keysets('quick',*item.keys())=='simple': quick(item['quick'],stepno=stepno+1)
 		else: raise Exception('no formula for metarun item: %r'%item)
 
 def prep(procname=None,noscript=False):
@@ -322,11 +334,11 @@ def is_installed():
 		try: subprocess.check_call(config['install_check'],shell=True)
 		except: sys.exit(1)
 
-def go(procname):
+def go(procname,restart=False):
 	"""
 	Sugar for running ``make prep (name) && make run`` which also works for metaruns or quick scripts.
 	"""
-	clean(sure=True)
+	if restart: clean(sure=True)
 	runtypes = ['metarun','run','quick']
 	from control import _keysets
 	if procname.isdigit(): procname = preplist(silent=True)[int(procname)-1]
