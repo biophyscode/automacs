@@ -187,11 +187,20 @@ def write_top(topfile):
 		#---we require a meta.json file to specify the definitions
 		if not os.path.isfile(meta_fn): raise Exception('need meta.json in %s'%(state.force_field+'.ff'))
 		with open(meta_fn) as fp: meta = json.loads(fp.read())
-		ff_defs = unique([i for i in meta if meta[i] if 'defs' in meta[i]])
-		with open(state.here+topfile,'w') as fp:
+		#---use new style definitions for an explicit ordering of the top list of includes
+		#---...which is suitable for charmm and other standard force fields 
+		#---...(martini is the else, needs replaced)
+		if 'definitions' in meta:
+			#---get the paths
+			itp_namer = dict([(os.path.basename(j),j) for j in includes])
+			includes_reorder = [itp_namer[j] for j in meta['definitions']]
+		#---other force fields might have molecules spread across multiple ITPs with one that has the defs
+		else: 
+			ff_defs = unique([i for i in meta if meta[i] if 'defs' in meta[i]])
 			#---reorder with the definitions first
 			includes_reorder = [i for i in includes if os.path.basename(i)==ff_defs]
 			includes_reorder += [i for i in includes if i not in includes_reorder]
+		with open(state.here+topfile,'w') as fp:
 			for fn in [os.path.relpath(i,state.here) for i in includes_reorder]:
 				fp.write('#include "%s"\n'%fn)
 			#---additional itp files
@@ -550,7 +559,7 @@ def counterions(structure,top=None,includes=None,ff_includes=None,gro='counterio
 	#---we store the water resname in the wordspace as "sol"
 	resname =  state.q('sol','SOL')
 	#---! the following section fails on the helix-0 test set which tracks water accurately
-	if False:
+	if True:
 		#---clean up the composition in case this is a restart
 		for key in ['cation','anion',resname]:
 			try: state.composition.pop(list(zip(*state.composition))[0].index(state.q(key)))
