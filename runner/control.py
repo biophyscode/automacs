@@ -59,15 +59,17 @@ def quick(procname,**kwargs):
 	#---note that stepno is indexed from one
 	stepno = int(kwargs.pop('stepno',-1))
 	settings = kwargs.pop('settings',None)
+	settings_extras = kwargs.pop('settings_extras',{})
 	if kwargs: raise Exception('invalid kwargs: %s'%kwargs)
 	inputlib = read_inputs(procname)
-	#quick_type = _keysets('quick',*inputlib.keys(),check=True)
 	ins = dict(inputlib)
 	ins.update(cwd_source=ins.pop('cwd'))
 	#---some quick calls from metarun have their own settings
 	if settings: ins['settings'] = settings
 	if stepno>-1: ins['script'] = script_fn = 'script_%d.py'%stepno
 	else: ins['script'] = script_fn = 'script.py'
+	#---pass along extras e.g. jupyter_coda
+	ins.update(**settings_extras)
 	#---if extensions are not present we avoid using the state
 	if stepno>-1 and 'extensions' not in inputlib: ins['stateless'] = True
 	#---extensions are uppercase in order to be processed
@@ -158,6 +160,8 @@ def prep_metarun(inputlib):
 	steplist = inputlib.pop('metarun')
 	for stepno,item in enumerate(steplist):
 		scriptname,exptname = 'script_%d'%(stepno+1),'expt_%d'%(stepno+1)
+		#---pass along extras if available
+		extras = dict([(key,item[key]) for key in ['jupyter_coda'] if key in item])
 		#---run a standard step verbatim
 		if _keysets('metarun_steps',*item.keys())=='simple': 
 			#---! need to send the step name!
@@ -172,11 +176,12 @@ def prep_metarun(inputlib):
 			prep_single(ins,scriptname=scriptname,exptname=exptname,overrides=item['settings'])
 		#---quick to script with settings
 		elif _keysets('metarun_steps',*item.keys())=='quick': 
-			quick(item['quick'],settings=item['settings'],stepno=stepno+1)
-		#---run a quick script, but only write the script, no incoming settings
-		elif _keysets('quick',*item.keys())=='quick': quick(item['quick'],stepno=stepno+1)
+			quick(item['quick'],settings=item['settings'],stepno=stepno+1,settings_extras=extras)
+		#---run a quick script, but only write the script without entire settings replace
+		elif _keysets('quick',*item.keys())=='quick': 
+			quick(item['quick'],stepno=stepno+1,settings_extras=extras)
 		#---write the quick script with no additional settings
-		elif _keysets('quick',*item.keys())=='simple': quick(item['quick'],stepno=stepno+1)
+		#---! elif _keysets('quick',*item.keys())=='simple': quick(item['quick'],stepno=stepno+1)
 		else: raise Exception('no formula for metarun item: %r'%item)
 
 def prep(procname=None,noscript=False):

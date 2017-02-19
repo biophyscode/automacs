@@ -2,9 +2,9 @@
 
 import os,sys,subprocess,re,time,glob,shutil
 
-__all__ = ['locate','flag_search','config','watch','layout','gromacs_config','bootstrap']
+__all__ = ['locate','flag_search','config','watch','layout','gromacs_config','bootstrap','notebook']
 
-from datapack import asciitree,delve,delveset
+from datapack import asciitree,delve,delveset,yamlb
 
 def locate(keyword):
 	"""
@@ -150,3 +150,77 @@ def bootstrap(name):
 		'to make a machine-specific configuration for future simulations.')
 	subprocess.check_call('make gromacs_config home',shell=True)
 	print('[STATUS] you just pulled yourself up by your bootstraps!')
+
+def notebook(procedure,rewrite=False,go=False,name='notebook.ipynb'):
+	"""
+	Make an IPython notebook for a particular procedure.
+	"""
+	if not rewrite and os.path.isfile(name): raise Exception('refusing to overwrite %s'%name)
+	if rewrite: subprocess.check_call('make clean sure',shell=True)
+	#---run make prep per usual
+	subprocess.check_call('make prep %s'%procedure,shell=True)
+	import nbformat as nbf
+	import json,pprint
+	nb = nbf.v4.new_notebook()
+	#---write the header
+	text = "# %s\n"%procedure +\
+		"\n*an AUTOMACS script*\n\n**Note:** you should only changes settings blocks before executing "+\
+		"these codes in the given sequence."
+	nb['cells'].append(nbf.v4.new_markdown_cell(text))
+	#---always clean and prepare again
+	reset = "%%capture\n! "+"make clean sure && make prep %s"%procedure
+	nb['cells'].append(nbf.v4.new_code_cell(reset))
+	#---! autoscrolling option causes overlaps
+	autoscroll = "%%html\n"+"<style> .output_wrapper, .output {height:auto!important;max-height:100px; }"+\
+		" .output_scroll {box-shadow:none!important;webkit-box-shadow:none!important;}</style>"
+	#---! diabled
+	if False: nb['cells'].append(nbf.v4.new_code_cell(autoscroll))
+	#---note that we use inference to distinguish metarun from run
+	#---! quick scripts may not work with the notebook format
+	#---loop over valid experiment files
+	expt_fns = sorted(glob.glob('expt*.json'))
+	if not expt_fns: raise Exception('cannot find experiments')
+	is_metarun = len(expt_fns)>1
+	for stepno,expt_fn in enumerate(expt_fns):
+		#---unpack the expt.json file into readable items
+		with open(expt_fn) as fp: expt = json.loads(fp.read())
+		script_fn = expt['script']
+		#---settings block gets its own text
+		settings = expt.pop('settings')
+		settings_block = 'settings = """%s"""'%settings
+		if 'settings_overrides' in expt: 
+			settings_block += '\n\nsettings_overrides = """%s"""'%expt.pop('settings_overrides')
+		#---warning to the user about what happens next
+		if is_metarun: 
+			step_name = yamlb(settings)['step']
+			nb['cells'].append(nbf.v4.new_markdown_cell('# step %d: %s'%(stepno+1,step_name)))
+		nb['cells'].append(nbf.v4.new_code_cell(settings_block))
+		#---rewrite metadata
+		rewrite_expt = "import json,shutil\nsets = dict(settings=settings)\n"+\
+			"if 'settings_overrides' in globals():\n\tsets['settings_overrides'] = settings_overrides"+\
+			"\n\tdel settings_overrides\n"+\
+			"expt = dict(metadata,**sets)\n"+\
+			"with open('expt.json','w') as fp: json.dump(expt,fp)"+\
+			"\nshutil.copyfile(expt['script'],'script.py');"
+		nb['cells'].append(nbf.v4.new_code_cell('#---save settings (run this cell without edits)\n'+
+			'metadata = %s\n'%pprint.pformat(expt)+rewrite_expt))
+		with open(script_fn) as fp: text = fp.read()
+		regex_no_hashbang = '^#!/usr/bin/env python\n\s*\n(.+)\n?$'
+		try: code = re.match(regex_no_hashbang,text,re.M+re.DOTALL).group(1).strip('\n')
+		except: code = text
+		#---time the run/step
+		code = "%%time\n"+code
+		#---if this step in the metarun is a standard run we write the code block
+		if 'quick' in expt: nb['cells'].append(nbf.v4.new_code_cell('! python -B script.py'))
+		#---standard runs are written directly to cells
+		else: nb['cells'].append(nbf.v4.new_code_cell(code))
+		#---add a coda if available
+		#---! note that this feature requires extra routing via controlspec.py
+		if 'jupyter_coda' in expt: nb['cells'].append(nbf.v4.new_code_cell(expt['jupyter_coda'].strip('\n')))
+
+	#---write the notebook
+	with open(name,'w') as f: nbf.write(nb,f)
+	#---run the notebook directly with os.system so INT works
+	if go: os.system('jupyter notebook %s'%name)
+	else: print('[STATUS] notebook is ready at %s. '%name+
+		'run this manually or use the "go" flag next time.')

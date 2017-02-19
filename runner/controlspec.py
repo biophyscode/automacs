@@ -15,9 +15,11 @@ controlspec = {
 		'metarun_steps':{
 			('step','do'):'simple',
 			('quick','settings'):'quick',
+			('quick','settings','jupyter_coda'):'quick',
 			('step','do','settings'):'settings',},
 		'quick':{
 			('quick',):'quick',
+			('quick','jupyter_coda'):'quick',
 			('quick','cwd',):'quick',
 			('quick','settings','cwd'):'basic',
 			('quick','settings','cwd','params','extensions','tags'):'extensions',
