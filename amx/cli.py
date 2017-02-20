@@ -1,10 +1,25 @@
 #!/usr/bin/env python
 
-import os,sys,subprocess,re,time,glob,shutil
+import os,sys,subprocess,re,time,glob,shutil,json
 
-__all__ = ['locate','flag_search','config','watch','layout','gromacs_config','bootstrap','notebook']
+__all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
+	'bootstrap','notebook','upload','download','cluster','qsub']
 
 from datapack import asciitree,delve,delveset,yamlb
+from calls import get_machine_config
+
+def get_amx():
+	"""
+	Wrapper for getting amx since command-line calls lack the null string in the path.
+	"""
+	#---! Note that something is adding '' to sys.path elsewhere because the runner imports always work.
+	#---! ...this isn't a problem but it could become one
+	paths = list(sys.path)
+	#---command-line calls like this one are missing '' from the path
+	if '' not in sys.path: sys.path.insert(0,'')
+	import amx
+	sys.path = paths
+	return amx
 
 def locate(keyword):
 	"""
@@ -150,6 +165,188 @@ def bootstrap(name):
 		'to make a machine-specific configuration for future simulations.')
 	subprocess.check_call('make gromacs_config home',shell=True)
 	print('[STATUS] you just pulled yourself up by your bootstraps!')
+
+def serial_number():
+	"""
+	Add a random serial number to the simulation.
+	This function adds the ``serial`` variable to the state.
+	!Note that we must propagate the serial on subsequent steps.
+	!Requires state hence you should import amx in the calling function e.g. upload.
+	"""
+	amx = get_amx()
+	path = list(sys.path)
+	sys.path.insert(0,'')
+	from runner.states import state_set_and_save
+	sys.path = path
+	serial = amx.state.get('serial',None)
+	if not serial:
+		import random
+		serialno = random.randint(0,10**9)
+		state_set_and_save(serial=serialno)
+	return state['serial']
+
+def upload(alias,sure=False,path='~',state_fn='state.json',bulk=False):
+	"""
+	Upload the data to a supercomputer.
+	!Bulk is not implemented yet.
+	"""
+	amx = get_amx()
+	from amx.calls import get_last_gmx_call
+	serial_number()
+	last_step = amx.state['here']
+	get_last_gmx_call('mdrun',this_state=amx.state)
+	last_mdrun = get_last_gmx_call('mdrun',this_state=amx.state)
+	restart_fns = [last_step+i for i in [last_mdrun['flags']['-s'],last_mdrun['flags']['-cpo']]]
+	restart_fns += [last_step+'script-continue.sh']
+	if not all([os.path.isfile(fn) for fn in restart_fns]):
+		error = '[STATUS] could not find necessary upload files from get_last_gmx_call'+\
+			"\n[ERROR] missing: %s"%str([fn for fn in restart_fns if not os.path.isfile(fn)])
+		raise Exception(error)
+	#---get defaults list
+	default_fns,default_dirs = ['makefile','config.py','state.json'],['amx','runner']
+	default_fns += [os.path.join(root,fn) for dn in default_dirs for root,dirnames,fns 
+		in os.walk(dn) for fn in fns]
+	default_fns = [fn for fn in default_fns if not re.match('.+\.pyc$',fn) and not re.search('/\.git/',fn)]
+	#---write list to upload
+	with open('uploads.txt','w') as fp: 
+		for fn in restart_fns+default_fns: fp.write(fn+'\n')
+	cwd = os.path.basename(os.path.abspath(os.getcwd()))
+	if not sure:
+		cmd = 'rsync -%s%s ../%s %s:%s/%s'%(
+			'avin',' --files-from=uploads.txt' if not bulk else ' --exclude=.git',cwd,
+			alias,path,cwd if not bulk else '')
+		p = subprocess.Popen(cmd,shell=True,cwd=os.path.abspath(os.getcwd()),executable='/bin/bash')
+		log = p.communicate()
+	if (sure or (input if sys.version_info>(3,0) else raw_input)
+		('\n[QUESTION] continue [y/N]? ')[:1] not in 'nN'):
+		cmd = 'rsync -%s%s ../%s %s:%s/%s'%(
+			'avi',' --files-from=uploads.txt' if not bulk else ' --exclude=.git',cwd,
+			alias,path,cwd if not bulk else '')
+		p = subprocess.Popen(cmd,shell=True,cwd=os.path.abspath(os.getcwd()),executable='/bin/bash')
+		log = p.communicate()
+		if not bulk: os.remove('uploads.txt')
+	if p.returncode == 0 and last_step:
+		destination = '%s:%s/%s'%(alias,path,cwd)
+		import datetime
+		ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d.%H%M')
+		from runner.states import state_set_and_save
+		this_upload = dict(to=destination,when=ts)
+		state_set_and_save(upload=this_upload)
+		upload_history = amx.state.get('upload_history',[])
+		upload_history.append(this_upload)
+		state_set_and_save(upload_history=upload_history)
+	elif p.returncode != 0: 
+		print("[STATUS] upload failure (not logged)")
+		sys.exit(1)
+
+def download(sure=False):
+	"""
+	"""
+	amx = get_amx()
+	if 'upload' not in amx.state: 
+		raise Exception('cannot find "upload" key in the state. did you upload this already?')
+	destination = amx.state['upload']['to']
+	serialno = serial_number()
+	print("[STATUS] the state says that this simulation (#%d) is located at %s"%(serialno,destination))
+	try:
+		cmd = 'rsync -avin --progress %s/* ./'%destination
+		print('[STATUS] running: "%s"'%cmd)
+		p = subprocess.Popen(cmd,shell=True,cwd=os.path.abspath(os.getcwd()))
+		log = p.communicate()
+		if p.returncode != 0: raise
+		if (sure or (input if sys.version_info>(3,0) else raw_input)
+			('\n[QUESTION] continue [y/N]? ')[:1] not in 'nN'):
+			cmd = 'rsync -avi --progress %s/* ./'%destination
+			print('[STATUS] running "%s"'%cmd)
+			p = subprocess.Popen(cmd,shell=True,cwd=os.path.abspath(os.getcwd()))
+			log = p.communicate()
+	except Exception as e:
+		import traceback
+		s = traceback.format_exc()
+		print("[TRACE] > "+"\n[TRACE] > ".join(s.split('\n')))
+		print("[ERROR] failed to find simulation")
+		print("[NOTE] find the data on the remote machine via \"find ./ -name serial-%s\""%serialno)
+		sys.exit(1)
+
+def cluster():
+	"""
+	Write a cluster header according to the machine configuration.
+	The machine configuration is read from ``~/.automacs.py`` but can be overriden by a local ``config.py``
+	which can be created with :meth:`make config local <amx.controller.config>`.
+	This code will concatenate the cluster submission header with a continuation script.
+	Note that we do not log this operation because it only manipulates BASH scripts.
+	"""
+	script_continue_fn = 'amx/script-continue.sh'
+	amx = get_amx()
+	from amx.calls import get_last_gmx_call
+	machine_configuration = get_machine_config()
+	if not 'cluster_header' in machine_configuration: 
+		print('[STATUS] no cluster information')
+		return
+	head = machine_configuration['cluster_header']
+	for key,val in machine_configuration.items(): head = re.sub(key.upper(),str(val),head)
+	with open('cluster-header.sh','w') as fp: fp.write(head)
+	print('[STATUS] wrote cluster-header.sh')
+	#---get the most recent step (possibly duplicate code from base)
+	last_step = amx.state.here
+	gmxpaths = amx.state.gmxpaths
+	if last_step:
+		#---code from base.functions.write_continue_script to rewrite the continue script
+		with open(script_continue_fn,'r') as fp: lines = fp.readlines()
+		tl = [float(j) if j else 0.0 for j in re.match('^([0-9]+)\:?([0-9]+)?\:?([0-9]+)?',
+			machine_configuration.get('walltime','24:00:00')).groups()]
+		maxhours = tl[0]+float(tl[1])/60+float(tl[2])/60/60
+		settings = {'maxhours':maxhours,
+			'tpbconv':gmxpaths['tpbconv'],
+			'mdrun':gmxpaths['mdrun']}
+		if 'nprocs' in machine_configuration: settings['nprocs'] = machine_configuration['nprocs']
+		#---! how should we parse multiple modules from the machine_configuration?
+		if 'modules' in machine_configuration:
+			need_modules = machine_configuration['modules']
+			need_modules = [need_modules] if type(need_modules)==str else need_modules
+			for m in need_modules: head += "module load %s\n"%m
+		for key in ['extend','until']: 
+			if key in machine_configuration: settings[key] = machine_configuration[key]
+		#---! must intervene above to come up with the correct executables
+		setting_text = '\n'.join([
+			str(key.upper())+'='+('"' if type(val)==str else '')+str(val)+('"' if type(val)==str else '') 
+			for key,val in settings.items()])
+		lines = map(lambda x: re.sub('#---SETTINGS OVERRIDES HERE$',setting_text,x),lines)
+		script_fn = 'script-continue.sh'
+		cont_fn = last_step+script_fn
+		print('[STATUS] %swriting %s'%('over' if os.path.isfile(last_step+script_fn) else '',cont_fn))
+		with open(last_step+script_fn,'w') as fp:
+			for line in lines: fp.write(line)
+		os.chmod(last_step+script_fn,0o744)
+		#---code above from base.functions.write_continue_script		
+		with open(cont_fn,'r') as fp: continue_script = fp.read()
+		continue_script = re.sub('#!/bin/bash\n','',continue_script)
+		cluster_continue = last_step+'/cluster-continue.sh'
+		print('[STATUS] writing %s'%cluster_continue)
+		with open(cluster_continue,'w') as fp: fp.write(head+continue_script)
+	#---for each python script in the root directory we write an equivalent cluster script
+	pyscripts = glob.glob('script-*.py')
+	if len(pyscripts)>0: 
+		with open('cluster-header.sh','r') as fp: header = fp.read()
+	for script in pyscripts:
+		name = re.findall('^script-([\w-]+)\.py$',script)[0]
+		with open('cluster-%s.sh'%name,'w') as fp:
+			fp.write(header+'\n')
+			fp.write('python script-%s.py &> log-%s\n'%(name,name))
+		print('[STATUS] wrote cluster-%s.sh'%name)
+
+def qsub():
+	"""
+	Submits the job to the queue. This saves you from changing into the latest step directory.
+	"""
+	amx = get_amx()
+	here = amx.state.here
+	if not os.path.isfile(here+'cluster-continue.sh'):
+		raise Exception('[ERROR] cannot find "cluster-continue.sh" in the last step directory (%s). '
+			%here+'try running `make cluster` to generate it.')
+	cmd = 'qsub cluster-continue.sh'
+	print('[STATUS] running "%s"'%cmd)
+	subprocess.check_call(cmd,cwd=here,shell=True)
 
 def notebook(procedure,rewrite=False,go=False,name='notebook.ipynb'):
 	"""

@@ -100,14 +100,16 @@ def convert_gmx_template_to_call(spec,kwargs,strict=False):
 		value%subs_required if type(value)==str else value) for flag,value in flags.items()])}
 	return {'call':call,'recorded':recorded}
 
-def get_last_gmx_call(name):
+def get_last_gmx_call(name,this_state=None):
 	"""
 	The gmx call history is loaded by convert_gmx_template_to_call. We can retrieve the last call to a 
 	particular gromacs utility using this function.
 	"""
-	recents = [ii for ii,i in enumerate(state.history_gmx) if i['call']==name]
+	#---sometimes we run this after "import amx" so the state is found there
+	if not this_state: this_state = state
+	recents = [ii for ii,i in enumerate(this_state.history_gmx) if i['call']==name]
 	if not recents: raise Exception('no record of a gmx call to %s recently'%name)
-	return state.history_gmx[recents[-1]]
+	return this_state.history_gmx[recents[-1]]
 
 def register_gmx_call(command,flag,value):
 	"""

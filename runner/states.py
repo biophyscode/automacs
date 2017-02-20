@@ -20,7 +20,10 @@ def statesave():
 	nosaves = state.get('_funcs',[])
 	#---we make sure that the only functions in the state were registered and added to _funcs
 	if not set(calls)==set(nosaves): 
-		raise Exception('savestate finds that state._funcs is not equivalent to callables')
+		#---custom exception exception (for serial_number)
+		if not (set(calls)==set([]) and 
+			set(nosaves)==set(['q'])):
+			raise Exception('savestate finds that state._funcs is not equivalent to callables')
 	try: 
 		state_out = dict([(k,v) for k,v in state.items() if k not in set(nosaves+['_protect'])]) 
 		text = json.dumps(state_out)
@@ -98,3 +101,10 @@ def call_reporter(func,state={}):
 	#---rename the function
 	loud.__name__ = func.__name__
 	return loud
+
+def state_set_and_save(**kwargs):
+	"""
+	Some functions lack access to the global state so we 
+	"""
+	state.update(**kwargs)
+	statesave()

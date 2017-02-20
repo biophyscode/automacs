@@ -208,7 +208,7 @@ class GMXStructure:
 		Write a GRO file.
 		"""
 
-		grospec = {'residue_indices'}
+		#---! unfinished code? grospec = {'residue_indices'}
 
 		self.renumber()
 		residue_inds_abs = self.residue_indices
