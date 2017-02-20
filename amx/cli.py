@@ -3,7 +3,7 @@
 import os,sys,subprocess,re,time,glob,shutil,json
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
-	'bootstrap','notebook','upload','download','cluster','qsub']
+	'bootstrap','notebook','upload','download','cluster','qsub','gitcheck']
 
 from datapack import asciitree,delve,delveset,yamlb
 from calls import get_machine_config
@@ -421,3 +421,14 @@ def notebook(procedure,rewrite=False,go=False,name='notebook.ipynb'):
 	if go: os.system('jupyter notebook %s'%name)
 	else: print('[STATUS] notebook is ready at %s. '%name+
 		'run this manually or use the "go" flag next time.')
+
+def gitcheck():
+	"""
+	Check all git repos for changes.
+	"""
+	with open('config.py') as fp: config_this = eval(fp.read())
+	#---loop over modules and check the status
+	for far,near in config_this['modules']:
+		print('[STATUS] checking `git status` of %s'%near)
+		subprocess.check_call('git status',cwd=near,shell=True)
+	print('[STATUS] the above messages will tell you if you are up to date')
