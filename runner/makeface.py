@@ -145,7 +145,7 @@ def makeface(*arglist):
 			else:
 				sig = inspect.signature(makeface_funcs[funcname])
 				argspec_args = [name for name,value in sig.parameters.items() 
-					if value.default==inspect._empty]
+					if value.default==inspect._empty or type(value.default)==bool]
 			#---! needs protection
 			if arg in argspec_args: kwargs[arg] = True
 			else: args.append(arg)

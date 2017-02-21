@@ -3,7 +3,7 @@
 import os,sys,subprocess,re,time,glob,shutil,json
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
-	'bootstrap','notebook','upload','download','cluster','qsub','gitcheck']
+	'setup','notebook','upload','download','cluster','qsub','gitcheck']
 
 from datapack import asciitree,delve,delveset,yamlb
 from calls import get_machine_config
@@ -129,7 +129,7 @@ def gromacs_config(where=None):
 
 ###---KICKSTART SCRIPTS
 
-kickstarters = {'full':"""
+kickstarters = {'all':"""
 make set module source="$up/amx-proteins.git" spot="amx/proteins"
 make set module source="$up/amx-extras.git" spot="inputs/extras"
 make set module source="$up/amx-docs.git" spot="inputs/docs"
@@ -149,7 +149,7 @@ make set module source="$up/amx-vmd.git" spot="inputs/vmd"
 """
 }
 
-def bootstrap(name):
+def setup(name):
 	"""
 	Run this after cloning a fresh copy of automacs in order to clone some standard
 	"""
@@ -160,11 +160,11 @@ def bootstrap(name):
 		fp.write("#!/bin/bash\n\nset -e\n\nup=%s\n\n"%upstream_source+kickstarters[name])
 	subprocess.check_call('bash kickstart.sh',shell=True)
 	os.remove('kickstart.sh')
-	print('[WARNING] bootstrap also runs `make gromacs_config local`\n'+
+	print('[WARNING] setup also runs `make gromacs_config local`\n'+
 		'so you are ready to simulate. consider using `make gromacs_config home`\n'+
 		'to make a machine-specific configuration for future simulations.')
 	subprocess.check_call('make gromacs_config home',shell=True)
-	print('[STATUS] you just pulled yourself up by your bootstraps!')
+	print('[STATUS] setup is complete')
 
 def serial_number():
 	"""
