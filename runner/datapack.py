@@ -16,6 +16,9 @@ function processes all incoming experiment settings into a nested dictionary whi
 """
 
 import os,sys,re,json
+
+#---import magic
+sys.path.insert(0,os.path.dirname(os.path.relpath(os.path.abspath(__file__),os.getcwd())))
 from controlspec import controlspec
 #from acme import get_path_to_module
 
