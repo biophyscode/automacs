@@ -123,8 +123,8 @@ def gromacs_config(where=None):
 		msg = ("we cannot find either a global (%s) or local (%s) "%(config_std,config_local)+
 			"gromacs path configuration file. the global location (a hidden file in your home directory) "+
 			"is the default, but you can override it with a local copy. "+
-			"run `make gromacs_config home` or `make gromacs_config local` to write a default configuration to "+
-			"either location. then you can continue to use automacs.")
+			"run `make gromacs_config home` or `make gromacs_config local` to write a default "+
+			"configuration to either location. then you can continue to use automacs.")
 		raise Exception('\n'.join(['[ERROR] %s'%i for i in textwrap.wrap(msg,width=80)]))
 
 ###---KICKSTART SCRIPTS
@@ -149,10 +149,12 @@ make set module source="$up/amx-vmd.git" spot="inputs/vmd"
 """
 }
 
-def setup(name):
+def setup(name=''):
 	"""
 	Run this after cloning a fresh copy of automacs in order to clone some standard
 	"""
+	if not name: 
+		raise Exception('you must specify a setup script: %s'%(', '.join(kickstarters.keys())))
 	#---! hard-coding the source for now, but it would be good to put this in config.py
 	upstream_source = "http://github.com/bradleyrp"
 	if name not in kickstarters: raise Exception('cannot find kickstarter script: %s'%name)

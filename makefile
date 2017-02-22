@@ -13,6 +13,7 @@ PYTHON_DEBUG = "$(shell echo $$PYTHON_DEBUG)"
 python_flags = "-B"
 
 # filter and evaluate
+MAKEFLAGS += -s
 RUN_ARGS_UNFILTER := $(wordlist 1,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
 RUN_ARGS := $(filter-out $(protected_targets),$(RUN_ARGS_UNFILTER))
 $(eval $(RUN_ARGS):;@:)

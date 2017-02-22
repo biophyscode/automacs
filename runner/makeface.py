@@ -118,8 +118,7 @@ def tracebacker(e):
 
 def makeface(*arglist):
 	"""
-	### M2P "Makefile to python"
-	### Ryan Bradley's ultra-hackish way of making CLI's for python
+	Route ``make`` commands into python.
 	"""
 	#---stray characters
 	arglist = tuple(i for i in arglist if i not in ['w','--','s','ws','sw'])
