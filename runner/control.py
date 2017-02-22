@@ -113,16 +113,17 @@ def preplist(silent=False):
 	is_installed()
 	from makeface import fab
 	from datapack import asciitree
-	inputlib = read_inputs(procname=None)
+	inputlib,spots = read_inputs(procname=None,return_paths=True)
 	toc,counter = {'run':[],'metarun':[],'quick':[]},0
 	expt_order = []
-	dottoc = lambda counter,key : ' '+str(counter+1).ljust(4,'.')+' '+key
+	#---! the following notes the cwd but not the _expts.py file for a particular experiment
+	dottoc = lambda counter,key,at : ' '+str(counter+1).ljust(4,'.')+' '+key+fab(' (%s)'%at,'gray')
 	for key in sorted(inputlib.keys()):
 		val = inputlib[key]
-		if 'metarun' in val: toc['metarun'].append(dottoc(counter,key))
-		elif 'quick' in val: toc['quick'].append(dottoc(counter,key))
+		if 'metarun' in val: toc['metarun'].append(dottoc(counter,key,spots[key]))
+		elif 'quick' in val: toc['quick'].append(dottoc(counter,key,spots[key]))
 		#---only three types here
-		else: toc['run'].append(dottoc(counter,key))
+		else: toc['run'].append(dottoc(counter,key,inputlib[key]['cwd']))
 		expt_order.append(key)
 		counter += 1
 	if not silent: asciitree({'menu':toc})
@@ -339,11 +340,11 @@ def is_installed():
 		try: subprocess.check_call(config['install_check'],shell=True)
 		except: sys.exit(1)
 
-def go(procname,restart=False):
+def go(procname,fresh=False):
 	"""
 	Sugar for running ``make prep (name) && make run`` which also works for metaruns or quick scripts.
 	"""
-	if restart: clean(sure=True)
+	if fresh: clean(sure=True)
 	runtypes = ['metarun','run','quick']
 	from control import _keysets
 	if procname.isdigit(): procname = preplist(silent=True)[int(procname)-1]
