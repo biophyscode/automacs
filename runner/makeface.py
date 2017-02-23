@@ -23,6 +23,9 @@ config_fn = 'config.py'
 config_key = 'commands'
 makeface_funcs = {}
 
+#---invalid flags from Makefile
+drop_flags = ['w','--','s','ws','sw']
+
 verbose = False
 
 import os,sys,re,glob
@@ -125,7 +128,7 @@ def makeface(*arglist):
 	Route ``make`` commands into python.
 	"""
 	#---stray characters
-	arglist = tuple(i for i in arglist if i not in ['w','--','s','ws','sw'])
+	arglist = tuple(i for i in arglist if i not in drop_flags)
 	#---unpack arguments
 	if arglist == []: raise Exception('[ERROR] no arguments to controller')
 	args,kwargs = [],{}
@@ -184,6 +187,8 @@ if __name__ == "__main__":
 		with open(config_fn) as fp: configurator = eval(fp.read())
 		source_scripts = str_or_list(configurator.get('commands',[]))
 	else: raise Exception('need to specify config_fn and config_key')
+	#---filter sys.argv
+	argvs = [i for i in sys.argv if i not in drop_flags]
 	if source_scripts:
 		for sc in source_scripts:
 			fns = glob.glob(sc)
@@ -198,20 +203,20 @@ if __name__ == "__main__":
 					or os.path.dirname(fn)=='.'): 
 					new_funcs = import_local(fn)
 					makeface_funcs.update(**new_funcs)
-					if len(sys.argv)==1 and verbose: 
+					if len(argvs)==1 and verbose: 
 						print('[NOTE] imported remotely from %s'%fn)
 						print('[NOTE] added functions: %s'%(' '.join(new_funcs)))
 					#---! currently deprecated below
 					if False:
 						mod = __import__(os.path.basename(fn).rstrip('.py'))
 						makeface_funcs.update(**strip_builtins(new_funcs))
-						if len(sys.argv)==1: 
+						if len(argvs)==1: 
 							print('[NOTE] imported from %s'%fn)
 							print('[NOTE] added functions: %s'%(' '.join(new_funcs)))
 				else: 
 					new_funcs = import_remote(fn)
 					makeface_funcs.update(**new_funcs)
-					if len(sys.argv)==1: 
+					if len(argvs)==1: 
 						if verbose: 
 							print('[NOTE] imported remotely from %s'%fn)
 							print('[NOTE] added functions: %s'%(' '.join(new_funcs)))
@@ -232,10 +237,10 @@ if __name__ == "__main__":
 		#---note that we remove the original function after making the alias to avoid redundancy
 		else: makeface_funcs[j] = makeface_funcs.pop(i)
 	#---if no argument, make returns valid targets
-	if len(sys.argv)==1: 
+	if len(argvs)==1: 
 		#---this formatting is read by the makefile to get the valid targets (please don't remove it)
 		print('[STATUS] available make targets: %s'%(' '.join(makeface_funcs.keys())))
 		from datapack import asciitree
 		asciitree({'make targets':list(sorted(makeface_funcs.keys()))})
 		print('[USAGE] `make <target> <args> <kwarg>="<val>" ...`')
-	else: makeface(*sys.argv[1:])
+	else: makeface(*argvs[1:])
