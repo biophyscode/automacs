@@ -91,7 +91,7 @@ class SafeDictHook(dict):
 		if len(args)>1: raise Exception('development failure')
 		keys = [i[0] for i in args[0]]
 		if len(keys)!=len(set(keys)): 
-			raise Exception(controlspec['msg']['json']+' PROBLEM KEYS MIGHT BE: %s'%str(keys))
+			raise Exception(controlmsg['json']+' PROBLEM KEYS MIGHT BE: %s'%str(keys))
 		self.update(*args,**kwargs)
 
 def check_repeated_keys(text,verbose=False):
@@ -108,7 +108,7 @@ def check_repeated_keys(text,verbose=False):
 				for ll,l in enumerate(text_json.splitlines())])
 			print('[ERROR] the following string has a JSON problem:\n'+text_with_linenos)
 			print('[ERROR] exception is %s'%e)
-			print('[NOTE] '+controlspec['msg']['json'])
+			print('[NOTE] '+controlmsg['json'])
 		return False
 	return True
 
@@ -200,7 +200,7 @@ def yamlb(text,style=None,ignore_json=False):
 		elif type(val)==list: result = val
 		elif type(val)==dict:
 			if not ignore_json and not check_repeated_keys(val_raw):
-				raise Exception(_control['msg']['json']+' problem was found in: "%s"'%val_raw)
+				raise Exception(controlmsg['json']+' problem was found in: "%s"'%val_raw)
 			result = val
 		elif type(val) in str_types:
 			if re.match('^(T|t)rue$',val): result = True

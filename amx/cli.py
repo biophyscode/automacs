@@ -1,9 +1,17 @@
 #!/usr/bin/env python
 
+"""
+Command-line interface
+----------------------
+
+A collection of (helpful) command-line utilities. The interface is managed by the :any:`makeface <makeface>` 
+module.
+"""
+
 import os,sys,subprocess,re,time,glob,shutil,json
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
-	'setup','notebook','upload','download','cluster','qsub','gitcheck']
+	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull']
 
 from datapack import asciitree,delve,delveset,yamlb
 from calls import get_machine_config
@@ -432,3 +440,15 @@ def gitcheck():
 		print('[STATUS] checking `git status` of %s'%near)
 		subprocess.check_call('git status',cwd=near,shell=True)
 	print('[STATUS] the above messages will tell you if you are up to date')
+
+def gitpull():
+	"""
+	Pull in each git module.
+	"""
+	with open('config.py') as fp: config_this = eval(fp.read())
+	#---pull the main module
+	subprocess.check_call('git pull',cwd='.',shell=True)
+	#---loop over modules and pull
+	for far,near in config_this['modules']:
+		print('[STATUS] running `git pull` at %s'%near)
+		subprocess.check_call('git pull',cwd=near,shell=True)

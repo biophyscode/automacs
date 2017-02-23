@@ -2,13 +2,13 @@
 
 """
 ACME EXPERIMENTS
+----------------
 
-Codes in this module manage reading and writing experiments.
+Codes in this module manage reading and writing experiments. Experiments for acme-inflected simulation runs 
+are written to special data structures found in python scripts containing dictionary literals. The files are 
+located by :any:`get_input_files <acme.get_input_files>`.
 
-Experiments for acme-inflected simulation runs are written to special data structures found in python scripts
-containing dictionary literals. The files are located by `get_input_files`.
-
-Note! Your experiment files may use paths that depend on your specific configuration. You can manage these 
+**Note!** Your experiment files may use paths that depend on your specific configuration. You can manage these 
 paths in two ways. You can either decide on a configuration (described largely by the modules list in 
 config.py) and then if you decide to move something, perform batch replacements on your paths inside of the
 experiment files. A more advanced option is to label paths in other modules with the "@module" syntactic 
@@ -25,7 +25,7 @@ import ast
 
 from makeface import abspath
 from datapack import check_repeated_keys,DotDict,yamlb,delveset,delve
-from controlspec import controlspec
+from controlspec import controlspec,controlmsg
 
 __all__ = []
 
@@ -67,7 +67,7 @@ def read_inputs(procname=None):
 	for fn in input_sources:
 		with open(fn) as fp: text_spec = fp.read()
 		if not check_repeated_keys(text_spec):
-			raise Exception(controlspec['msg']['json']+' error is located in: %s'%fn)
+			raise Exception(controlmsg['json']+' error is located in: %s'%fn)
 		inputlib_ins = eval(text_spec)
 		#---attach location to each incoming hash
 		for key,val in inputlib_ins.items():

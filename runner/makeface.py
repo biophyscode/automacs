@@ -1,17 +1,21 @@
 #!/bin/bash
 "exec" "python" "-B" "$0" "$@"
 
-"""
-MAKEFACE (a.k.a. MAKEfile INTERFACE)
+__doc__ = """
+
+MAKEFACE (a.k.a. MAKEfile interFACE)
+------------------------------------
 
 A crude but convenient way to make a command-line interface for python. This makeface.py connects the makefile 
-to arbitrary python functions found in files specified by the "commands" key in config.py and collected by 
-functions in ``acme.py``.
+to arbitrary python functions found in files specified by the ``commands`` key in ``config.py`` which is 
+managed by the :any:`acme <acme>` module.
 
-Note: you avoid using make keywords as python args or kwargs (e.g. "w" and "s"). Use this feature at the 
-terminal by running ``make my_python_function flag_that_will_be_true kwarg="some value"``. Set "commands" 
-in the config.py read by ``acme.py`` to specify which files provide functions to the interface. You can set
-__all__ in these files to hide extra functions from ``make``. 
+Note: you avoid using ``make`` keywords as python argument names (e.g. "w" and "s") and avoid using ``*args`` 
+and ``**kwargs`` because arguments are passed from the ``Makefile`` to the python functions by using the 
+`inspect <https://docs.python.org/2/library/inspect.html>`_ module for introspection. You can access python 
+functions from the terminal by running ``make my_python_function some_true_bool_flag kwarg="some value"``. 
+Set ``commands`` in the ``config.py`` managed by :any:`acme <acme>` to specify which files provide functions 
+to the interface. You can set ``__all__`` in these files to hide extraneous functions from ``make``. 
 """
 
 #---settings for globbing for functions

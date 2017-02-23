@@ -1,7 +1,10 @@
-#!/usr/bin/env
+#!/usr/bin/env python
 
 """
-AUTOMACS EXTRAS
+COMMON
+------
+
+Extra functions common to many simulations.
 Generic extensions used by: proteins, bilayers
 Someday this might become part of the amx canon.
 """
