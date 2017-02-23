@@ -286,7 +286,7 @@ def metarun():
 		#---save the state for posterity, later lookups (no save if quick script doesn't save a state.json)
 		elif os.path.isfile('state.json'): shutil.copyfile('state.json','state_%d.json'%num)
 
-def clean(sure=False):
+def cleanup(sure=False):
 	"""
 	Clean files from the current directory.
 	"""
@@ -299,6 +299,8 @@ def clean(sure=False):
 		for fn in fns: 
 			if os.path.isfile(fn): os.remove(fn)
 			else: shutil.rmtree(fn)
+
+def clean(sure=False): cleanup(sure=sure)
 
 def back(command=None,cwd='.',log='log-back'):
 	"""
@@ -340,11 +342,11 @@ def is_installed():
 		try: subprocess.check_call(config['install_check'],shell=True)
 		except: sys.exit(1)
 
-def go(procname,fresh=False):
+def go(procname,clean=False):
 	"""
 	Sugar for running ``make prep (name) && make run`` which also works for metaruns or quick scripts.
 	"""
-	if fresh: clean(sure=True)
+	if clean: cleanup(sure=True)
 	runtypes = ['metarun','run','quick']
 	from control import _keysets
 	if procname.isdigit(): procname = preplist(silent=True)[int(procname)-1]
