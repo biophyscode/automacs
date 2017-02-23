@@ -11,7 +11,7 @@ module.
 import os,sys,subprocess,re,time,glob,shutil,json
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
-	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull']
+	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull','rewrite_config']
 
 from datapack import asciitree,delve,delveset,yamlb
 from calls import get_machine_config
@@ -134,6 +134,19 @@ def gromacs_config(where=None):
 			"run `make gromacs_config home` or `make gromacs_config local` to write a default "+
 			"configuration to either location. then you can continue to use automacs.")
 		raise Exception('\n'.join(['[ERROR] %s'%i for i in textwrap.wrap(msg,width=80)]))
+
+def rewrite_config(source='config.py'):
+	"""
+	Reformat the config.py file in case you change it and want it to look normal again.
+	"""
+	if not os.path.isfile(os.path.abspath(source)): raise Exception('cannot find file "%s"'%source)
+	try: config = eval(open(os.path.abspath(source)).read())
+	except: raise Exception('[ERROR] failed to read master config from "%s"'%source)
+	import pprint
+	#---write the config
+	with open(source,'w') as fp: 
+		fp.write('#!/usr/bin/env python -B\n'+str(pprint.pformat(config,width=110)))
+
 
 ###---KICKSTART SCRIPTS
 
