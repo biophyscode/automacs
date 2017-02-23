@@ -57,13 +57,14 @@ def get_input_files():
 	else: input_sources = str_or_list(config['inputs'])
 	return input_sources
 
-def read_inputs(procname=None):
+def read_inputs(procname=None,return_paths=False):
 	"""
 	Parse all experiment files specified by ``get_input_files`` and either return the whole list or isolate
 	a single procedure specified by the argument.
 	"""
 	inputlib = {}
 	input_sources = get_input_files()
+	spots = {}
 	for fn in input_sources:
 		with open(fn) as fp: text_spec = fp.read()
 		if not check_repeated_keys(text_spec):
@@ -78,7 +79,9 @@ def read_inputs(procname=None):
 			if not procname and key in inputlib:
 				raise Exception('input file %s contains a key "%s" that we already found!'%(fn,key))
 			else: inputlib[key] = val
-	if not procname: return inputlib
+			spots[key] = fn
+	if procname and return_paths: raise Exception('cannot return paths if you asked for a procedure')
+	if not procname: return inputlib if not return_paths else (inputlib,spots)
 	elif procname not in inputlib: raise Exception('cannot find procedure %s in the inputs'%procname)
 	else: return inputlib[procname]
 
