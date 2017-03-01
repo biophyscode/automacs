@@ -123,7 +123,7 @@ def preplist(silent=False):
 		if 'metarun' in val: toc['metarun'].append(dottoc(counter,key,spots[key]))
 		elif 'quick' in val: toc['quick'].append(dottoc(counter,key,spots[key]))
 		#---only three types here
-		else: toc['run'].append(dottoc(counter,key,inputlib[key]['cwd']))
+		else: toc['run'].append(dottoc(counter,key,spots[key]))
 		expt_order.append(key)
 		counter += 1
 	if not silent: asciitree({'menu':toc})
