@@ -11,9 +11,10 @@ module.
 import os,sys,subprocess,re,time,glob,shutil,json
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
-	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull','rewrite_config']
+	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull','rewrite_config',
+	'codecheck']
 
-from datapack import asciitree,delve,delveset,yamlb
+from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
 from calls import get_machine_config
 
 def get_amx():
@@ -160,6 +161,7 @@ make set module source="$up/amx-bilayers.git" spot="inputs/bilayers"
 make set module source="$up/amx-martini.git" spot="inputs/martini"
 make set module source="$up/amx-charmm.git" spot="inputs/charmm"
 make set module source="$up/amx-structures.git" spot="inputs/structure-repo"
+make set module source="$up/amx-polymers.git" spot="inputs/polymers"
 """,
 'proteins':"""
 make set module source="$up/amx-proteins.git" spot="amx/proteins"
@@ -467,3 +469,17 @@ def gitpull():
 	for far,near in config_this['modules']:
 		print('[STATUS] running `git pull` at %s'%near)
 		subprocess.check_call('git pull',cwd=near,shell=True)
+
+def codecheck(fn):
+	"""
+	Check a file for evaluation from the command line.
+	This utility is useful when you want to see if a file with dict literals passes the JSON check.
+	"""
+	if not os.path.isfile(fn): raise Exception('cannot find file %s'%fn)
+	with open(fn) as fp: text = fp.read()
+	print('[NOTE] parsing with python')
+	result = eval(text)
+	print('[NOTE] parsing with jsonify')
+	result = jsonify(text)
+	print('[NOTE] parsing with check_repeated_keys')
+	check_repeated_keys(text,verbose=True)

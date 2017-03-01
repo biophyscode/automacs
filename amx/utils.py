@@ -31,7 +31,7 @@ def status(string,i=0,looplen=None,bar_character=None,width=25,tag='',start=None
 		countstring = str(i+1)+'/'+str(looplen)
 		bar = ' %s%s%s '%(left,int(width*(i+1)/looplen)*bb+' '*(width-int(width*(i+1)/looplen)),right)
 		if not logfile: 
-			output = u'\r '+string+bar+countstring+timestring+' '
+			output = u'\r'+string+bar+countstring+timestring+' '
 			if sys.version_info<(3,0): output = output.encode('utf-8')
 			sys.stdout.flush()
 			sys.stdout.write(output)

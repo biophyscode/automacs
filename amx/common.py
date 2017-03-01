@@ -13,7 +13,7 @@ import os,sys,re,glob,shutil,subprocess,json
 import numpy as np
 
 from automacs import component,include
-from calls import gmx,get_machine_config,move_file,get_last_gmx_call
+from calls import gmx,get_machine_config,move_file,get_last_gmx_call,get_gmx_share
 
 #---hide some functions from reporting (lengthy kwargs)
 _not_reported = ['write_gro','dotplace','unique']
@@ -533,22 +533,28 @@ def solvate(structure,gro):
 	if state.q('thickness'): 
 		boxdims[2] = state.q('thickness')
 		boxdims_old[2] = state.q('thickness')
+	#---if no solvent argument we go and fetch it
+	solvent = state.q('solvent','spc216')
+	if solvent=='spc216' and not os.path.isfile(state.here+'spc216.gro'):
+		share_dn = get_gmx_share()
+		shutil.copyfile(os.path.join(share_dn,'spc216.gro'),state.here+'spc216.gro')
 	#---get the basedim for the incoming water box
-	basedim,_ = get_box_vectors(state.q('solvent'))
+	basedim,_ = get_box_vectors(solvent)
 	#---use the preexisting box vectors
 	nbox = ' '.join([str(int(i/basedim[ii]+1)) for ii,i in enumerate(newdims)])
-	gmx('genconf',structure=state.q('solvent'),
-		gro='solvate-empty-uncentered-untrimmed',nbox=nbox,log='genconf')
+	gmx('genconf',structure=solvent,gro='solvate-empty-uncentered-untrimmed',nbox=nbox,log='genconf')
 	gro_combinator(structure+'.gro','solvate-empty-uncentered-untrimmed.gro',
 		box=boxdims_old,cwd=state.here,gro='solvate-dense')
+	atom_resolution = atomistic_or_coarse()
 	trim_waters(structure='solvate-dense',gro='solvate',gap=state.q('water_buffer',3),
-		boxvecs=boxdims_old,method=state.atom_resolution,boxcut=True)
+		boxvecs=boxdims_old,method=atom_resolution,boxcut=True)
 	#---! ugly
 	structure = 'solvate'
-	nwaters = count_molecules(structure,state.sol)/({'aamd':3.0,'cgmd':1.0}[state.atom_resolution])
+	sol = state.q('sol','SOL')
+	nwaters = count_molecules(structure,sol)/({'aamd':3.0,'cgmd':1.0}[atom_resolution])
 	if round(nwaters)!=nwaters: raise Exception('[ERROR] fractional water molecules')
 	else: nwaters = int(nwaters)
-	component(state.sol,count=nwaters)
+	component(sol,count=nwaters)
 	state.bilayer_dimensions_solvate = boxdims_old
 	state.water_without_ions = nwaters
 
@@ -634,7 +640,7 @@ def minimize(name,method='steep',top=None):
 	gmx('grompp',base='em-%s-%s'%(name,method),top=name if not top else re.sub('^(.+)\.top$',r'\1',top),
 		structure=name,log='grompp-%s-%s'%(name,method),mdp='input-em-%s-in'%method,nonessential=True)
 	tpr = state.here+'em-%s-%s.tpr'%(name,method)
-	if not os.path.isfile(tpr): raise Exception('cannot find %s'%tpr)
+	if not os.path.isfile(tpr): raise Exception('cannot find %s. check the grompp step.'%tpr)
 	gmx('mdrun',base='em-%s-%s'%(name,method),log='mdrun-%s-%s'%(name,method))
 	shutil.copyfile(state.here+'em-'+'%s-%s.gro'%(name,method),state.here+'%s-minimized.gro'%name)
 

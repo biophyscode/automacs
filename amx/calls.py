@@ -248,20 +248,27 @@ def get_machine_config(hostname=None):
 	#---! previously did some ppn calculations here
 	return machine_config
 
-def get_gmx_paths(override=False,gmx_series=False):
+def get_gmx_share():
+	"""
+	Figure out the share/gromacs/top directory.
+	"""
+	gmx_dn = subprocess.Popen('which %s'%state.gmxpaths['gmx'],
+		shell=True,stdout=subprocess.PIPE,
+		stderr=subprocess.PIPE).communicate()[0].strip()
+	return os.path.abspath(os.path.join(gmx_dn,'..','..','share','gromacs','top'))
 
+def get_gmx_paths(override=False,gmx_series=False):
 	"""
 	!!!
 	"""
-
 	gmx4paths = {'grompp':'grompp','mdrun':'mdrun','pdb2gmx':'pdb2gmx','editconf':'editconf',
 		'genbox':'genbox','make_ndx':'make_ndx','genion':'genion','genconf':'genconf',
-		'trjconv':'trjconv','tpbconv':'tpbconv','vmd':'vmd','gmxcheck':'gmxcheck'}
-
+		'trjconv':'trjconv','tpbconv':'tpbconv','vmd':'vmd','gmxcheck':'gmxcheck','gmx':'gmxcheck'}
 	gmx5paths = {'grompp':'gmx grompp','mdrun':'gmx mdrun','pdb2gmx':'gmx pdb2gmx',
 		'editconf':'gmx editconf','genbox':'gmx solvate','make_ndx':'gmx make_ndx',
 		'genion':'gmx genion','trjconv':'gmx trjconv','genconf':'gmx genconf',
-		'tpbconv':'gmx convert-tpr','gmxcheck':'gmx check','vmd':'vmd','solvate':'gmx solvate'}
+		'tpbconv':'gmx convert-tpr','gmxcheck':'gmx check','vmd':'vmd','solvate':'gmx solvate','gmx':'gmx'}
+	#---note that we tacked-on "gmx" so you can use it to find the share folder using get_gmx_share
 
 	#---figure out all the paths shit here. @@@!!!!!
 	machine_config = get_machine_config()

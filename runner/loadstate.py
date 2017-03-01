@@ -51,6 +51,9 @@ else:
 		settings = DotDict(**yamlb_special(expt.settings))
 		#---apply overrides to the settings
 		if 'settings_overrides' in expt: settings.update(**yamlb_special(expt.settings_overrides))
-	except: 
+	except Exception as e:
+		print(e) 
+		#---note that it is critical that we continue on blanked settings because this
+		#---...code is called many times, and only some of these calls actually need settings
 		print('[WARNING] settings was broken, now blanked!')
 		settings = DotDict()
