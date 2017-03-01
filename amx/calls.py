@@ -255,6 +255,7 @@ def get_gmx_share():
 	gmx_dn = subprocess.Popen('which %s'%state.gmxpaths['gmx'],
 		shell=True,stdout=subprocess.PIPE,
 		stderr=subprocess.PIPE).communicate()[0].strip()
+	if sys.version_info>=(3,0): gmx_dn = gmx_dn.decode()
 	return os.path.abspath(os.path.join(gmx_dn,'..','..','share','gromacs','top'))
 
 def get_gmx_paths(override=False,gmx_series=False):

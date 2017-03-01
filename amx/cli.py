@@ -381,6 +381,8 @@ def notebook(procedure,rewrite=False,go=False,name='notebook.ipynb'):
 	if rewrite: subprocess.check_call('make clean sure',shell=True)
 	#---run make prep per usual
 	subprocess.check_call('make prep %s'%procedure,shell=True)
+	#---! not sure how to get the names from an integer sent to prep above
+	if procedure.isdigit(): raise Exception('integers not allowed. use the full name.')
 	import nbformat as nbf
 	import json,pprint
 	nb = nbf.v4.new_notebook()
@@ -418,12 +420,12 @@ def notebook(procedure,rewrite=False,go=False,name='notebook.ipynb'):
 			nb['cells'].append(nbf.v4.new_markdown_cell('# step %d: %s'%(stepno+1,step_name)))
 		nb['cells'].append(nbf.v4.new_code_cell(settings_block))
 		#---rewrite metadata
-		rewrite_expt = "import json,shutil\nsets = dict(settings=settings)\n"+\
+		rewrite_expt = "import json,shutil,os\nsets = dict(settings=settings)\n"+\
 			"if 'settings_overrides' in globals():\n\tsets['settings_overrides'] = settings_overrides"+\
 			"\n\tdel settings_overrides\n"+\
 			"expt = dict(metadata,**sets)\n"+\
 			"with open('expt.json','w') as fp: json.dump(expt,fp)"+\
-			"\nshutil.copyfile(expt['script'],'script.py');"
+			"\nif not os.path.isfile('script.py'): shutil.copyfile(expt['script'],'script.py');"
 		nb['cells'].append(nbf.v4.new_code_cell('#---save settings (run this cell without edits)\n'+
 			'metadata = %s\n'%pprint.pformat(expt)+rewrite_expt))
 		with open(script_fn) as fp: text = fp.read()
