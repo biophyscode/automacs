@@ -47,7 +47,7 @@ def locate(keyword):
 	The ``locate`` function is useful for finding functions which may be found in many parts of the automacs
 	directory structure.
 	"""
-	os.system('find ./ -name "*.py" | xargs egrep --color=always "def \w*%s\w*"'%keyword)
+	os.system('find ./ -name "*.py" | xargs egrep --color=always "(def|class) \w*%s\w*"'%keyword)
 
 def flag_search(keyword):
 	"""
