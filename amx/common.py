@@ -556,12 +556,8 @@ def solvate(structure,gro):
 		boxvecs=boxdims_old,method=atom_resolution,boxcut=True)
 	#---! ugly
 	structure = 'solvate'
-<<<<<<< HEAD
-	nwaters = count_molecules(structure,state.sol)/({'aamd':3.0,'cgmd':1.0}[atom_resolution])
-=======
 	sol = state.q('sol','SOL')
 	nwaters = count_molecules(structure,sol)/({'aamd':3.0,'cgmd':1.0}[atom_resolution])
->>>>>>> 9de281df9dcd3766d501d8d60692ec6656a1513e
 	if round(nwaters)!=nwaters: raise Exception('[ERROR] fractional water molecules')
 	else: nwaters = int(nwaters)
 	component(sol,count=nwaters)

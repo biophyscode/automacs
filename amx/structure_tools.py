@@ -190,7 +190,7 @@ class GMXStructure:
 		"""
 
 		if type(before)==bool: 
-			first,second = [self,another][::-1*before]
+			first,second = [self,another][::-1 if before else 1]
 			for key in self.meta_keys:
 				self.__dict__[key] = np.concatenate((first.__dict__[key],second.__dict__[key]))
 		else:

@@ -224,7 +224,7 @@ if __name__ == "__main__":
 	#---prune non-callables from the list of makeface functions
 	for name,obj in list(makeface_funcs.items()):
 		if not hasattr(obj,'__call__'): 
-			import ipdb;ipdb.set_trace()
+			print('[WARNING] removing non-callable %s from makeface'%name)
 			del makeface_funcs[name]
 	#---command aliases for usability
 	commands_aliases = configurator.get('commands_aliases',[])

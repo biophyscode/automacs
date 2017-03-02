@@ -83,6 +83,8 @@ class GMXTopology:
 		#---extract definition lines
 		defines = re.findall(r"^\s*(\#define.+)$",self.itp_raw,re.M)
 		self.defines = list(set(defines))
+		#---extract includes lines
+		self.includes = re.findall(r"^\s*\#include\s*\"(.+)\"\s*$",self.itp_raw,re.M)
 
 		#---! need to add a check in case the defines are sequential and they override each other
 		#---extract raw molecule types and process them
@@ -169,11 +171,11 @@ class GMXTopology:
 			entries.update(**self.entry_proc(name,entry))
 		return entries
 
-	def write(self,fn):
+	def write(self,fn,overwrite=False):
 		"""
 		Write an ITP file.
 		"""
-		if os.path.isfile(fn): raise Exception('refusing to overwrite %s'%fn)
+		if os.path.isfile(fn) and not overwrite: raise Exception('refusing to overwrite %s'%fn)
 		mol_entries = []
 		#---start with the defines
 		mol_entries = list(self.defines)
@@ -195,3 +197,9 @@ class GMXTopology:
 					text.append(line)
 			mol_entries.append('\n'.join(text))
 		with open(fn,'w') as fp: fp.write('\n'.join(mol_entries))
+
+	def molecule_rename(self,old,rename):
+		"""
+		"""
+		self.molecules[old]['moleculetype']['molname'] = rename
+		self.molecules[rename] = self.molecules.pop(old)
