@@ -12,7 +12,7 @@ import os,sys,subprocess,re,time,glob,shutil,json
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
 	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull','rewrite_config',
-	'codecheck']
+	'codecheck','collect_parameters']
 
 from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
 from calls import get_machine_config
@@ -455,10 +455,12 @@ def gitcheck():
 	"""
 	Check all git repos for changes.
 	"""
+	from makeface import fab
 	with open('config.py') as fp: config_this = eval(fp.read())
 	#---loop over modules and check the status
-	for far,near in [('','.')]+config_this['modules']:
-		print('[STATUS] checking `git status` of %s'%near)
+	for far,near in [('.','.')]+config_this['modules']:
+		print('[STATUS] checking `git status` of %s'%
+			fab(near if near!='.' else 'automacs (root)','red_black'))
 		subprocess.check_call('git status',cwd=near,shell=True)
 	print('[STATUS] the above messages will tell you if you are up to date')
 
@@ -487,3 +489,16 @@ def codecheck(fn):
 	result = jsonify(text)
 	print('[NOTE] parsing with check_repeated_keys')
 	check_repeated_keys(text,verbose=True)
+
+def collect_parameters():
+	"""
+	Scan for all parameters files.
+	"""
+	#---! is it okay to import acme here (or anywhere in cli)?
+	from acme import read_inputs,get_path_to_module
+	inputlib = read_inputs()
+	params_fns = sorted(list(set([os.path.join('.',get_path_to_module(v['params']))
+		if re.match('^@',v['params']) 
+		else os.path.join(v['cwd'],v['params']) 
+		for k,v, in inputlib.items() if 'params' in v and v['params']])))
+	asciitree({'PARAMETER SPECIFICATIONS':params_fns})

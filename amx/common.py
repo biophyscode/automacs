@@ -519,7 +519,7 @@ def center_by_group(structure,gro,selection):
 	gmx('trjconv',structure=structure,inpipe='1\n0\n',pbc='mol',
 		center=True,tpr=tpr,ndx=ndx,gro=gro,log='trjconv-center')
 
-def solvate(structure,gro):
+def solvate(structure,gro,edges=None,center=False):
 	"""
 	Standard solvate procedure for atomistic protein in water.
 	Often requires restuff above.
@@ -532,9 +532,19 @@ def solvate(structure,gro):
 	boxdims_old,boxdims = get_box_vectors(structure)
 	newdims = boxdims_old
 	#---impose the total box thickness here!
+	if state.thickness and edges: raise Exception('cannot set both thickness and edges')
 	if state.q('thickness'): 
 		boxdims[2] = state.q('thickness')
 		boxdims_old[2] = state.q('thickness')
+	if edges:
+		#---custom water buffers in each direction require that we make a new box
+		water_edges = [float(j) for j in state.water_edges]
+		if not len(water_edges)==3: raise Exception('water_edges must be a triplet')
+		boxdims_old = [boxdims_old[jj]+2*water_edges[jj] for jj in range(3)]
+		structure_new = structure+'-centered'
+		gmx('editconf',structure=structure,gro=structure_new,
+			box=' '.join([str(j) for j in boxdims_old]),c=True,log='editconf-recenter')
+		structure = structure_new
 	#---if no solvent argument we go and fetch it
 	solvent = state.q('solvent','spc216')
 	if solvent=='spc216' and not os.path.isfile(state.here+'spc216.gro'):
@@ -543,7 +553,8 @@ def solvate(structure,gro):
 	#---get the basedim for the incoming water box
 	basedim,_ = get_box_vectors(solvent)
 	#---use the preexisting box vectors
-	nbox = ' '.join([str(int(i/basedim[ii]+1)) for ii,i in enumerate(newdims)])
+	#---! fixed this from newdims to boxdims_old since the solvate function works in-place
+	nbox = ' '.join([str(int(i/basedim[ii]+1)) for ii,i in enumerate(boxdims_old)])
 	gmx('genconf',structure=solvent,gro='solvate-empty-uncentered-untrimmed',nbox=nbox,log='genconf')
 	gro_combinator(structure+'.gro','solvate-empty-uncentered-untrimmed.gro',
 		box=boxdims_old,cwd=state.here,gro='solvate-dense')

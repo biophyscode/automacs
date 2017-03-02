@@ -105,7 +105,7 @@ def quick(procname,**kwargs):
 	#---normal execution happens automatically
 	if stepno==-1: os.system('python -B script.py')
 
-def preplist(silent=False):
+def preplist(silent=False,verbose=False):
 	"""
 	Identify all available experiments and print them for the user.
 	"""
@@ -114,19 +114,29 @@ def preplist(silent=False):
 	from makeface import fab
 	from datapack import asciitree
 	inputlib,spots = read_inputs(procname=None,return_paths=True)
-	toc,counter = {'run':[],'metarun':[],'quick':[]},0
+	toc,counter = {'run':[],'metarun':{} if verbose else [],'quick':[]},0
 	expt_order = []
 	#---! the following notes the cwd but not the _expts.py file for a particular experiment
-	dottoc = lambda counter,key,at : ' '+str(counter+1).ljust(4,'.')+' '+key+fab(' (%s)'%at,'gray')
+	dottoc = lambda counter,key,at,lead='',trail='' : (
+		' '+str(counter).ljust(4,'.')+' '+lead+key+(fab(' (%s)'%at,'gray') if at else '')+trail)
 	for key in sorted(inputlib.keys()):
 		val = inputlib[key]
-		if 'metarun' in val: toc['metarun'].append(dottoc(counter,key,spots[key]))
-		elif 'quick' in val: toc['quick'].append(dottoc(counter,key,spots[key]))
+		lead = ''
+		if 'tags' in val and 'cgmd' in val['tags']: lead += fab('cgmd','cyan_black')+' '
+		if 'tags' in val and 'aamd' in val['tags']: lead += fab('aamd','red_black')+' '
+		if 'metarun' in val: 
+			if verbose:
+				toc['metarun'][dottoc(str(counter+1),key,'',lead=lead)] = {
+					'at':spots[key],'steps':[i.get('do',i.get('quick','?')) for i in val['metarun']]}
+			else: 
+				toc['metarun'].append(dottoc(str(counter+1),key,spots[key],lead=lead))
+		elif 'quick' in val: toc['quick'].append(dottoc(counter+1,key,spots[key],lead=lead))
 		#---only three types here
-		else: toc['run'].append(dottoc(counter,key,spots[key]))
+		else: toc['run'].append(dottoc(counter+1,key,spots[key],lead=lead))
 		expt_order.append(key)
 		counter += 1
-	if not silent: asciitree({'menu':toc})
+	if not silent: 
+		for key in ['metarun','quick','run']: asciitree({key:toc[key]})
 	return expt_order
 
 def prep_single(inputlib,scriptname='script',exptname='expt',noscript=False,overrides=None):
@@ -185,13 +195,13 @@ def prep_metarun(inputlib):
 		#---! elif _keysets('quick',*item.keys())=='simple': quick(item['quick'],stepno=stepno+1)
 		else: raise Exception('no formula for metarun item: %r'%item)
 
-def prep(procname=None,noscript=False):
+def prep(procname=None,noscript=False,v=False):
 	"""
 	Prepare an experiment from inputs specified by the config.
 	There are two modes: a "metarun" or a single program.
 	"""
 	if procname==None: 
-		preplist()
+		preplist(verbose=v)
 		return
 	#---use numbers from the lookup table
 	if procname.isdigit(): procname = preplist(silent=True)[int(procname)-1]
@@ -302,7 +312,7 @@ def cleanup(sure=False):
 
 def clean(sure=False): cleanup(sure=sure)
 
-def back(command=None,cwd='.',log='log-back'):
+def back(command=None,cwd='.',log='log-back',go=None):
 	"""
 	Run a command in the background and generate a kill switch.
 
@@ -342,7 +352,7 @@ def is_installed():
 		try: subprocess.check_call(config['install_check'],shell=True)
 		except: sys.exit(1)
 
-def go(procname,clean=False):
+def go(procname,clean=False,back=False):
 	"""
 	Sugar for running ``make prep (name) && make run`` which also works for metaruns or quick scripts.
 	"""
@@ -354,5 +364,11 @@ def go(procname,clean=False):
 	if len(which_runtype)>1: 
 		raise Exception('found %s in multiple run categories. something has gone very wrong'%procname)
 	runtype = which_runtype[0]
-	if runtype!='quick':prep(procname)
-	quick(procname) if runtype=='quick' else globals()[runtype]()
+	if back and runtype=='quick': 
+		raise Exception('cannot run `make go %s` with back because it is a quick script'%procname)
+	if runtype!='quick': prep(procname)
+	if not back: quick(procname) if runtype=='quick' else globals()[runtype]()
+	if back: 
+		cmd = 'make %s'%runtype
+		print('[STATUS] running in the background via `make back command="%s"'%cmd)
+		subprocess.check_call('make back command="%s"'%cmd,shell=True)

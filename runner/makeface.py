@@ -152,6 +152,8 @@ def makeface(*arglist):
 				sig = inspect.signature(makeface_funcs[funcname])
 				argspec_args = [name for name,value in sig.parameters.items() 
 					if value.default==inspect._empty or type(value.default)==bool]
+			#---! note that a function like runner.control.prep which uses an arg=None instead of just an
+			#---! ...arg will need to make sure the user hasn't sent the wrong flags through.
 			#---! needs protection
 			if arg in argspec_args: kwargs[arg] = True
 			else: args.append(arg)
