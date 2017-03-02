@@ -457,7 +457,7 @@ def gitcheck():
 	"""
 	with open('config.py') as fp: config_this = eval(fp.read())
 	#---loop over modules and check the status
-	for far,near in config_this['modules']:
+	for far,near in [('','.')]+config_this['modules']:
 		print('[STATUS] checking `git status` of %s'%near)
 		subprocess.check_call('git status',cwd=near,shell=True)
 	print('[STATUS] the above messages will tell you if you are up to date')
