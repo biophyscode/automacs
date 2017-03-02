@@ -310,7 +310,10 @@ def get_gmx_paths(override=False,gmx_series=False):
 			if sys.version_info<(3,0): check_mdrun = ''.join(output)
 			else: check_mdrun = ''.join([i.decode() for i in output])
 			if re.search('VERSION 4',check_mdrun): gmx_series = 4
-			elif not override: raise Exception('gromacs is absent')
+			elif not override: raise Exception('gromacs is absent. make sure it is installed. '+
+				'if your system uses the `module` command, try loading it with `module load gromacs` or '+
+				'something similar. you can also add `modules` in a list to the machine configuration dictionary '+
+				'in your gromacs config file (try `make gromacs_config` to see where it is).')
 			else: print('[NOTE] preparing gmxpaths with override')
 
 	if gmx_series == 4: gmxpaths = dict(gmx4paths)

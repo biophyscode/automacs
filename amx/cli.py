@@ -126,7 +126,9 @@ def gromacs_config(where=None):
 	if has_local: 
 		print('[NOTE] using local gromacs configuration at ./gromacs_config.py')
 		return config_local_path
-	elif has_std: return config_std_path
+	elif has_std: 
+		print('[NOTE] using global gromacs configuration at ~/.automacs.py')
+		return config_std_path
 	else: 
 		import textwrap
 		msg = ("we cannot find either a global (%s) or local (%s) "%(config_std,config_local)+
