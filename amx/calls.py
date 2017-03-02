@@ -258,6 +258,28 @@ def get_gmx_share():
 	if sys.version_info>=(3,0): gmx_dn = gmx_dn.decode()
 	return os.path.abspath(os.path.join(gmx_dn,'..','..','share','gromacs','top'))
 
+def modules_load(machine_config):
+	"""
+	Interact with environment modules to load software.
+	"""
+	#---modules in LOCAL configuration must be loaded before checking version
+	import importlib
+	if 'module_path' in machine_config: module_path = machine_config['module_path']
+	else:
+		module_parent = os.environ.get('MODULESHOME','/usr/share/Modules/default')
+		module_path = os.path.join(module_parent,'init','python.py')
+	incoming = {}
+	if sys.version_info<(3,0): execfile(module_path,incoming)
+	else: exec(open(module_path).read(),incoming)
+	#---note that modules that rely on dynamically-linked C-code must use EnvironmentModules
+	modlist = machine_config['modules']
+	if type(modlist)==str: modlist = modlist.split(',')
+	for mod in modlist:
+		#---always unload gromacs to ensure correct version
+		incoming['module']('unload','gromacs')
+		print('[STATUS] module load %s'%mod)
+		incoming['module']('load',mod)
+	
 def get_gmx_paths(override=False,gmx_series=False):
 	"""
 	!!!
@@ -271,8 +293,9 @@ def get_gmx_paths(override=False,gmx_series=False):
 		'tpbconv':'gmx convert-tpr','gmxcheck':'gmx check','vmd':'vmd','solvate':'gmx solvate','gmx':'gmx'}
 	#---note that we tacked-on "gmx" so you can use it to find the share folder using get_gmx_share
 
-	#---figure out all the paths shit here. @@@!!!!!
 	machine_config = get_machine_config()
+	#---check the config for a "modules" keyword in case we need to laod it
+	if 'modules' in machine_config: modules_load(machine_config)
 	#---basic check for gromacs version series
 	suffix = '' if 'suffix' not in machine_config else machine_config['suffix']
 	check_gmx = subprocess.Popen('gmx%s'%suffix,shell=True,executable='/bin/bash',
@@ -282,8 +305,10 @@ def get_gmx_paths(override=False,gmx_series=False):
 		#---! is this the best way to search?
 		if not re.search('command not found',str(check_gmx[1])): gmx_series = 5
 		else:
-			check_mdrun = ' '.join(subprocess.Popen('mdrun%s -g /tmp/md.log'%suffix,shell=True,
-				executable='/bin/bash',stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate())
+			output = subprocess.Popen('mdrun%s -g /tmp/md.log'%suffix,shell=True,
+				executable='/bin/bash',stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()
+			if sys.version_info<(3,0): check_mdrun = ''.join(output)
+			else: check_mdrun = ''.join([i.decode() for i in output])
 			if re.search('VERSION 4',check_mdrun): gmx_series = 4
 			elif not override: raise Exception('gromacs is absent')
 			else: print('[NOTE] preparing gmxpaths with override')
