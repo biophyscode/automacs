@@ -541,11 +541,7 @@ def solvate(structure,gro):
 		share_dn = get_gmx_share()
 		shutil.copyfile(os.path.join(share_dn,'spc216.gro'),state.here+'spc216.gro')
 	#---get the basedim for the incoming water box
-<<<<<<< HEAD
-	basedim,_ = get_box_vectors(state.solvent)
-=======
 	basedim,_ = get_box_vectors(solvent)
->>>>>>> 9de281df9dcd3766d501d8d60692ec6656a1513e
 	#---use the preexisting box vectors
 	nbox = ' '.join([str(int(i/basedim[ii]+1)) for ii,i in enumerate(newdims)])
 	gmx('genconf',structure=solvent,gro='solvate-empty-uncentered-untrimmed',nbox=nbox,log='genconf')
