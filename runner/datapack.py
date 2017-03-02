@@ -19,7 +19,7 @@ import os,sys,re,json
 
 #---import magic
 sys.path.insert(0,os.path.dirname(os.path.relpath(os.path.abspath(__file__),os.getcwd())))
-from controlspec import controlspec
+from controlspec import controlspec,controlmsg
 #from acme import get_path_to_module
 
 #---release some functions for external import 
@@ -111,20 +111,6 @@ def check_repeated_keys(text,verbose=False):
 			print('[NOTE] '+controlmsg['json'])
 		return False
 	return True
-
-def codecheck(fn):
-	"""
-	Check a file for evaluation from the command line.
-	This utility is useful when you want to see if a file with dict literals passes the JSON check.
-	"""
-	if not os.path.isfile(fn): raise Exception('cannot find file %s'%fn)
-	with open(fn) as fp: text = fp.read()
-	print('[NOTE] parsing with python')
-	result = eval(text)
-	print('[NOTE] parsing with jsonify')
-	result = jsonify(text)
-	print('[NOTE] parsing with check_repeated_keys')
-	check_repeated_keys(text,verbose=True)
 
 def catalog(base,path=None):
 	"""

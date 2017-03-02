@@ -11,9 +11,10 @@ module.
 import os,sys,subprocess,re,time,glob,shutil,json
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
-	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull','rewrite_config']
+	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull','rewrite_config',
+	'codecheck']
 
-from datapack import asciitree,delve,delveset,yamlb
+from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
 from calls import get_machine_config
 
 def get_amx():
@@ -125,7 +126,9 @@ def gromacs_config(where=None):
 	if has_local: 
 		print('[NOTE] using local gromacs configuration at ./gromacs_config.py')
 		return config_local_path
-	elif has_std: return config_std_path
+	elif has_std: 
+		print('[NOTE] using global gromacs configuration at ~/.automacs.py')
+		return config_std_path
 	else: 
 		import textwrap
 		msg = ("we cannot find either a global (%s) or local (%s) "%(config_std,config_local)+
@@ -160,6 +163,7 @@ make set module source="$up/amx-bilayers.git" spot="inputs/bilayers"
 make set module source="$up/amx-martini.git" spot="inputs/martini"
 make set module source="$up/amx-charmm.git" spot="inputs/charmm"
 make set module source="$up/amx-structures.git" spot="inputs/structure-repo"
+make set module source="$up/amx-polymers.git" spot="inputs/polymers"
 """,
 'proteins':"""
 make set module source="$up/amx-proteins.git" spot="amx/proteins"
@@ -379,6 +383,8 @@ def notebook(procedure,rewrite=False,go=False,name='notebook.ipynb'):
 	if rewrite: subprocess.check_call('make clean sure',shell=True)
 	#---run make prep per usual
 	subprocess.check_call('make prep %s'%procedure,shell=True)
+	#---! not sure how to get the names from an integer sent to prep above
+	if procedure.isdigit(): raise Exception('integers not allowed. use the full name.')
 	import nbformat as nbf
 	import json,pprint
 	nb = nbf.v4.new_notebook()
@@ -416,12 +422,12 @@ def notebook(procedure,rewrite=False,go=False,name='notebook.ipynb'):
 			nb['cells'].append(nbf.v4.new_markdown_cell('# step %d: %s'%(stepno+1,step_name)))
 		nb['cells'].append(nbf.v4.new_code_cell(settings_block))
 		#---rewrite metadata
-		rewrite_expt = "import json,shutil\nsets = dict(settings=settings)\n"+\
+		rewrite_expt = "import json,shutil,os\nsets = dict(settings=settings)\n"+\
 			"if 'settings_overrides' in globals():\n\tsets['settings_overrides'] = settings_overrides"+\
 			"\n\tdel settings_overrides\n"+\
 			"expt = dict(metadata,**sets)\n"+\
 			"with open('expt.json','w') as fp: json.dump(expt,fp)"+\
-			"\nshutil.copyfile(expt['script'],'script.py');"
+			"\nif not os.path.isfile('script.py'): shutil.copyfile(expt['script'],'script.py');"
 		nb['cells'].append(nbf.v4.new_code_cell('#---save settings (run this cell without edits)\n'+
 			'metadata = %s\n'%pprint.pformat(expt)+rewrite_expt))
 		with open(script_fn) as fp: text = fp.read()
@@ -451,7 +457,7 @@ def gitcheck():
 	"""
 	with open('config.py') as fp: config_this = eval(fp.read())
 	#---loop over modules and check the status
-	for far,near in config_this['modules']:
+	for far,near in [('','.')]+config_this['modules']:
 		print('[STATUS] checking `git status` of %s'%near)
 		subprocess.check_call('git status',cwd=near,shell=True)
 	print('[STATUS] the above messages will tell you if you are up to date')
@@ -467,3 +473,17 @@ def gitpull():
 	for far,near in config_this['modules']:
 		print('[STATUS] running `git pull` at %s'%near)
 		subprocess.check_call('git pull',cwd=near,shell=True)
+
+def codecheck(fn):
+	"""
+	Check a file for evaluation from the command line.
+	This utility is useful when you want to see if a file with dict literals passes the JSON check.
+	"""
+	if not os.path.isfile(fn): raise Exception('cannot find file %s'%fn)
+	with open(fn) as fp: text = fp.read()
+	print('[NOTE] parsing with python')
+	result = eval(text)
+	print('[NOTE] parsing with jsonify')
+	result = jsonify(text)
+	print('[NOTE] parsing with check_repeated_keys')
+	check_repeated_keys(text,verbose=True)
