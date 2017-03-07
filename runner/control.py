@@ -118,7 +118,8 @@ def preplist(silent=False,verbose=False):
 	expt_order = []
 	#---! the following notes the cwd but not the _expts.py file for a particular experiment
 	dottoc = lambda counter,key,at,lead='',trail='' : (
-		' '+str(counter).ljust(4,'.')+' '+lead+key+(fab(' (%s)'%at,'gray') if at else '')+trail)
+		(fab(str(counter).rjust(4),'white_black')+' ' if counter else '')+
+		lead+key+(fab(' (%s)'%at,'gray') if at else '')+trail)
 	for key in sorted(inputlib.keys()):
 		val = inputlib[key]
 		lead = ''
@@ -126,7 +127,8 @@ def preplist(silent=False,verbose=False):
 		if 'tags' in val and 'aamd' in val['tags']: lead += fab('aamd','red_black')+' '
 		if 'metarun' in val: 
 			if verbose:
-				toc['metarun'][dottoc(str(counter+1),key,'',lead=lead)] = {
+				heading = dottoc('',fab(key,'mag_gray')+' '+fab(str(counter+1),'white_black'),'',lead=lead)
+				toc['metarun'][heading] = {
 					'at':spots[key],'steps':[i.get('do',i.get('quick','?')) for i in val['metarun']]}
 			else: 
 				toc['metarun'].append(dottoc(str(counter+1),key,spots[key],lead=lead))

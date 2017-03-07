@@ -159,6 +159,7 @@ make set module source="$up/amx-extras.git" spot="inputs/extras"
 make set module source="$up/amx-docs.git" spot="inputs/docs"
 make set commands inputs/docs/docs.py
 make set module source="$up/amx-vmd.git" spot="inputs/vmd"
+make set commands inputs/vmd/quickview.py
 make set module source="$up/amx-bilayers.git" spot="inputs/bilayers"
 make set module source="$up/amx-martini.git" spot="inputs/martini"
 make set module source="$up/amx-charmm.git" spot="inputs/charmm"
@@ -187,10 +188,8 @@ def setup(name=''):
 		fp.write("#!/bin/bash\n\nset -e\n\nup=%s\n\n"%upstream_source+kickstarters[name])
 	subprocess.check_call('bash kickstart.sh',shell=True)
 	os.remove('kickstart.sh')
-	print('[WARNING] setup also runs `make gromacs_config local`\n'+
-		'so you are ready to simulate. consider using `make gromacs_config home`\n'+
-		'to make a machine-specific configuration for future simulations.')
-	subprocess.check_call('make gromacs_config home',shell=True)
+	print('[WARNING] new users must run `make gromacs_config (local|home)` '+
+		'to tell automacs how to find gromacs.')
 	print('[STATUS] setup is complete')
 
 def serial_number():

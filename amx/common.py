@@ -703,7 +703,7 @@ def equilibrate(groups=None,structure='system',top='system'):
 			**({'n':groups} if groups else {}))
 		gmx('mdrun',base=name,log='mdrun-0001')
 
-def restart_clean(part,structure,groups,posres_coords=None):
+def restart_clean(part,structure,groups,posres_coords=None,mdp='input-md-in'):
 	"""
 	Perform a hard-restart that mimics the md.part0001 naming scheme.
 	"""
@@ -714,7 +714,7 @@ def restart_clean(part,structure,groups,posres_coords=None):
 	#---! needs systematic restraint additions for all grompp !!!!!!!!!!!!
 	if posres_coords: flags['r'] = posres_coords
 	gmx('grompp',base=name,top='system',
-		structure=structure,log='grompp-%04d'%part,mdp='input-md-in',
+		structure=structure,log='grompp-%04d'%part,mdp=mdp,
 		**flags)
 	gmx('mdrun',base=name,log='mdrun-%04d'%part)
 

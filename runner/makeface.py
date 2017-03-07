@@ -105,7 +105,7 @@ def fab(text,*flags):
 	"""Colorize the text."""
 	#---three-digit codes: first one is style (0 and 2 are regular, 3 is italics, 1 is bold)
 	colors = {'gray':(0,37,48),'cyan_black':(1,36,40),'red_black':(1,31,40),'black_gray':(0,37,40),
-		'white_black':(1,37,40)}
+		'white_black':(1,37,40),'mag_gray':(0,35,47)}
 	if flags and sys.stdout.isatty()==True: 
 		if any(f for f in flags if f not in colors): raise Exception('cannot find a color in %s'%str(flags))
 		for f in flags[::-1]: 
