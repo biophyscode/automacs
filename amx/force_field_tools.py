@@ -4,7 +4,7 @@
 Force field tools mediate naming schemes between various force fields.
 """
 
-import os,json,glob
+import os,json,glob,re
 from topology_tools import GMXTopology
 
 charmm_lipids = {
@@ -114,4 +114,3 @@ class Landscape:
 		if not hasattr(self,cat): raise Exception('category %s not in this landscape'%cat)
 		object_names = getattr(self,cat)()
 		return [i for j in [self.objects[o]['atoms'] for o in object_names] for i in j]
-
