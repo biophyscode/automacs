@@ -68,7 +68,7 @@ class GMXTopology:
 		'ILE','LEU','MET','ASN','PRO','HYP','GLN','SER','THR','VAL','ALA','GLY']
 	_aa_codes1 = 'WYFHRKCDEILMNPOQSTVAG'
 
-	def __init__(self,itp,**kwargs):
+	def __init__(self,itp=None,**kwargs):
 
 		"""
 		Unpack an ITP file.
@@ -79,21 +79,24 @@ class GMXTopology:
 
 		self.ifdefs = []
 		self.ifdefs.extend(kwargs.get('ifdefs',[]))
-		with open(self.itp_source) as fp: self.itp_raw = fp.read()
-		#---extract definition lines
-		defines = re.findall(r"^\s*(\#define.+)$",self.itp_raw,re.M)
-		self.defines = list(set(defines))
-		#---extract includes lines
-		self.includes = re.findall(r"^\s*\#include\s*\"(.+)\"\s*$",self.itp_raw,re.M)
-
-		#---! need to add a check in case the defines are sequential and they override each other
-		#---extract raw molecule types and process them
-		for match in re.findall(self._regex_molecule,self.itp_raw,re.M+re.DOTALL):
-			#---note that comment-only lines are stripped elsewhere, but here we remove comment tails
-			match_no_comment_tails = re.sub('[^\n;];.*?(\n|\Z)','\n',match,flags=re.M)
-			match_proc = self.entry_pre_proc(match_no_comment_tails)	
-			moldef = self.process_moleculetype(match_proc)
-			self.molecules[moldef['moleculetype']['molname']] = moldef
+		if self.itp_source:
+			with open(self.itp_source) as fp: self.itp_raw = fp.read()
+			#---extract definition lines
+			defines = re.findall(r"^\s*(\#define.+)$",self.itp_raw,re.M)
+			self.defines = list(set(defines))
+			#---extract includes lines
+			self.includes = re.findall(r"^\s*\#include\s*\"(.+)\"\s*$",self.itp_raw,re.M)
+			#---! need to add a check in case the defines are sequential and they override each other
+			#---extract raw molecule types and process them
+			for match in re.findall(self._regex_molecule,self.itp_raw,re.M+re.DOTALL):
+				#---note that comment-only lines are stripped elsewhere, but here we remove comment tails
+				match_no_comment_tails = re.sub('[^\n;];.*?(\n|\Z)','\n',match,flags=re.M)
+				match_proc = self.entry_pre_proc(match_no_comment_tails)	
+				moldef = self.process_moleculetype(match_proc)
+				self.molecules[moldef['moleculetype']['molname']] = moldef
+		#---if no source we create a blank topology
+		else:
+			self.defines = []
 
 	def entry_pre_proc(self,match):
 
@@ -189,6 +192,8 @@ class GMXTopology:
 					#---changed _entry_abstracted to handle a flexible stopping point in that list
 					#---...here we check that the items on the list are present
 					header_keys = self._entry_abstracted[entry]['records'].split()
+					if type(o)!=dict: 
+						import ipdb;ipdb.set_trace()
 					if not set(header_keys[:len(o.keys())])==set(o.keys()):
 						raise Exception('the set of keys in this entry does not match a starting subsequence '+
 							'from the header. the available keys are %s and the header is %s'%(o.keys(),header_keys))
@@ -203,3 +208,11 @@ class GMXTopology:
 		"""
 		self.molecules[old]['moleculetype']['molname'] = rename
 		self.molecules[rename] = self.molecules.pop(old)
+
+	def add_molecule(self,**kwargs):
+		"""
+		Add a new molecule.
+		"""
+		for key,val in kwargs.items():
+			if key in self.molecules: raise Exception('refusing to overwrite molecule: %s'%key)
+		else: self.molecules[key] = val
