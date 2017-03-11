@@ -12,7 +12,7 @@ import os,sys,subprocess,re,time,glob,shutil,json
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
 	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull','rewrite_config',
-	'codecheck','collect_parameters']
+	'codecheck','collect_parameters','write_continue_script']
 
 from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
 from calls import get_machine_config
@@ -294,6 +294,16 @@ def download(sure=False):
 		print("[NOTE] find the data on the remote machine via \"find ./ -name serial-%s\""%serialno)
 		sys.exit(1)
 
+def write_continue_script():
+	"""
+	Write the continue script if it does not yet exist.
+	"""
+	amx = get_amx()
+	script_continue_fn = amx.state.here+'script-continue.sh'
+	if not os.path.isfile(script_continue_fn):
+		from common import write_continue_script
+		write_continue_script()
+
 def cluster():
 	"""
 	Write a cluster header according to the machine configuration.
@@ -302,7 +312,6 @@ def cluster():
 	This code will concatenate the cluster submission header with a continuation script.
 	Note that we do not log this operation because it only manipulates BASH scripts.
 	"""
-	script_continue_fn = 'amx/script-continue.sh'
 	amx = get_amx()
 	from amx.calls import get_last_gmx_call
 	machine_configuration = get_machine_config()
@@ -317,6 +326,11 @@ def cluster():
 	last_step = amx.state.here
 	gmxpaths = amx.state.gmxpaths
 	if last_step:
+		#---this script requires a continue script to be available
+		if not amx.state.continuation_script: 
+			raise Exception('cluster requires a continuation script which must be registered to '+
+				'state.contiuation_script. try `make write_continue_script` to make one.')
+		script_continue_fn = amx.state.here+amx.state.continuation_script
 		#---code from base.functions.write_continue_script to rewrite the continue script
 		with open(script_continue_fn,'r') as fp: lines = fp.readlines()
 		tl = [float(j) if j else 0.0 for j in re.match('^([0-9]+)\:?([0-9]+)?\:?([0-9]+)?',
