@@ -209,7 +209,7 @@ def serial_number():
 		import random
 		serialno = random.randint(0,10**9)
 		state_set_and_save(serial=serialno)
-	return state['serial']
+	return amx.state['serial']
 
 def upload(alias,sure=False,path='~',state_fn='state.json',bulk=False):
 	"""
