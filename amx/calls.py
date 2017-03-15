@@ -192,7 +192,8 @@ def gmx_run(cmd,log,nonessential=False,inpipe=None):
 		'Fatal Error:',
 		'Can not open file:',
 		'Invalid command line argument:',
-		'Software inconsistency error']
+		'Software inconsistency error',
+		'Syntax error']
 
 	if log == None: raise Exception('[ERROR] gmx_run needs a log file to route output')
 	#---if the log is an absolute path we drop the log there without prepending "log-"
@@ -280,7 +281,7 @@ def modules_load(machine_config):
 		print('[STATUS] module load %s'%mod)
 		incoming['module']('load',mod)
 	
-def get_gmx_paths(override=False,gmx_series=False):
+def get_gmx_paths(override=False,gmx_series=False,hostname=None):
 	"""
 	!!!
 	"""
@@ -293,7 +294,7 @@ def get_gmx_paths(override=False,gmx_series=False):
 		'tpbconv':'gmx convert-tpr','gmxcheck':'gmx check','vmd':'vmd','solvate':'gmx solvate','gmx':'gmx'}
 	#---note that we tacked-on "gmx" so you can use it to find the share folder using get_gmx_share
 
-	machine_config = get_machine_config()
+	machine_config = get_machine_config(hostname=hostname)
 	#---check the config for a "modules" keyword in case we need to laod it
 	if 'modules' in machine_config: modules_load(machine_config)
 	#---basic check for gromacs version series
@@ -344,4 +345,6 @@ def get_gmx_paths(override=False,gmx_series=False):
 	#---even if mdrun is customized in config we treat the gpu flag separately
 	if 'gpu_flag' in machine_config: gmxpaths['mdrun'] += ' -nb %s'%machine_config['gpu_flag']	
 	#---export the gmxpaths to the state
-	state.gmxpaths = gmxpaths
+	if 'state' in globals(): state.gmxpaths = gmxpaths
+	return gmxpaths
+	

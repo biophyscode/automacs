@@ -721,99 +721,6 @@ def restart_clean(part,structure,groups,posres_coords=None,mdp='input-md-in'):
 		**flags)
 	gmx('mdrun',base=name,log='mdrun-%04d'%part)
 
-###---CONTINUE
-
-#---! logging is to ../continue.log for now
-
-continue_script = """
-#!/bin/bash
-
-#---SETTINGS: nprocs, maxhours (hours), extend (ps), tpbconv, mdrun
-#---SETTINGS OVERRIDES HERE
-
-#---find last CPT
-PRUN=0
-for file in md.part*.cpt
-do
-if [ $(echo ${file:7:4} | sed 's/^0*//') -gt $PRUN ]; 
-then PRUN=$(echo ${file:7:4} | sed 's/^0*//')
-fi
-done
-NRUN=$(($PRUN+1))
-
-#---log to standard log
-step=$(pwd | sed -r 's/.+\/(.+)/\1/')
-metalog="../continuation.log"
-echo "[STATUS] continuing simulation from part $PRUN in $step"
-echo "[STATUS] logging to $metalog"
-echo "[STATUS] running ... "
-
-#---extend TPR
-if [[ ! -z $EXTEND  ]]; then EXTEND_FLAG="-extend $EXTEND";
-elif [[ ! -z $UNTIL ]]; then EXTEND_FLAG="-until $UNTIL";
-else EXTEND_FLAG="-nsteps -1"; fi
-log=$(printf tpbconv-%04d $NRUN)
-cmd="$TPBCONV $EXTEND_FLAG -s $(printf md.part%04d.tpr $PRUN) -o $(printf md.part%04d.tpr $NRUN)"
-cmdexec=$cmd" &> log-$log"
-echo "[FUNCTION] gmx_run ('"$cmd"',) {'skip': False, 'log': '$log', 'inpipe': None}" >> $metalog
-eval $cmdexec
-
-#---continue simulation
-log=$(printf mdrun-%04d $NRUN)
-cmd="$MDRUN -s $(printf md.part%04d.tpr $NRUN) \
--cpi $(printf md.part%04d.cpt $PRUN) \
--cpo $(printf md.part%04d.cpt $NRUN) \
--g $(printf md.part%04d.log $NRUN) \
--e $(printf md.part%04d.edr $NRUN) \
--o $(printf md.part%04d.trr $NRUN) \
--x $(printf md.part%04d.xtc $NRUN) \
--c $(printf md.part%04d.gro $NRUN) -maxh $MAXHOURS"
-cmdexec=$cmd" &> log-$log"
-echo "[FUNCTION] gmx_run ('"$cmd"',) {'skip': False, 'log': '$log', 'inpipe': None}" >> $metalog
-eval $cmdexec
-echo "[STATUS] done continuation stage"
-"""
-
-def write_continue_script(script='script-continue.sh',machine_configuration=None,**kwargs):
-
-	"""
-	Uses a template in amx/procedures to write a bash continuation script.
-	"""
-
-	#---assume that the scripts are in the scripts folder
-	### with open(os.path.join('amx/procedures/scripts',script),'r') as fp: lines = fp.readlines()
-	lines = continue_script.splitlines()
-	#---settings required for continuation script
-	#---! get these from the proper setup
-	settings = {
-		'maxhours':24,
-		'extend':100000,
-		'start_part':1,
-		'tpbconv':state.gmxpaths['tpbconv'],
-		'mdrun':state.gmxpaths['mdrun'],
-		'grompp':state.gmxpaths['grompp'],
-		'maxwarn':0,
-		}
-
-	if not machine_configuration: machine_configuration = get_machine_config()
-
-	settings.update(**kwargs)
-	setting_text = '\n'.join([
-		str(key.upper())+'='+('"' if type(val)==str else '')+str(val)+('"' if type(val)==str else '') 
-		for key,val in settings.items()])
-	modules = machine_configuration.get('modules',None)
-	if modules:
-		modules = [modules] if type(modules)==str else modules
-		#---if gromacs is in any of the modules we try to unload gromacs
-		if any([re.search('gromacs',i) for i in modules]):
-			setting_text += '\nmodule unload gromacs'
-		for m in modules: setting_text += '\nmodule load %s'%m
-	lines = map(lambda x: re.sub('#---SETTINGS OVERRIDES HERE$',setting_text,x),lines)
-	state.continuation_script = script_fn = script
-	with open(state.here+script_fn,'w') as fp:
-		for line in lines: fp.write(line+'\n')
-	os.chmod(state.here+script_fn,0o744)
-
 def atomistic_or_coarse():
 	"""
 	We rely on tags to identify atomistic and coarse-grained simulations rather than settings.
@@ -855,6 +762,9 @@ def grouper(ndx='system-groups',protein=True,lipids=True):
 		land = Landscape('martini')
 		protein_selection = land.protein_selection()
 		selector.ask(protein_selection,name='PROTEIN')
-	if lipids: raise Exception('dev')
+	if lipids: 
+		if not state.lipids: raise Exception('the state must know the lipids to add them to a groups file')
+		selector.ask('|'.join([' r %s '%i for i in state.lipids]),name='LIPIDS')
 	#---create the final copy of groups
+	#---make_ndx will throw a syntax error if a group has zero atoms so we have to be precise
 	gmx('make_ndx',structure='system',ndx=ndx,log='make-ndx-groups',inpipe=selector.final())

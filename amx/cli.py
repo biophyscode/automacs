@@ -20,6 +20,7 @@ from calls import get_machine_config
 def get_amx():
 	"""
 	Wrapper for getting amx since command-line calls lack the null string in the path.
+	Anything that calls this function requires all of the packages e.g. scipy.
 	"""
 	#---! Note that something is adding '' to sys.path elsewhere because the runner imports always work.
 	#---! ...this isn't a problem but it could become one
@@ -150,7 +151,6 @@ def rewrite_config(source='config.py'):
 	with open(source,'w') as fp: 
 		fp.write('#!/usr/bin/env python -B\n'+str(pprint.pformat(config,width=110)))
 
-
 ###---KICKSTART SCRIPTS
 
 kickstarters = {'all':"""
@@ -211,19 +211,27 @@ def serial_number():
 		state_set_and_save(serial=serialno)
 	return amx.state['serial']
 
-def upload(alias,sure=False,path='~',state_fn='state.json',bulk=False):
+def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 	"""
 	Upload the data to a supercomputer.
 	!Bulk is not implemented yet.
+	!Note that putting sure before path ruins the argument handling hence makeface needs fix
 	"""
 	amx = get_amx()
 	from amx.calls import get_last_gmx_call
 	serial_number()
 	last_step = amx.state['here']
+	###
+	#last_step = 's03-release/'
 	get_last_gmx_call('mdrun',this_state=amx.state)
 	last_mdrun = get_last_gmx_call('mdrun',this_state=amx.state)
+	###
+	#last_mdrun = {u'flags': {u'-e': u'md.part0001.edr', u'-g': u'md.part0001.log', u'-c': u'md.part0001.gro', u'-o': u'md.part0001.trr', u'-v': u'', u'-s': u'md.part0001.tpr', u'-x': u'md.part0001.xtc', u'-cpo': u'md.part0001.cpt'}, u'call': u'mdrun'}
+	path = '~/project-drive/'
+	###import pdb;pdb.set_trace()
+	#import ipdb;ipdb.set_trace()
 	restart_fns = [last_step+i for i in [last_mdrun['flags']['-s'],last_mdrun['flags']['-cpo']]]
-	restart_fns += [last_step+'script-continue.sh']
+	restart_fns += [last_step+'script-continue.sh',last_step+'cluster-continue.sh']
 	if not all([os.path.isfile(fn) for fn in restart_fns]):
 		error = '[STATUS] could not find necessary upload files from get_last_gmx_call'+\
 			"\n[ERROR] missing: %s"%str([fn for fn in restart_fns if not os.path.isfile(fn)])
@@ -241,6 +249,7 @@ def upload(alias,sure=False,path='~',state_fn='state.json',bulk=False):
 		cmd = 'rsync -%s%s ../%s %s:%s/%s'%(
 			'avin',' --files-from=uploads.txt' if not bulk else ' --exclude=.git',cwd,
 			alias,path,cwd if not bulk else '')
+		print(cmd)
 		p = subprocess.Popen(cmd,shell=True,cwd=os.path.abspath(os.getcwd()),executable='/bin/bash')
 		log = p.communicate()
 	if (sure or (input if sys.version_info>(3,0) else raw_input)
@@ -248,10 +257,11 @@ def upload(alias,sure=False,path='~',state_fn='state.json',bulk=False):
 		cmd = 'rsync -%s%s ../%s %s:%s/%s'%(
 			'avi',' --files-from=uploads.txt' if not bulk else ' --exclude=.git',cwd,
 			alias,path,cwd if not bulk else '')
+		print(cmd)
 		p = subprocess.Popen(cmd,shell=True,cwd=os.path.abspath(os.getcwd()),executable='/bin/bash')
 		log = p.communicate()
 		if not bulk: os.remove('uploads.txt')
-	if p.returncode == 0 and last_step:
+	if p.returncode == 0 and last_step and False: ##########
 		destination = '%s:%s/%s'%(alias,path,cwd)
 		import datetime
 		ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d.%H%M')
@@ -294,17 +304,17 @@ def download(sure=False):
 		print("[NOTE] find the data on the remote machine via \"find ./ -name serial-%s\""%serialno)
 		sys.exit(1)
 
-def write_continue_script():
+def write_continue_script(hostname=None,overwrite=False):
 	"""
 	Write the continue script if it does not yet exist.
+	Note that this script wraps the same function in amx.continue_script for the CLI.
 	"""
-	amx = get_amx()
-	script_continue_fn = amx.state.here+'script-continue.sh'
-	if not os.path.isfile(script_continue_fn):
-		from common import write_continue_script
-		write_continue_script()
+	machine_configuration = get_machine_config(hostname=hostname)
+	sys.path.insert(0,'amx')
+	import continue_script
+	return continue_script.write_continue_script(machine_configuration=machine_configuration)
 
-def cluster():
+def cluster(hostname=None,overwrite=True):
 	"""
 	Write a cluster header according to the machine configuration.
 	The machine configuration is read from ``~/.automacs.py`` but can be overriden by a local ``config.py``
@@ -312,9 +322,12 @@ def cluster():
 	This code will concatenate the cluster submission header with a continuation script.
 	Note that we do not log this operation because it only manipulates BASH scripts.
 	"""
-	amx = get_amx()
-	from amx.calls import get_last_gmx_call
-	machine_configuration = get_machine_config()
+	#amx = get_amx()
+	#from amx.calls import get_last_gmx_call
+	sys.path.insert(0,'runner')
+	from makeface import import_remote
+	get_gmx_paths = import_remote('amx/calls.py')['get_gmx_paths']
+	machine_configuration = get_machine_config(hostname=hostname)
 	if not 'cluster_header' in machine_configuration: 
 		print('[STATUS] no cluster information')
 		return
@@ -323,14 +336,18 @@ def cluster():
 	with open('cluster-header.sh','w') as fp: fp.write(head)
 	print('[STATUS] wrote cluster-header.sh')
 	#---get the most recent step (possibly duplicate code from base)
-	last_step = amx.state.here
-	gmxpaths = amx.state.gmxpaths
+	#last_step = amx.state.here
+	#####!!!
+	last_step = 's03-release/'
+	#gmxpaths = amx.state.gmxpaths
+	gmxpaths = get_gmx_paths(hostname=hostname,override=True if hostname else False)
+	#---override the mdrun command if the cluster definition says so
+	if 'mdrun_command' in machine_configuration: gmxpaths['mdrun'] = machine_configuration['mdrun_command']
+	#---this script requires a continue script to be available. overwrites by default
+	### removed continuation script if not amx.state.continuation_script or overwrite: 
+	script_continue_fn = write_continue_script(hostname=hostname,overwrite=True)
 	if last_step:
-		#---this script requires a continue script to be available
-		if not amx.state.continuation_script: 
-			raise Exception('cluster requires a continuation script which must be registered to '+
-				'state.contiuation_script. try `make write_continue_script` to make one.')
-		script_continue_fn = amx.state.here+amx.state.continuation_script
+		### removed continuation script script_continue_fn = amx.state.here+amx.state.continuation_script
 		#---code from base.functions.write_continue_script to rewrite the continue script
 		with open(script_continue_fn,'r') as fp: lines = fp.readlines()
 		tl = [float(j) if j else 0.0 for j in re.match('^([0-9]+)\:?([0-9]+)?\:?([0-9]+)?',
@@ -348,9 +365,8 @@ def cluster():
 		for key in ['extend','until']: 
 			if key in machine_configuration: settings[key] = machine_configuration[key]
 		#---! must intervene above to come up with the correct executables
-		setting_text = '\n'.join([
-			str(key.upper())+'='+('"' if type(val)==str else '')+str(val)+('"' if type(val)==str else '') 
-			for key,val in settings.items()])
+		setting_text = '\n'.join([str(key.upper())+'='+('"' if type(val)==str else '')+
+			str(val)+('"' if type(val)==str else '') for key,val in settings.items()])
 		lines = map(lambda x: re.sub('#---SETTINGS OVERRIDES HERE$',setting_text,x),lines)
 		script_fn = 'script-continue.sh'
 		cont_fn = last_step+script_fn
@@ -361,7 +377,7 @@ def cluster():
 		#---code above from base.functions.write_continue_script		
 		with open(cont_fn,'r') as fp: continue_script = fp.read()
 		continue_script = re.sub('#!/bin/bash\n','',continue_script)
-		cluster_continue = last_step+'/cluster-continue.sh'
+		cluster_continue = os.path.join(last_step,'cluster-continue.sh')
 		print('[STATUS] writing %s'%cluster_continue)
 		with open(cluster_continue,'w') as fp: fp.write(head+continue_script)
 	#---for each python script in the root directory we write an equivalent cluster script

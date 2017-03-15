@@ -61,7 +61,7 @@ def abspath(path):
 def import_local(fn):
 	"""Import a local script manually."""
 	if os.path.join(os.getcwd(),os.path.dirname(abspath(fn))) in sys.path: 
-		mod = __import__(os.path.basename(fn).rstrip('.py'))
+		mod = __import__(re.sub(r'\.py$','',os.path.basename(fn)))
 		return strip_builtins(mod.__dict__)
 	else: raise Exception('could not import locally')
 
@@ -135,13 +135,12 @@ def makeface(*arglist):
 	arglist = list(arglist)
 	funcname = arglist.pop(0)
 	#---regex for kwargs. note that the makefile organizes the flags for us
-	regex_kwargs = '^(\w+)\="?([\w:\-\.\/\s]+)"?$'
+	regex_kwargs = r'^(\w+)\="?([\w:~\-\.\/\s]+)"?$'
 	while arglist:
 		arg = arglist.pop(0)
 		#---note that it is crucial that the following group contains all incoming 
 		if re.match(regex_kwargs,arg):
 			parname,parval = re.findall(regex_kwargs,arg)[0]
-			parname,parval = re.findall('^(\w+)\="?([\w:\-\.\/\s]+)"?$',arg)[0]
 			kwargs[parname] = parval
 		else:
 			if sys.version_info<(3,3): 
@@ -208,13 +207,6 @@ if __name__ == "__main__":
 					if len(argvs)==1 and verbose: 
 						print('[NOTE] imported remotely from %s'%fn)
 						print('[NOTE] added functions: %s'%(' '.join(new_funcs)))
-					#---! currently deprecated below
-					if False:
-						mod = __import__(os.path.basename(fn).rstrip('.py'))
-						makeface_funcs.update(**strip_builtins(new_funcs))
-						if len(argvs)==1: 
-							print('[NOTE] imported from %s'%fn)
-							print('[NOTE] added functions: %s'%(' '.join(new_funcs)))
 				else: 
 					new_funcs = import_remote(fn)
 					makeface_funcs.update(**new_funcs)
