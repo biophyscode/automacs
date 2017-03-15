@@ -7,6 +7,9 @@ the full automacs when writing cluster scripts.
 ! logging is to ../continue.log for now. it would be good to register this with automacs for later ...
 """
 
+#---! tried and failed to hide this from "import amx"
+_not_all = ['continue_script','write_continue_script_master']
+
 import os,sys,json,re
 
 continue_script = """#!/bin/bash
@@ -57,8 +60,8 @@ eval $cmdexec
 echo "[STATUS] done continuation stage"
 """
 
-def write_continue_script(script='script-continue.sh',
-	machine_configuration=None,hostname=None,**kwargs):
+def write_continue_script_master(script='script-continue.sh',
+	machine_configuration=None,here=None,hostname=None,**kwargs):
 	"""
 	Uses a template in amx/procedures to write a bash continuation script.
 	"""
@@ -96,9 +99,11 @@ def write_continue_script(script='script-continue.sh',
 			setting_text += '\nmodule unload gromacs'
 		for m in modules: setting_text += '\nmodule load %s'%m
 	lines = map(lambda x: re.sub('#---SETTINGS OVERRIDES HERE$',setting_text,x),lines)
-	#---we probe the state (required) manually to avoid importing amx
-	if not os.path.isfile('state.json'): raise Exception('write_continue_script requires state.json')
-	here = json.load(open('state.json'))['here']
+	#---most calls come from amx.cli.write_continue_script which has the state during a regular run
+	if here: pass
+	#---calls to e.g. cluster lack the state so we read it manually and avoid importing amx
+	elif not os.path.isfile('state.json'): raise Exception('write_continue_script requires state.json')
+	else: here = json.load(open('state.json'))['here']
 	with open(here+script,'w') as fp:
 		for line in lines: fp.write(line+'\n')
 	os.chmod(here+script,0o744)

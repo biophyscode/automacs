@@ -312,7 +312,10 @@ def write_continue_script(hostname=None,overwrite=False):
 	machine_configuration = get_machine_config(hostname=hostname)
 	sys.path.insert(0,'amx')
 	import continue_script
-	return continue_script.write_continue_script(machine_configuration=machine_configuration)
+	here = globals()['state']['here'] if 'state' in globals() else None
+	script_fn = continue_script.write_continue_script_master(
+		machine_configuration=machine_configuration,here=here)
+	return script_fn
 
 def cluster(hostname=None,overwrite=True):
 	"""

@@ -123,7 +123,13 @@ for sub in sub_scripts_valid + sub_scripts_valid_extras:
 	if verbose: print('[ACME] module %s collects %s'%(my_name,sub_local))
 	try:
 		#---manually import the local and save it in the subs dictionary
+		#---we perform a standard locals/globals import here, and then remove _not_all
 		subs[sub] = test = __import__(os.path.splitext(sub_local)[0],globals(),locals())
+		#---it is O.K. to remove _not_all afterwards as long as it was in the incoming module
+		#---...if it weren't in the incoming module then maybe another module put it in globals
+		vars_intercepted = test.__dict__.get('_not_all',[])
+		for key in vars_intercepted:
+			if key in globals() and key in test.__dict__: del globals()[key]
 	except Exception as e: 
 		from makeface import tracebacker
 		tracebacker(e)
