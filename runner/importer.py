@@ -62,7 +62,7 @@ def get_extras(extensions):
 			extra_fns = glob.glob(extra)
 			if not extra_fns:
 				raise Exception('extension %s returned no files'%extra)
-			extras.extend(extra_fns)
+			extras.extend([i for i in extra_fns if os.path.basename(i)!='__init__.py'])
 	if any(regulars):
 		for ask in regulars:
 			#---we only allow __init__.py if it is an explicit path
@@ -75,6 +75,8 @@ def get_extras(extensions):
 			if not fns:
 				raise Exception('request for extension %s returned no files'%ask)
 			extras.extend(fns)
+	#---it is extremely important to filter out even blank __init__.py files because they cause that 
+	#---...problem where like a billion slashes interspersed with "call_reporter" are written to stdout
 	return extras
 
 import glob,re

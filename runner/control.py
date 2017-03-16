@@ -24,6 +24,7 @@ def fetch_script(src,cwd='./'):
 	"""
 	Finds the path for a parent script.
 	"""
+	fn = get_path_to_module(src)
 	if os.path.isfile(os.path.join(cwd,src)): return src
 	else: raise Exception('cannot find requested script %s at %s'%(src,cwd))
 
@@ -148,6 +149,8 @@ def prep_single(inputlib,scriptname='script',exptname='expt',noscript=False,over
 	_keysets('run',*inputlib.keys(),check=True)
 	#---get the script name
 	script_fn = os.path.join(inputlib['cwd'],inputlib['script'])
+	#---if the path is not local we use the @ syntax sugar and drop the cwd
+	if not os.path.isfile(script_fn): script_fn = get_path_to_module(inputlib['script'])
 	script_new_fn = '%s.py'%scriptname
 	#---prepare the experiment
 	ins = dict(inputlib,script=script_new_fn,script_source=script_fn)
