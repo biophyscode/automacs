@@ -13,7 +13,7 @@ from makeface import fab
 
 __all__ = []
 
-def statesave():
+def statesave(state):
 	"""One stop for saving the state. Strips functions saved to `funcs` keyword."""
 	calls = [key for key,val in state.items() if hasattr(val,'__call__')]
 	#---check on _funcs without modifying the state
@@ -40,7 +40,7 @@ def finished(state,script_fn='script.py'):
 	print('[NOTE] finished and saving state.json')
 	with open(script_fn) as fp: state.script_code = fp.read()
 	state.status = 'completed'
-	statesave()
+	statesave(state)
 
 def stopper(state,exc,show_trace=True,last_lineno=None,script_fn='script.py'):
 	"""
@@ -73,7 +73,7 @@ def stopper(state,exc,show_trace=True,last_lineno=None,script_fn='script.py'):
 	tracetext = tag+re.sub(r'\n','\n%s '%tag,str(''.join(traceback.format_tb(exc_tb)).strip()))
 	if show_trace: print(tracetext)
 	print(fab('[ERROR]','red_black')+' '+fab('%s'%exc,'cyan_black'))
-	statesave()
+	statesave(state)
 
 def call_reporter(func,state={}):
 	"""Every function reports itself. Send this to __init__.py so exposed functions are loud."""
@@ -107,4 +107,5 @@ def state_set_and_save(**kwargs):
 	Some functions lack access to the global state so we 
 	"""
 	state.update(**kwargs)
-	statesave()
+	#---! statesave requires the state as arg. if it is not global, this will fail
+	statesave(state)
