@@ -11,6 +11,7 @@ the full automacs when writing cluster scripts.
 _not_all = ['continue_script','write_continue_script_master']
 
 import os,sys,json,re
+from calls import get_machine_config
 
 continue_script = """#!/bin/bash
 
