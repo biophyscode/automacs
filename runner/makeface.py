@@ -18,6 +18,15 @@ Set ``commands`` in the ``config.py`` managed by :any:`acme <acme>` to specify w
 to the interface. You can set ``__all__`` in these files to hide extraneous functions from ``make``. 
 """
 
+default_config = {
+	'acme':'./runner',
+	'cleanup':['exec.py','s*-*','state*.json','expt*.json','script*.py','log-*','*.log','v*-*','*.ipynb'],
+	'commands':['runner/control.py','runner/datapack.py','amx/cli.py'],
+	'commands_aliases':[('prep?','preplist'),('set','set_config')],
+	'inputs':'@regex^.*?_expts\\.py$',
+	'install_check': 'make gromacs_config',
+	'modules':[]}
+
 #---settings for globbing for functions
 config_fn = 'config.py'
 config_key = 'commands'
@@ -183,7 +192,8 @@ if __name__ == "__main__":
 	#---read configuration to retrieve source scripts
 	#---note this happens every time (even on make tab-completion) to collect scripts
 	#---...from all open-ended sources. timing: it only requires about 3 ms
-	if not os.path.isfile(config_fn): raise Exception('cannot locate %s'%config_fn)
+	if not os.path.isfile(config_fn): 
+		with open(config_fn,'w') as fp: fp.write(str(default_config))
 	if 'config_fn' in globals() and 'config_key' in globals(): 
 		with open(config_fn) as fp: configurator = eval(fp.read())
 		source_scripts = str_or_list(configurator.get('commands',[]))
