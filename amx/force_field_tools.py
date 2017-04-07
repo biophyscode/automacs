@@ -11,6 +11,8 @@ charmm_lipids = {
 	
 }
 
+#---! WHAT IS GOING ON HERE. dOES THIS REPLACE landscape.json?
+
 landscape_spec = {
 	'martini':{
 		'ion':{'files':'inputs/martini/martini-sources.ff/martini-v2.0-ions.itp'},
@@ -18,7 +20,11 @@ landscape_spec = {
 		},
 	'charmm':{
 		'ion':{'files':'inputs/charmm/charmm36.ff/ions.itp'},
-		'lipid':{'files':['inputs/charmm/lipid-tops/lipid*.itp']},
+		#---updated this: 'lipid':{'files':['inputs/charmm/lipid-tops/lipid*.itp']},
+		#---! dangerous to hard-code the path to charmm instead of putting this in expts file
+		'lipid':{'files':['inputs/charmm/charmm36.ff/lipids/%s.itp'%i for i in 
+			['DOPC','DOPS','POPC','DOPE','SAPI','PI2P']]},
+		'sterol':{'files':['inputs/charmm/charmm36.ff/lipids/CHL1.itp']},
 		}
 	}
 
@@ -96,6 +102,7 @@ class Landscape:
 		return [k for k,v in self.objects.items() if v['cat']==cat]
 
 	def lipids(self): return [k for k,v in self.objects.items() if v['cat']=='lipid']
+	def sterols(self): return [k for k,v in self.objects.items() if v['cat']=='sterol']
 	def anions(self): return [k for k,v in self.objects.items() if v['cat']=='ion' and v['charge'] < 0]
 	def cations(self): return [k for k,v in self.objects.items() if v['cat']=='ion' and v['charge'] > 0]
 

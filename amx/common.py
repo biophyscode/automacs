@@ -11,6 +11,7 @@ Someday this might become part of the amx canon.
 
 import os,sys,re,glob,shutil,subprocess,json
 import numpy as np
+str_types = [str,unicode] if sys.version_info<(3,0) else [str]
 
 from automacs import component,include
 from calls import gmx,get_machine_config,move_file,get_last_gmx_call,get_gmx_share
@@ -189,18 +190,29 @@ def write_top(topfile):
 	if 'itp' in state: state.itp = list(set(state.itp))
 	#---if the force field is local we automatically detect its files and add itps to it
 	if state.force_field and os.path.isdir(state.here+state.force_field+'.ff'):
-		includes = glob.glob(os.path.join(state.here+state.force_field+'.ff','*.itp'))
 		meta_fn = os.path.join(state.here+state.force_field+'.ff','meta.json')
 		#---we require a meta.json file to specify the definitions
 		if not os.path.isfile(meta_fn): raise Exception('need meta.json in %s'%(state.force_field+'.ff'))
 		with open(meta_fn) as fp: meta = json.loads(fp.read())
+		#---includes is typically only the itp files in the top level unless the meta file is explicit
+		includes = glob.glob(os.path.join(state.here+state.force_field+'.ff','*.itp'))
+		#---an explicit include_itps list is added after the defs and overrides the itps in the top level of 
+		#---...the e.g. charmm.ff folder
+		#---! note that this is clumsy. the include_itps is necessary to have itp files in a subfolder
+		#---! ...but we also need to have everything in the meta['definitions'] for the new-style charmm
+		#---! ...way of handling the itps triggered by "if 'definitions'" below
+		if meta.get('include_itps',False):
+			includes = [os.path.join(state.step,state.force_field+'.ff',i) for i in meta['include_itps']]
+			missing_itps = [i for i in includes if not os.path.isfile(i)]
+			if any(missing_itps):
+				raise Exception('some files specified by include_itps in meta are missing: %s'%missing_itps)
 		#---use new style definitions for an explicit ordering of the top list of includes
 		#---...which is suitable for charmm and other standard force fields 
 		#---...(martini is the else, needs replaced)
 		if 'definitions' in meta:
 			#---get the paths
 			itp_namer = dict([(os.path.basename(j),j) for j in includes])
-			includes_reorder = [itp_namer[j] for j in meta['definitions']]
+			includes_reorder = [itp_namer[os.path.basename(j)] for j in meta['definitions']]
 		#---other force fields might have molecules spread across multiple ITPs with one that has the defs
 		else: 
 			ff_defs = unique([i for i in meta if meta[i] if 'defs' in meta[i]])
@@ -678,11 +690,10 @@ def equilibrate(groups=None,structure='system',top='system'):
 	"""
 	Standard equilibration procedure.
 	"""
-	
 	#---settings can be a python list or a comman-separated string
 	eq_setting = state.q('equilibration')
 	if eq_setting:
-		if type(eq_setting)!=list:
+		if type(eq_setting) in str_types:
 			try: seq = eq_setting.split(',')
 			except: raise Exception('failed to parse equilibration setting: "%s"'%str(eq_setting))
 		else: seq = eq_setting

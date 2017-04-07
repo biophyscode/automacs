@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import re,os,glob
+import re,os,glob,json,shutil
 
 class GMXForceField:
 	"""
@@ -125,7 +125,6 @@ class GMXTopology:
 		"""
 
 		if name not in self._entry_defns:
-			import ipdb;ipdb.set_trace()
 			raise Exception('developing GMXTopology. missing entry for "%s"'%name)
 		spec = self._entry_defns[name]
 		valids = self._lam_strip_commented_lines(text)
@@ -216,3 +215,27 @@ class GMXTopology:
 		for key,val in kwargs.items():
 			if key in self.molecules: raise Exception('refusing to overwrite molecule: %s'%key)
 		else: self.molecules[key] = val
+
+	def restrain_atoms(self,*names,**kwargs):
+		"""
+		Apply a restraint to a molecule.
+		"""
+		mol = kwargs.pop('mol',0)
+		forces = {}
+		for k in 'xyz': forces['fc%s'%k] = kwargs.pop('fc%s'%k,0)
+		if kwargs: raise Exception('unprocessed kwargs')
+		if not mol or mol not in self.molecules: raise Exception('cannot find molecule %s'%mol)
+		#---generate blank restraints if they do not exist otherwise we overwrite what is already there
+		#---! note that this might be dangerous
+		if 'position_restraints' not in self.molecules[mol]:
+			posres_custom = {'funct':'1','fcy':'0','ai':'1','fcx':'0','fcz':'0'}
+			posres_all = [dict(posres_custom,ai=str(ii+1)) 
+				for ii,i in enumerate(self.molecules[mol]['atoms'])]
+			self.molecules[mol]['position_restraints'] = posres_all	
+		atoms = [i['atom'] for i in self.molecules[mol]['atoms']]
+		#---loop over target atom names
+		for atom_name in names:
+			#---loop over directions to apply the forces
+			for k,v in forces.items(): 
+				self.molecules[mol]['position_restraints'][atoms.index(atom_name)][k] = v
+		
