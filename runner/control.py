@@ -18,7 +18,7 @@ from controlspec import controlspec
 from loadstate import state,expt,settings
 from makeface import fab
 
-__all__ = ['look','quick','prep','run','metarun','clean','back','preplist','set_config','go']
+__all__ = ['look','quick','prep','run','metarun','clean','back','preplist','set_config','go','prep_json']
 
 def fetch_script(src,cwd='./'):
 	"""
@@ -116,6 +116,8 @@ def preplist(silent=False,verbose=False):
 	from datapack import asciitree
 	inputlib,spots = read_inputs(procname=None,return_paths=True)
 	toc,counter = {'run':[],'metarun':{} if verbose else [],'quick':[]},0
+	#---the toc has fancy formatting for the terminal, so we make a clean version
+	toc_clean = {'run':[],'metarun':{} if verbose else [],'quick':[]}
 	expt_order = []
 	#---! the following notes the cwd but not the _expts.py file for a particular experiment
 	dottoc = lambda counter,key,at,lead='',trail='' : (
@@ -131,16 +133,26 @@ def preplist(silent=False,verbose=False):
 				heading = dottoc('',fab(key,'mag_gray')+' '+fab(str(counter+1),'white_black'),'',lead=lead)
 				toc['metarun'][heading] = {
 					'at':spots[key],'steps':[i.get('do',i.get('quick','?')) for i in val['metarun']]}
-			else: 
-				toc['metarun'].append(dottoc(str(counter+1),key,spots[key],lead=lead))
+			else: toc['metarun'].append(dottoc(str(counter+1),key,spots[key],lead=lead))
 		elif 'quick' in val: toc['quick'].append(dottoc(counter+1,key,spots[key],lead=lead))
 		#---only three types here
 		else: toc['run'].append(dottoc(counter+1,key,spots[key],lead=lead))
+		#---add to the clean copy
+		if 'metarun' in val: toc_clean['metarun'].append([key,spots[key]])
+		elif 'quick' in val: toc_clean['quick'].append([key,spots[key]])
+		else: toc_clean['run'].append([key,spots[key]])
 		expt_order.append(key)
 		counter += 1
 	if not silent: 
 		for key in ['metarun','quick','run']: asciitree({key:toc[key]})
-	return expt_order
+	return {'order':expt_order,'details':toc_clean}
+
+def prep_json():
+	"""
+	Print the experiments list in JSON format. Useful for  the factory.
+	"""
+	expts = preplist(silent=True)
+	print('NOTE: '+json.dumps(expts['details']))
 
 def prep_single(inputlib,scriptname='script',exptname='expt',noscript=False,overrides=None):
 	"""
@@ -209,7 +221,7 @@ def prep(procname=None,noscript=False,v=False):
 		preplist(verbose=v)
 		return
 	#---use numbers from the lookup table
-	if procname.isdigit(): procname = preplist(silent=True)[int(procname)-1]
+	if procname.isdigit(): procname = preplist(silent=True)['order'][int(procname)-1]
 	inputlib = read_inputs(procname)
 	regular_prep_keys = 'tags script params extensions settings cwd'.split()
 	quick_keys = [['settings','quick'],['settings','quick','params','extensions','tags']]
@@ -364,7 +376,7 @@ def go(procname,clean=False,back=False):
 	if clean: cleanup(sure=True)
 	runtypes = ['metarun','run','quick']
 	from control import _keysets
-	if procname.isdigit(): procname = preplist(silent=True)[int(procname)-1]
+	if procname.isdigit(): procname = preplist(silent=True)['order'][int(procname)-1]
 	which_runtype = [k for k in runtypes if _keysets(k,*read_inputs()[procname].keys())]
 	if len(which_runtype)>1: 
 		raise Exception('found %s in multiple run categories. something has gone very wrong'%procname)
