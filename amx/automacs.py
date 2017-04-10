@@ -318,7 +318,7 @@ def write_mdp(param_file=None,rootdir='./',outdir='',extras=None):
 
 ###---SIMULATION STEPS
 
-def minimize(name,method='steep',top=None):
+def minimize_deprecated(name,method='steep',top=None):
 
 	"""
 	minimize(name,method='steep')
