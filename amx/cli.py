@@ -12,7 +12,7 @@ import os,sys,subprocess,re,time,glob,shutil,json
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
 	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull','rewrite_config',
-	'codecheck','collect_parameters','write_continue_script']
+	'codecheck','collect_parameters','write_continue_script','show_kickstarters']
 
 from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
 from calls import get_machine_config
@@ -151,34 +151,22 @@ def rewrite_config(source='config.py'):
 	with open(source,'w') as fp: 
 		fp.write('#!/usr/bin/env python -B\n'+str(pprint.pformat(config,width=110)))
 
-###---KICKSTART SCRIPTS
-
-kickstarters = {'all':"""
-make set module source="$up/amx-proteins.git" spot="amx/proteins"
-make set module source="$up/amx-extras.git" spot="inputs/extras"
-make set module source="$up/amx-docs.git" spot="inputs/docs"
-make set commands inputs/docs/docs.py
-make set module source="$up/amx-vmd.git" spot="inputs/vmd"
-make set commands inputs/vmd/quickview.py
-make set module source="$up/amx-bilayers.git" spot="inputs/bilayers"
-make set module source="$up/amx-martini.git" spot="inputs/martini"
-make set module source="$up/amx-charmm.git" spot="inputs/charmm"
-make set module source="$up/amx-structures.git" spot="inputs/structure-repo"
-make set module source="$up/amx-polymers.git" spot="inputs/polymers"
-""",
-'proteins':"""
-make set module source="$up/amx-proteins.git" spot="amx/proteins"
-make set module source="$up/amx-extras.git" spot="inputs/extras"
-make set module source="$up/amx-docs.git" spot="inputs/docs"
-make set commands inputs/docs/docs.py
-make set module source="$up/amx-vmd.git" spot="inputs/vmd"
-"""
-}
+def show_kickstarters():
+	"""
+	Print the available kickstarters for the user.
+	"""
+	from makeface import import_remote
+	mod = import_remote('amx/kickstarts.py')
+	for key,val in mod['kickstarters'].items():
+		print('[KICKSTARTER] "%s"\n%s'%(key,val))
 
 def setup(name=''):
 	"""
 	Run this after cloning a fresh copy of automacs in order to clone some standard
 	"""
+	from makeface import import_remote
+	mod = import_remote('amx/kickstarts.py')
+	kickstarters = mod['kickstarters']
 	if not name: 
 		raise Exception('you must specify a setup script: %s'%(', '.join(kickstarters.keys())))
 	#---! hard-coding the source for now, but it would be good to put this in config.py
