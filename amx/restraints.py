@@ -93,7 +93,7 @@ def transform_itp(itp,specs):
 	#---we apply the transformation to the valid molecules
 	for mol in list(itp.molecules.keys()):
 		mol_spec = itp.molecules[mol]
-		atom_names = map(lambda x:x['atom'],mol_spec['atoms'])
+		atom_names = list(map(lambda x:x['atom'],mol_spec['atoms']))
 		#---BEGIN TRANFORMATION TYPES
 		if target_type=='lipids' and mol in land.lipids():
 			#---loop over restraint types

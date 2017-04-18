@@ -17,10 +17,11 @@ class GMXForceField:
 		return [i for j in [v.molecules for v in self.itps.values()] for i in j]
 	def molecule(self,name):
 		which_itp = [fn for fn,itp in self.itps.items() if name in itp.molecules]
-		if len(which_itp)>1: 
-			raise Exception('molecule %s is repeated somewhere in the force field %s'%(name,self.dirname))
-		elif len(which_itp)==0: raise Exception('cannot find molecule %s in force field %s'%(name,self.dirname))
-		else: return self.itps[which_itp[0]].molecules[name]
+		if len(which_itp)==0: raise Exception('cannot find molecule %s in force field %s'%(name,self.dirname))
+		elif len(which_itp)>1:
+			print('[WARNING] molecule %s is repeated in %s: %s. '
+				'using the first.'%(name,self.dirname,which_itp))
+		return self.itps[which_itp[0]].molecules[name]
 
 class GMXTopology:
 	"""
@@ -45,7 +46,7 @@ class GMXTopology:
 		'virtual_sites3':{'records':'site n0 n1 n2 funct a b'},
 		'pairs':{'records':'ai aj funct c0 c1 c2 c3'},
 		'cmap':{'records':'ai aj ak al am funct'},
-		}
+		'settles':{'records':'OW funct doh dhh'},}
 	_entry_order = "moleculetype atoms bonds angles dihedrals constraints position_restraints".split()
 	#---specify the ITP format for a molecule type
 	_entry_defns_original = dict([(name,{'lines':details.get('lines','many'),'regex':

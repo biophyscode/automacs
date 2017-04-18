@@ -196,7 +196,7 @@ def serial_number():
 	if not serial:
 		import random
 		serialno = random.randint(0,10**9)
-		state_set_and_save(serial=serialno)
+		state_set_and_save(amx.state,serial=serialno)
 	return amx.state['serial']
 
 def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
@@ -255,10 +255,10 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 		ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d.%H%M')
 		from runner.states import state_set_and_save
 		this_upload = dict(to=destination,when=ts)
-		state_set_and_save(upload=this_upload)
+		state_set_and_save(amx.state,upload=this_upload)
 		upload_history = amx.state.get('upload_history',[])
 		upload_history.append(this_upload)
-		state_set_and_save(upload_history=upload_history)
+		state_set_and_save(amx.state,upload_history=upload_history)
 	elif p.returncode != 0: 
 		print("[STATUS] upload failure (not logged)")
 		sys.exit(1)

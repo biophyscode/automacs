@@ -565,6 +565,12 @@ def solvate(structure,gro,edges=None,center=False):
 	if solvent=='spc216' and not os.path.isfile(state.here+'spc216.gro'):
 		share_dn = get_gmx_share()
 		shutil.copyfile(os.path.join(share_dn,'spc216.gro'),state.here+'spc216.gro')
+	#---! solvent must be centered. for some reason spc216 is not in the box entirely.
+	if solvent=='spc216':
+		_,boxdims_spc216 = get_box_vectors('spc216')
+		gmx('editconf',structure='spc216',gro='spc216-center',
+			center=' '.join([str(i/2.) for i in boxdims_spc216]),log='spc216-recenter')
+		solvent = 'spc216-center'
 	#---get the basedim for the incoming water box
 	basedim,_ = get_box_vectors(solvent)
 	#---use the preexisting box vectors
@@ -685,7 +691,7 @@ def equilibrate_check(name):
 		found = True
 	return found
 
-def equilibrate(groups=None,structure='system',top='system'):
+def equilibrate(groups=None,structure='system',top='system',stages_only=False):
 
 	"""
 	Standard equilibration procedure.
@@ -708,14 +714,16 @@ def equilibrate(groups=None,structure='system',top='system'):
 			gmx('mdrun',base='md-%s'%name,log='mdrun-%s'%name,nonessential=True)
 			if not os.path.isfile(state.here+'md-%s.gro'%name): 
 				raise Exception('mdrun failure at %s'%name)
-	#---first part of the equilibration/production run
-	name = 'md.part0001'
-	if not equilibrate_check(name) or seq == []:
-		gmx('grompp',base=name,top=top,
-			structure='md-%s'%seq[-1] if seq else structure,
-			log='grompp-0001',mdp='input-md-in',
-			**({'n':groups} if groups else {}))
-		gmx('mdrun',base=name,log='mdrun-0001')
+	#---stages only protects you from beginning with part numbers
+	if not stages_only:
+		#---first part of the equilibration/production run
+		name = 'md.part0001'
+		if not equilibrate_check(name) or seq == []:
+			gmx('grompp',base=name,top=top,
+				structure='md-%s'%seq[-1] if seq else structure,
+				log='grompp-0001',mdp='input-md-in',
+				**({'n':groups} if groups else {}))
+			gmx('mdrun',base=name,log='mdrun-0001')
 
 def restart_clean(part,structure,groups,posres_coords=None,mdp='input-md-in'):
 	"""
