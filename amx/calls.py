@@ -230,7 +230,13 @@ def get_machine_config(hostname=None):
 
 	machine_config = {}
 	#---!
-	with open(os.path.expanduser('~/.automacs.py')) as fp: exec(fp.read(),machine_config)
+	config_fn = '~/.automacs.py'
+	if not os.path.isfile(os.path.expanduser(config_fn)):
+		config_fn = 'gromacs_config.py'
+		if not os.path.isfile(config_fn):
+			raise Exception('cannot find either a local (gromacs_config.py) or a global (~/.automacs.py) '
+				'gromacs configuration. make one with `make gromacs_config (local|home)`')
+	with open(os.path.expanduser(config_fn)) as fp: exec(fp.read(),machine_config)
 	#---most of the machine configuration file are headers that are loaded into the main dictionary
 	machine_config = machine_config['machine_configuration']
 	this_machine = 'LOCAL'
