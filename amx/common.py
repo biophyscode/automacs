@@ -691,19 +691,21 @@ def equilibrate_check(name):
 		found = True
 	return found
 
-def equilibrate(groups=None,structure='system',top='system',stages_only=False):
+def equilibrate(groups=None,structure='system',top='system',stages_only=False,seq=None):
 
 	"""
 	Standard equilibration procedure.
 	"""
-	#---settings can be a python list or a comman-separated string
-	eq_setting = state.q('equilibration')
-	if eq_setting:
-		if type(eq_setting) in str_types:
-			try: seq = eq_setting.split(',')
-			except: raise Exception('failed to parse equilibration setting: "%s"'%str(eq_setting))
-		else: seq = eq_setting
-	else: seq = []
+	#---custom settings via kwarg otherwise we call out to the state
+	if not seq:
+		#---settings can be a python list or a comman-separated string
+		eq_setting = state.q('equilibration')
+		if eq_setting:
+			if type(eq_setting) in str_types:
+				try: seq = eq_setting.split(',')
+				except: raise Exception('failed to parse equilibration setting: "%s"'%str(eq_setting))
+			else: seq = eq_setting
+		else: seq = []
 	#---sequential equilibration stages
 	for eqnum,name in enumerate(seq):
 		if not equilibrate_check(name):
