@@ -31,7 +31,10 @@ class GMXTopology:
 	_regex_molecule = r'^(\s*\[\s*moleculetype\s*\]\s*.*?)(?=\s*\[\s*moleculetype|\Z)'
 	_regex_bracket_entry = r'^\s*\[\s*(.*?)\s*\]\s*(.*?)(?=(?:^\s*\[|\Z))'
 	_regex_commented_line = r'^(\s*[\;\#].+|\s*)$'
-	_regex_ifdef_block = r"(?:\n#(if%sdef)\s*(.*?)\s*\n)(.*?)(\n#endif\s*\n)"
+	#_regex_ifdef_block = r"(?:\n#(if%sdef)\s*(.*?)\s*\n)(.*?)(\n#endif\s*\n)"
+	#---it is important not to having any trailing parts
+	_regex_ifdef_block = r'(?:\n#if%sdef\s*(.*?)\s*\n(.*?)\n#endif)'
+	_regex_ifdef_block_sub = r'(?:\n#if%sdef\s*(%s)\s*\n(.*?)\n#endif)'
 	_regex_define = r"^\s*(\#define.+)$"
 	#---abstract definition of different ITP entries
 	_entry_abstracted = {
@@ -78,12 +81,17 @@ class GMXTopology:
 		self.molecules = {}
 		self.itp_source = itp
 
-		self.ifdefs = []
-		self.ifdefs.extend(kwargs.get('ifdefs',[]))
+		#self.ifdefs = []
+		#self.ifdefs.extend(kwargs.get('ifdefs',[]))
+		self.defs = kwargs.get('defs',{})
+		
+
 		if self.itp_source:
 			with open(self.itp_source) as fp: self.itp_raw = fp.read()
 			#---extract definition lines
 			defines = re.findall(r"^\s*(\#define.+)$",self.itp_raw,re.M)
+			#---! dropping the ifdefs above and the deprecated entry_pre_proc flag
+			self.preproc()
 			self.defines = list(set(defines))
 			#---extract includes lines
 			self.includes = re.findall(r"^\s*\#include\s*\"(.+)\"\s*$",self.itp_raw,re.M)
@@ -99,6 +107,29 @@ class GMXTopology:
 		else:
 			self.defines = []
 
+	def preproc(self):
+		"""
+		"""
+		#---first we detect any ifdef/ifndef statements
+		ifdefs = re.findall(self._regex_ifdef_block%'',self.itp_raw,flags=re.DOTALL+re.M)
+		ifndefs = re.findall(self._regex_ifdef_block%'n',self.itp_raw,flags=re.DOTALL+re.M)
+		defnames_ja = list(set(list(zip(*ifdefs)[0]))) if ifdefs else []
+		defnames_no = list(set(list(zip(*ifndefs)[0]))) if ifndefs else []
+		defs = {}
+		for key in defnames_ja: defs[key] = True
+		#---default is NOT to include a block (we run this second)
+		for key in defnames_no: defs[key] = False
+		#---overrides from the user
+		for key,val in self.defs.items(): defs[key] = val
+		#---make replacements
+		for key,val in defs.items():
+			#---keeper
+			self.itp_raw = re.sub(self._regex_ifdef_block_sub%('' if val else 'n',key),r"\2",
+				self.itp_raw,flags=re.M+re.DOTALL)
+			#---discard
+			self.itp_raw = re.sub(self._regex_ifdef_block_sub%('n' if val else '',key),'',
+				self.itp_raw,flags=re.M+re.DOTALL)
+
 	def entry_pre_proc(self,match):
 
 		"""
@@ -107,13 +138,16 @@ class GMXTopology:
 
 		match_proc = str(match)
 		
+		#---! THIS WAS (false) A TERRIBLE MISTAKE !!!!!!!! DOCUMENT IT!
 		if False:
 			#---take or leave ifn?def...endif blocks based on the pre_proc_flags
+			#---! previously named "pre_proc_flags" but it looks like we want this to be ifdefs
 			for key,val in self.pre_proc_flags.items():
 				keeper = self._regex_ifdef_block%{True:'',False:'n'}[val]
 				match_proc = re.sub(keeper,r"\2",match_proc,flags=re.M+re.DOTALL)
 				dropper = self._regex_ifdef_block%{True:'',False:'n'}[not val]
 				match_proc = re.sub(dropper,"",match_proc,flags=re.M+re.DOTALL)
+				import ipdb;ipdb.set_trace()
 				xxx
 			if re.search('ifdef',match_proc):
 				xxx
