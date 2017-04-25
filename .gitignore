@@ -8,3 +8,4 @@ config.py
 /*.sh
 /log-back
 /inputs
+/continuation.log
