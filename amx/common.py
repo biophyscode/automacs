@@ -776,7 +776,12 @@ def grouper(ndx='system-groups',protein=True,lipids=True):
 	#---we always include solvent
 	#---! should we always use ION even if it is relevant only for MARTINI?
 	sol_list = [state.sol,'ION',state.cation,state.anion]
-	if any([not i for i in sol_list]): raise Exception('solvent list has a null value: %s'%sol_list)
+	if any([not i for i in sol_list]): 
+		#---! temporary intervension
+		land = Landscape()
+		#---! have to have ION for MARTINI still, ca testing of bilayer release on v823
+		sol_list = [land.SOL,state.cation,state.anion,'ION']
+		# raise Exception('solvent list has a null value: %s'%sol_list)
 	selector.ask(" || ".join(['r '+r for r in sol_list]),name='SOLVENT')
 	#---use landscapes to make the protein selection
 	if protein:
@@ -789,3 +794,13 @@ def grouper(ndx='system-groups',protein=True,lipids=True):
 	#---create the final copy of groups
 	#---make_ndx will throw a syntax error if a group has zero atoms so we have to be precise
 	gmx('make_ndx',structure='system',ndx=ndx,log='make-ndx-groups',inpipe=selector.final())
+
+def protein_laden(structure='system'):
+	"""
+	Infer if there are proteins in the simulation.
+	"""
+	from structure_tools import GMXStructure
+	struct = GMXStructure(state.here+'%s.gro'%structure)
+	land = Landscape()
+	return np.any(np.in1d(struct.residue_names,land.protein_residues))
+

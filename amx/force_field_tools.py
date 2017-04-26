@@ -28,6 +28,11 @@ landscape_spec = {
 		}
 	}
 
+special_defs = {
+	'martini':{'SOL':'W'},
+	'charmm':{'SOL':'W'},
+}
+
 def force_field_family():
 	"""
 	Get the family name for the force field i.e. charmm or martini.
@@ -92,6 +97,9 @@ class Landscape:
 						self.objects[name] = obj
 			else: raise Exception('you must supply files list in the landscape spec')
 
+		#---special defs go right into members
+		for key,val in special_defs[ff].items(): self.__dict__[key] = val
+
 		#---populate categories
 		self.categories = list(set([v['cat'] for k,v in self.objects.items()]))
 
@@ -105,6 +113,7 @@ class Landscape:
 	def sterols(self): return [k for k,v in self.objects.items() if v['cat']=='sterol']
 	def anions(self): return [k for k,v in self.objects.items() if v['cat']=='ion' and v['charge'] < 0]
 	def cations(self): return [k for k,v in self.objects.items() if v['cat']=='ion' and v['charge'] > 0]
+	def ions(self): return [k for k,v in self.objects.items() if v['cat']=='ion']
 
 	def protein_selection(self):
 		"""
