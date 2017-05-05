@@ -209,17 +209,11 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 	from amx.calls import get_last_gmx_call
 	serial_number()
 	last_step = amx.state['here']
-	###
-	#last_step = 's03-release/'
 	get_last_gmx_call('mdrun',this_state=amx.state)
 	last_mdrun = get_last_gmx_call('mdrun',this_state=amx.state)
-	###
-	#last_mdrun = {u'flags': {u'-e': u'md.part0001.edr', u'-g': u'md.part0001.log', u'-c': u'md.part0001.gro', u'-o': u'md.part0001.trr', u'-v': u'', u'-s': u'md.part0001.tpr', u'-x': u'md.part0001.xtc', u'-cpo': u'md.part0001.cpt'}, u'call': u'mdrun'}
-	path = '~/project-drive/'
-	###import pdb;pdb.set_trace()
-	#import ipdb;ipdb.set_trace()
 	restart_fns = [last_step+i for i in [last_mdrun['flags']['-s'],last_mdrun['flags']['-cpo']]]
-	restart_fns += [last_step+'script-continue.sh',last_step+'cluster-continue.sh']
+	for fn in [last_step+'script-continue.sh',last_step+'cluster-continue.sh']:
+		if os.path.isfile(fn): restart_fns.append(fn)
 	if not all([os.path.isfile(fn) for fn in restart_fns]):
 		error = '[STATUS] could not find necessary upload files from get_last_gmx_call'+\
 			"\n[ERROR] missing: %s"%str([fn for fn in restart_fns if not os.path.isfile(fn)])
