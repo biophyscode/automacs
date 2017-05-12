@@ -247,6 +247,9 @@ def write_mdp(param_file=None,rootdir='./',outdir='',extras=None):
 	mdpdefs = eval(param_text)
 
 	#---STEP 1:	whittle the master dictionary according the group keyword
+	if type(mdpspecs) in str_types:
+		raise Exception('mdpspecs must be a dictionary but instead it is a string. '+
+			'there is probably a syntax error in your settings block')
 	group_name = mdpspecs.get('group',None)
 	if group_name:
 		if group_name not in mdpdefs:

@@ -108,4 +108,4 @@ def state_set_and_save(state,**kwargs):
 	"""
 	state.update(**kwargs)
 	#---! statesave requires the state as arg. if it is not global, this will fail
-	statesave()
+	statesave(state)
