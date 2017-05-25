@@ -210,10 +210,13 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 	serial_number()
 	last_step = amx.state['here']
 	get_last_gmx_call('mdrun',this_state=amx.state)
+	#---upload requires knowledge of the last mdrun so we only send up cpt and tpr
 	last_mdrun = get_last_gmx_call('mdrun',this_state=amx.state)
 	restart_fns = [last_step+i for i in [last_mdrun['flags']['-s'],last_mdrun['flags']['-cpo']]]
-	for fn in [last_step+'script-continue.sh',last_step+'cluster-continue.sh']:
-		if os.path.isfile(fn): restart_fns.append(fn)
+	#---upload cluster files if they are already prepared by users who wish to run cluster before sending it
+	for fn in ['script-continue.sh','cluster-continue.sh']:
+		if os.path.isfile(os.path.join(last_step,fn)):
+			restart_fns.append(os.path.join(last_step,fn))
 	if not all([os.path.isfile(fn) for fn in restart_fns]):
 		error = '[STATUS] could not find necessary upload files from get_last_gmx_call'+\
 			"\n[ERROR] missing: %s"%str([fn for fn in restart_fns if not os.path.isfile(fn)])
@@ -243,7 +246,7 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 		p = subprocess.Popen(cmd,shell=True,cwd=os.path.abspath(os.getcwd()),executable='/bin/bash')
 		log = p.communicate()
 		if not bulk: os.remove('uploads.txt')
-	if p.returncode == 0 and last_step and False: ##########
+	if p.returncode == 0 and last_step:
 		destination = '%s:%s/%s'%(alias,path,cwd)
 		import datetime
 		ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d.%H%M')
@@ -259,6 +262,7 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 
 def download(sure=False):
 	"""
+	Download a simulation from the cluster if it has already been uploaded.
 	"""
 	amx = get_amx()
 	if 'upload' not in amx.state: 
@@ -267,11 +271,12 @@ def download(sure=False):
 	serialno = serial_number()
 	print("[STATUS] the state says that this simulation (#%d) is located at %s"%(serialno,destination))
 	try:
-		cmd = 'rsync -avin --progress %s/* ./'%destination
-		print('[STATUS] running: "%s"'%cmd)
-		p = subprocess.Popen(cmd,shell=True,cwd=os.path.abspath(os.getcwd()))
-		log = p.communicate()
-		if p.returncode != 0: raise
+		if not sure:
+			cmd = 'rsync -avin --progress %s/* ./'%destination
+			print('[STATUS] running: "%s"'%cmd)
+			p = subprocess.Popen(cmd,shell=True,cwd=os.path.abspath(os.getcwd()))
+			log = p.communicate()
+			if p.returncode != 0: raise
 		if (sure or (input if sys.version_info>(3,0) else raw_input)
 			('\n[QUESTION] continue [y/N]? ')[:1] not in 'nN'):
 			cmd = 'rsync -avi --progress %s/* ./'%destination

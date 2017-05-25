@@ -48,7 +48,8 @@ def look(state='state.json'):
 	if not os.path.isfile(state): raise Exception('cannot find %s'%state)
 	bname = os.path.splitext(state)[0]
 	#---! no tab completion in python 2 for some reason
-	os.system('python -B -i -c "import json,sys;sys.path.insert(0,\'runner\');from datapack import DotDict;'
+	os.system('python -B -i -c "import json,sys;sys.path.insert(0,\'runner\');'+
+		'exec(open(\'amx/pythonrc.py\').read());'+'from datapack import DotDict;'
 		'%s = DotDict(**json.load(open(\'%s\')));"'%(bname,state))
 
 def quick(procname,**kwargs):

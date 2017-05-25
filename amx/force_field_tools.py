@@ -20,6 +20,7 @@ landscape_spec = {
 		},
 	'charmm':{
 		'ion':{'files':'inputs/charmm/charmm36.ff/ions.itp'},
+		'tip3p':{'files':'inputs/charmm/charmm36.ff/tip3p.itp'},
 		#---updated this: 'lipid':{'files':['inputs/charmm/lipid-tops/lipid*.itp']},
 		#---! dangerous to hard-code the path to charmm instead of putting this in expts file
 		'lipid':{'files':['inputs/charmm/charmm36.ff/lipids/%s.itp'%i for i in 
@@ -63,28 +64,32 @@ class Landscape:
 		'HIS2','TRP','HISA','ACE','ASH','CYSH','PGLU','LYS','PHE','ALA','QLN','MET','LYSH','NME',
 		'LEU','ARG','TYR']
 
-	def __init__(self,ff=None):
+	def __init__(self,ff=None,cwd=None):
 		"""
 		This class wraps the landscape files.
 		"""
 		self.objects = {}
 		if not ff: ff = force_field_family()
+		cwd = os.getcwd() if not cwd else cwd
 
-		#---load the ions
+		#---???
+		self.itps = {}
 		for cat,spec in landscape_spec[ff].items():
 			if 'files' in spec:
 				files = [spec['files']] if type(spec['files'])!=list else spec['files']
-				files_collect = [i for j in [glob.glob(expr) for expr in files] for i in j]
+				files_collect = [i for j in [glob.glob(os.path.join(cwd,expr)) for expr in files] for i in j]
 				if not files_collect: raise Exception('cannot find files via "%s"'%files)
 				for fn in files_collect:
-					for name,mol in GMXTopology(fn).molecules.items():
+					#---? check for overwrites
+					#---save the topologies by ITP file
+					self.itps[fn] = GMXTopology(fn).molecules
+					for name,mol in self.itps[fn].items():
 						if name in self.objects: 
 							raise Exception('molecule named %s already registered'%name)
 						resnames = [a['resname'] for a in mol['atoms']]
 						if not len(list(set(resnames)))==1: 
 							raise Exception('molecule with multiple resnames under development: %s'%name)
-						try:
-							charge = sum([float(a['charge']) for a in mol['atoms']])
+						try: charge = sum([float(a['charge']) for a in mol['atoms']])
 						except: raise Exception(
 							'failed to compute charge. problem with the ITP file or reader.')
 						obj = {
@@ -93,9 +98,12 @@ class Landscape:
 							'atoms':[a['atom'] for a in mol['atoms']],
 							'resname':list(set(resnames))[0],
 							'charge':sum([float(a['charge']) for a in mol['atoms']]),
-							}
+							'fn':fn,}
 						self.objects[name] = obj
 			else: raise Exception('you must supply files list in the landscape spec')
+
+		#---! recent changes to the data structure above are useful but to get the GMXTopology object
+		#---! ...you have to do: land.itps[land.objects['POPC']['fn']]['POPC']
 
 		#---special defs go right into members
 		for key,val in special_defs[ff].items(): self.__dict__[key] = val
