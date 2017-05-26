@@ -312,8 +312,8 @@ def cluster(hostname=None,overwrite=True):
 	This code will concatenate the cluster submission header with a continuation script.
 	Note that we do not log this operation because it only manipulates BASH scripts.
 	"""
-	#amx = get_amx()
-	#from amx.calls import get_last_gmx_call
+	amx = get_amx()
+	from amx.calls import get_last_gmx_call
 	sys.path.insert(0,'runner')
 	from makeface import import_remote
 	get_gmx_paths = import_remote('amx/calls.py')['get_gmx_paths']
@@ -326,11 +326,9 @@ def cluster(hostname=None,overwrite=True):
 	with open('cluster-header.sh','w') as fp: fp.write(head)
 	print('[STATUS] wrote cluster-header.sh')
 	#---get the most recent step (possibly duplicate code from base)
-	#last_step = amx.state.here
-	#####!!!
-	last_step = 's03-release/'
-	#gmxpaths = amx.state.gmxpaths
-	gmxpaths = get_gmx_paths(hostname=hostname,override=True if hostname else False)
+	last_step = amx.state.here
+	gmxpaths = amx.state.gmxpaths
+	#gmxpaths = get_gmx_paths(hostname=hostname,override=True if hostname else False)
 	#---override the mdrun command if the cluster definition says so
 	if 'mdrun_command' in machine_configuration: gmxpaths['mdrun'] = machine_configuration['mdrun_command']
 	#---this script requires a continue script to be available. overwrites by default
@@ -341,7 +339,7 @@ def cluster(hostname=None,overwrite=True):
 		#---code from base.functions.write_continue_script to rewrite the continue script
 		with open(script_continue_fn,'r') as fp: lines = fp.readlines()
 		tl = [float(j) if j else 0.0 for j in re.match('^([0-9]+)\:?([0-9]+)?\:?([0-9]+)?',
-			machine_configuration.get('walltime','24:00:00')).groups()]
+			str(machine_configuration.get('walltime','24:00:00'))).groups()]
 		maxhours = tl[0]+float(tl[1])/60+float(tl[2])/60/60
 		settings = {'maxhours':maxhours,
 			'tpbconv':gmxpaths['tpbconv'],

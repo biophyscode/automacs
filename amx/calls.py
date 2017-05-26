@@ -270,7 +270,6 @@ def modules_load(machine_config):
 	Interact with environment modules to load software.
 	"""
 	#---modules in LOCAL configuration must be loaded before checking version
-	import importlib
 	if 'module_path' in machine_config: module_path = machine_config['module_path']
 	else:
 		module_parent = os.environ.get('MODULESHOME','/usr/share/Modules/default')
