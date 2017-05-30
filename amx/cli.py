@@ -370,7 +370,7 @@ def cluster(hostname=None,overwrite=True):
 		cluster_continue = os.path.join(last_step,'cluster-continue.sh')
 		print('[STATUS] writing %s'%cluster_continue)
 		#---the header gets settings substitutions
-		for key,val in settings.items(): head = re.sub(key.upper(),str(val),head,flags=re.M)
+		for key,val in settings.items(): head = re.sub(key.upper(),str(val),head,re.M)
 		with open(cluster_continue,'w') as fp: fp.write(head+continue_script)
 	#---for each python script in the root directory we write an equivalent cluster script
 	pyscripts = glob.glob('script-*.py')
