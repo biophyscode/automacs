@@ -100,7 +100,7 @@ def write_continue_script_master(script='script-continue.sh',
 			setting_text += '\nmodule unload gromacs'
 		for m in modules: setting_text += '\nmodule load %s'%m
 	#---add settings overrides here
-	this_script = re.sub('#---SETTINGS OVERRIDES HERE\n',setting_text,this_script,flags=re.M)
+	this_script = re.sub('#---SETTINGS OVERRIDES HERE\n',setting_text,this_script,re.M)
 	#---most calls come from amx.cli.write_continue_script which has the state during a regular run
 	if here: pass
 	#---calls to e.g. cluster lack the state so we read it manually and avoid importing amx
