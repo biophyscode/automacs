@@ -62,15 +62,15 @@ echo "[STATUS] done continuation stage"
 """
 
 def write_continue_script_master(script='script-continue.sh',
-	machine_configuration=None,here=None,hostname=None,**kwargs):
+	machine_configuration=None,here=None,hostname=None,override=False,**kwargs):
 	"""
 	Uses a template in amx/procedures to write a bash continuation script.
 	"""
-	lines = continue_script.splitlines()
+	this_script = str(continue_script)
 	#---remote import to avoid large packages
 	import makeface
-	get_gmx_paths = makeface.import_remote('amx/calls')['get_gmx_paths']	
-	gmxpaths = get_gmx_paths(hostname=hostname)
+	get_gmx_paths = makeface.import_remote('amx/calls')['get_gmx_paths']
+	gmxpaths = get_gmx_paths(hostname=hostname,override=override)
 	#---CONTINUATION DEFAULTS HERE
 	settings = {
 		'maxhours':24,
@@ -99,13 +99,13 @@ def write_continue_script_master(script='script-continue.sh',
 		if any([re.search('gromacs',i) for i in modules]):
 			setting_text += '\nmodule unload gromacs'
 		for m in modules: setting_text += '\nmodule load %s'%m
-	lines = map(lambda x: re.sub('#---SETTINGS OVERRIDES HERE$',setting_text,x),lines)
+	#---add settings overrides here
+	this_script = re.sub('#---SETTINGS OVERRIDES HERE\n',setting_text,this_script,flags=re.M)
 	#---most calls come from amx.cli.write_continue_script which has the state during a regular run
 	if here: pass
 	#---calls to e.g. cluster lack the state so we read it manually and avoid importing amx
 	elif not os.path.isfile('state.json'): raise Exception('write_continue_script requires state.json')
 	else: here = json.load(open('state.json'))['here']
-	with open(here+script,'w') as fp:
-		for line in lines: fp.write(line+'\n')
+	with open(here+script,'w') as fp: fp.write(this_script)
 	os.chmod(here+script,0o744)
 	return here+script

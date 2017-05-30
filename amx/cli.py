@@ -12,7 +12,7 @@ import os,sys,subprocess,re,time,glob,shutil,json
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
 	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull','rewrite_config',
-	'codecheck','collect_parameters','write_continue_script','show_kickstarters']
+	'codecheck','collect_parameters','write_continue_script','show_kickstarters','hardstart']
 
 from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
 from calls import get_machine_config
@@ -327,15 +327,16 @@ def cluster(hostname=None,overwrite=True):
 	print('[STATUS] wrote cluster-header.sh')
 	#---get the most recent step (possibly duplicate code from base)
 	last_step = amx.state.here
-	gmxpaths = amx.state.gmxpaths
-	#gmxpaths = get_gmx_paths(hostname=hostname,override=True if hostname else False)
+	#---gmxpaths can be saved to the state or retrieved automatically
+	try: gmxpaths = get_gmx_paths(hostname=hostname,override=True if hostname else False)
+	except: gmxpaths = amx.state.gmxpaths
 	#---override the mdrun command if the cluster definition says so
 	if 'mdrun_command' in machine_configuration: gmxpaths['mdrun'] = machine_configuration['mdrun_command']
-	#---this script requires a continue script to be available. overwrites by default
-	### removed continuation script if not amx.state.continuation_script or overwrite: 
-	script_continue_fn = write_continue_script(hostname=hostname,overwrite=True)
 	if last_step:
-		### removed continuation script script_continue_fn = amx.state.here+amx.state.continuation_script
+		#---this script requires a continue script to be available. overwrites by default
+		if not 'continuation_script' in amx.state or overwrite: 
+			script_continue_fn = write_continue_script(hostname=hostname,overwrite=True)
+		else: script_continue_fn = amx.state.here+amx.state.continuation_script
 		#---code from base.functions.write_continue_script to rewrite the continue script
 		with open(script_continue_fn,'r') as fp: lines = fp.readlines()
 		tl = [float(j) if j else 0.0 for j in re.match('^([0-9]+)\:?([0-9]+)?\:?([0-9]+)?',
@@ -345,6 +346,7 @@ def cluster(hostname=None,overwrite=True):
 			'tpbconv':gmxpaths['tpbconv'],
 			'mdrun':gmxpaths['mdrun']}
 		if 'nprocs' in machine_configuration: settings['nprocs'] = machine_configuration['nprocs']
+		else: settings['nprocs'] = machine_configuration['ppn']*machine_configuration['nnodes']
 		#---! how should we parse multiple modules from the machine_configuration?
 		if 'modules' in machine_configuration:
 			need_modules = machine_configuration['modules']
@@ -367,6 +369,8 @@ def cluster(hostname=None,overwrite=True):
 		continue_script = re.sub('#!/bin/bash\n','',continue_script)
 		cluster_continue = os.path.join(last_step,'cluster-continue.sh')
 		print('[STATUS] writing %s'%cluster_continue)
+		#---the header gets settings substitutions
+		for key,val in settings.items(): head = re.sub(key.upper(),str(val),head,flags=re.M)
 		with open(cluster_continue,'w') as fp: fp.write(head+continue_script)
 	#---for each python script in the root directory we write an equivalent cluster script
 	pyscripts = glob.glob('script-*.py')
@@ -519,3 +523,24 @@ def collect_parameters():
 		else os.path.join(v['cwd'],v['params']) 
 		for k,v, in inputlib.items() if 'params' in v and v['params']])))
 	asciitree({'PARAMETER SPECIFICATIONS':params_fns})
+
+def hardstart():
+	"""
+	Generate a state.json to initiate a hard restart.
+	This functionality is useful for dropping CPT and TPR files into a new directory for a continuation.
+	"""
+	if os.path.isfile('state.json'): raise Exception('cannot hard restart if state.json is here')
+	#---figure out the last step folder
+	dns = [fn for fn in glob.glob('*') if re.match('s\d+-.+',fn) and os.path.isdir(fn)]
+	dns = sorted(dns,key=lambda x:os.path.getmtime(x))
+	here = os.path.join(dns[-1],'')
+	state = dict(here=here,gmxpaths=gmxpaths)
+	state['history_gmx'] = [{'call':'mdrun','flags':{}}]
+	#"-e":"md.part0001.edr","-g": "md.part0001.log", "-c": "md.part0001.gro", "-o": "md.part0001.trr", "-v": "", "-s": "md.part0001.tpr", "-x": "md.part0001.xtc", "-cpo": "md.part0002.cpt"}, "call": "mdrun"}]
+	#---detect the last mdrun by modification time
+	for suf in ['cpt','tpr']:
+		fns = sorted([fn for fn in glob.glob(os.path.join(here,'*.%s'%suf)) 
+			if re.match('md\.part\d{4}\.%s'%suf,os.path.basename(fn))],key=lambda x:os.path.getmtime(x))
+		if not fns: raise Exception('cannot find a %s file in %s'%(suf,here))
+		state['history_gmx'][-1]['flags'][{'cpt':'-cpo','tpr':'-s'}[suf]] = os.path.basename(fns[-1])
+	with open('state.json','w') as fp: fp.write(json.dumps(state))
