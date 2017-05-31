@@ -191,6 +191,7 @@ def yamlb(text,style=None,ignore_json=False):
 		elif type(val) in str_types:
 			if re.match('^(T|t)rue$',val): result = True
 			elif re.match('^(F|f)alse$',val): result = False
+			elif re.match('^(N|n)one$',val): result = None
 			#---! may be redundant with the eval command above
 			elif re.match('^[0-9]+$',val): result = int(val)
 			elif re.match('^[0-9]*\.[0-9]*$',val): result = float(val)
