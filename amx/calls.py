@@ -233,7 +233,7 @@ def get_machine_config(hostname=None):
 	config_fn_global = '~/.automacs.py'
 	config_fn_local = './gromacs_config.py'
 	if os.path.isfile(config_fn_local): config_fn = config_fn_local
-	elif os.path.isfile(config_fn_global): config_fn = config_fn_global	
+	elif os.path.isfile(os.path.expanduser(config_fn_global)): config_fn = config_fn_global	
 	else: raise Exception('cannot find either a local (gromacs_config.py) or a global (~/.automacs.py) '
 		'gromacs configuration. make one with `make gromacs_config (local|home)`')
 	with open(os.path.expanduser(config_fn)) as fp: exec(fp.read(),machine_config)
