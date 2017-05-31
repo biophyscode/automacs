@@ -534,9 +534,11 @@ def hardstart():
 	dns = [fn for fn in glob.glob('*') if re.match('s\d+-.+',fn) and os.path.isdir(fn)]
 	dns = sorted(dns,key=lambda x:os.path.getmtime(x))
 	here = os.path.join(dns[-1],'')
+	from makeface import import_remote
+	get_gmx_paths = import_remote('amx/calls.py')['get_gmx_paths']
+	gmxpaths = get_gmx_paths()
 	state = dict(here=here,gmxpaths=gmxpaths)
 	state['history_gmx'] = [{'call':'mdrun','flags':{}}]
-	#"-e":"md.part0001.edr","-g": "md.part0001.log", "-c": "md.part0001.gro", "-o": "md.part0001.trr", "-v": "", "-s": "md.part0001.tpr", "-x": "md.part0001.xtc", "-cpo": "md.part0002.cpt"}, "call": "mdrun"}]
 	#---detect the last mdrun by modification time
 	for suf in ['cpt','tpr']:
 		fns = sorted([fn for fn in glob.glob(os.path.join(here,'*.%s'%suf)) 
