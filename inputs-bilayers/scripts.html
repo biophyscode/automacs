@@ -1,0 +1,600 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scripts &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Experiments" href="experiments.html" />
+    <link rel="prev" title="Experiments" href="../amx-proteins/experiments.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../amx-proteins/experiments.html" title="Experiments"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Scripts</a><ul>
+<li><a class="reference internal" href="#inputs-bilayers-bilayer-aamd-expts-py">inputs/bilayers/bilayer_aamd_expts.py</a></li>
+<li><a class="reference internal" href="#inputs-bilayers-scripts-bilayer-py">inputs/bilayers/scripts/bilayer.py</a></li>
+<li><a class="reference internal" href="#inputs-bilayers-scripts-bilayer-careful-py">inputs/bilayers/scripts/bilayer-careful.py</a></li>
+<li><a class="reference internal" href="#inputs-bilayers-scripts-bilayer-release-py">inputs/bilayers/scripts/bilayer-release.py</a></li>
+<li><a class="reference internal" href="#inputs-bilayers-scripts-bilayer-flat-py">inputs/bilayers/scripts/bilayer-flat.py</a></li>
+<li><a class="reference internal" href="#inputs-bilayers-scripts-bilayer-protein-py">inputs/bilayers/scripts/bilayer-protein.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../amx-proteins/experiments.html"
+                        title="previous chapter">Experiments</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="experiments.html"
+                        title="next chapter">Experiments</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/inputs-bilayers/scripts.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scripts">
+<h1>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="inputs-bilayers-bilayer-aamd-expts-py">
+<h2>inputs/bilayers/bilayer_aamd_expts.py<a class="headerlink" href="#inputs-bilayers-bilayer-aamd-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;bilayer_control_aamd_test_small&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/bilayer.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters-aamd.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;aamd&#39;</span><span class="p">,</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;free&#39;</span><span class="p">],</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+    <span class="s1">&#39;@extras/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codes/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	you MUST run `make go bilayer_control_aamd_restrain clean` first to generate restraints</span>
+<span class="s2">	use this procedure to make a &quot;free&quot; bilayer</span>
+<span class="s2">	this method packs lipids in vacuum with restraints</span>
+<span class="s2">	requires restrains generated via a run named &quot;generate_lipidome_restraints&quot;</span>
+<span class="s2">	this small test was the first test after porting the cgmd method into &quot;new automacs&quot;</span>
+<span class="s2">	this method is largely deprecated by the bilayer-careful script used by bilayer_control_aamd_test</span>
+
+<span class="s2">step:               bilayer</span>
+
+<span class="s2">#---SHAPE AND COMPOSITION</span>
+<span class="s2">shape:              flat            # initial mesh shape flat</span>
+<span class="s2">aspect:             1.0             # XY proportion for flat bilayers</span>
+<span class="s2">binsize:            1.2             # grid spacing for initial lipid configuration</span>
+<span class="s2">monolayer offset:   1.5             # initial distance between leaflets </span>
+<span class="s2">monolayer top:      36              # number of lipids in the top leaflet</span>
+<span class="s2">monolayer bottom:   37              # number of lipids in the bottom leaflet (none for symmetric)</span>
+
+<span class="s2">lipid structures:   @structure-repo/bilayers-aamd/lipid-structures # folder for lipid structures</span>
+<span class="s2">landscape metadata: @charmm/landscape.json                         # colloquial types for different molecules</span>
+<span class="s2">	</span>
+<span class="s2">#---COMPOSITIONS (propotional -- no need to sum to unity)</span>
+<span class="s2">composition top:    {&#39;DOPC&#39;:1,&#39;DOPS&#39;:1,&#39;PI2P&#39;:1,&#39;CHL1&#39;:1}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:3,&#39;CHL1&#39;:1}</span>
+
+<span class="s2">#---SOLVATION</span>
+<span class="s2">cation:             NA              # residue name for the cation (must be found in the ff)</span>
+<span class="s2">anion:              CL              # residue name for the anion (must be found in the ff)</span>
+<span class="s2">ionic strength:     0.150           # molar ionic strength</span>
+<span class="s2">sol:                SOL             # residue name for water</span>
+<span class="s2">atom resolution:    cgmd            # either cgmd or aamd</span>
+<span class="s2">water buffer:       8               # water-other gap distance in Angstroms (avoid waters in bilayer!)</span>
+<span class="s2">solvent:            spc216          # water box (must be copied via files)</span>
+<span class="s2">thickness:          10              # thickness of the box at the solvate step</span>
+<span class="s2">                                    # ...be careful with this. you can get widely varying levels of water</span>
+
+<span class="s2">#---COPY DEPENDENCIES</span>
+<span class="s2">files:              []</span>
+<span class="s2">sources:            [&#39;@charmm/charmm36.ff&#39;,&#39;@charmm/auto_ff/charmm36_upright.ff&#39;]</span>
+
+<span class="s2">#---FORCE FIELD</span>
+<span class="s2">force field:           charmm36            # specify the name of the force field (minus &quot;.ff&quot; suffix)</span>
+<span class="s2">                                           # note non-standard force fields must be copied via &quot;sources&quot;</span>
+<span class="s2">force field upright:   charmm36_upright    # force field with &quot;upright&quot; vacuum pack restraints</span>
+
+<span class="s2">#---EQUILIBRATION</span>
+<span class="s2">equilibration: npt-bilayer-short,npt-bilayer</span>
+<span class="s2">mdp specs:|{</span>
+<span class="s2">	&#39;group&#39;:&#39;aamd&#39;,</span>
+<span class="s2">	&#39;mdps&#39;:{</span>
+<span class="s2">		&#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;,{&#39;potential&#39;:&#39;verlet&#39;,&#39;emtol&#39;:10}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack1-eq-in.mdp&#39;:[</span>
+<span class="s2">			&#39;vacuum-packing&#39;,{&#39;nsteps&#39;:10000,&#39;dt&#39;:0.001}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack2-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;,{&#39;ref_p&#39;:&#39;500.0 1.0&#39;}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack3-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;],</span>
+<span class="s2">		&#39;input-md-npt-bilayer-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,],</span>
+<span class="s2">		&#39;input-md-npt-bilayer-short-eq-in.mdp&#39;:[&#39;npt-bilayer&#39;,{&#39;dt&#39;:0.0002,&#39;nsteps&#39;:10000}],</span>
+<span class="s2">		&#39;input-md-in.mdp&#39;:[&#39;npt-bilayer&#39;],</span>
+<span class="s2">		},</span>
+<span class="s2">	}</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;bilayer_control_aamd_test&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/bilayer-careful.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters-aamd.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;aamd&#39;</span><span class="p">,</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;free&#39;</span><span class="p">],</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+    <span class="s1">&#39;@extras/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codes/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	you MUST run `make go bilayer_control_aamd_restrain clean` first to generate restraints</span>
+<span class="s2">	use this procedure to make a &quot;free&quot; bilayer</span>
+<span class="s2">	this method packs lipids in vacuum with restraints</span>
+<span class="s2">	requires restrains generated via a run named &quot;generate_lipidome_restraints&quot;</span>
+<span class="s2">	developed bilayer-careful.py here and added posre-com-only to everything (will be ignored if no posre)</span>
+
+<span class="s2">step:               bilayer</span>
+
+<span class="s2">#---SHAPE AND COMPOSITION</span>
+<span class="s2">shape:              flat            # initial mesh shape flat</span>
+<span class="s2">aspect:             1.0             # XY proportion for flat bilayers</span>
+<span class="s2">binsize:            1.2             # grid spacing for initial lipid configuration</span>
+<span class="s2">monolayer offset:   1.5             # initial distance between leaflets </span>
+<span class="s2">monolayer top:      125             # number of lipids in the top leaflet</span>
+<span class="s2">monolayer bottom:   129             # number of lipids in the bottom leaflet (none for symmetric)</span>
+
+<span class="s2">lipid structures:   @structure-repo/bilayers-aamd/lipid-structures # folder for lipid structures</span>
+<span class="s2">landscape metadata: @charmm/landscape.json                         # colloquial types for different molecules</span>
+
+<span class="s2">#---COMPOSITIONS (propotional -- no need to sum to unity)</span>
+<span class="s2">composition top:    {&#39;DOPE&#39;:50.0,&#39;DOPS&#39;:25.0,&#39;PI2P&#39;:25.0,&#39;CHL1&#39;:25.0}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:104.0,&#39;CHL1&#39;:25.0}</span>
+<span class="s2">ste</span>
+<span class="s2">#---SOLVATION</span>
+<span class="s2">cation:             NA              # residue name for the cation (must be found in the ff)</span>
+<span class="s2">anion:              CL              # residue name for the anion (must be found in the ff)</span>
+<span class="s2">ionic strength:     0.150           # molar ionic strength</span>
+<span class="s2">sol:                SOL             # residue name for water</span>
+<span class="s2">atom resolution:    cgmd            # either cgmd or aamd</span>
+<span class="s2">water buffer:       8               # water-other gap distance in Angstroms (avoid waters in bilayer!)</span>
+<span class="s2">solvent:            spc216          # water box (must be copied via files)</span>
+<span class="s2">thickness:          16              # thickness of the box at the solvate step</span>
+<span class="s2">                                    # ...be careful with this. you can get widely varying levels of water</span>
+
+<span class="s2">#---COPY DEPENDENCIES</span>
+<span class="s2">files:              []</span>
+<span class="s2">sources:|           [&#39;@charmm/charmm36.ff&#39;,&#39;@charmm/auto_ff/charmm36_upright.ff&#39;,</span>
+<span class="s2">	&#39;@charmm/auto_ff/charmm36_restrain.ff&#39;]</span>
+
+<span class="s2">#---FORCE FIELD (note non-standard force fields must be copied via &quot;sources&quot;)</span>
+<span class="s2">force field:           charmm36            # specify the name of the force field (minus &quot;.ff&quot; suffix)</span>
+<span class="s2">force field upright:   charmm36_upright    # force field with &quot;upright&quot; vacuum pack restraints</span>
+<span class="s2">force field restrain:  charmm36_restrain   # force field with all lipid atoms restrained for water relax</span>
+
+<span class="s2">#---EQUILIBRATION</span>
+<span class="s2">equilibrate_restrain: [&#39;bilayer-s1-restr&#39;,&#39;bilayer-s2-restr&#39;]</span>
+<span class="s2">equilibrate_free: [&#39;bilayer-s3-free&#39;,&#39;bilayer-s4-free&#39;,&#39;bilayer-s5-free&#39;,&#39;bilayer&#39;]</span>
+<span class="s2">equilibrate_restrain_final: &quot;md-bilayer-s2-restr&quot;</span>
+<span class="s2">mdp specs:|{</span>
+<span class="s2">	&#39;group&#39;:&#39;aamd&#39;,</span>
+<span class="s2">	&#39;mdps&#39;:{</span>
+<span class="s2">		&#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;,{&#39;potential&#39;:&#39;verlet&#39;,&#39;emtol&#39;:10}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack1-eq-in.mdp&#39;:[</span>
+<span class="s2">			&#39;vacuum-packing&#39;,{&#39;nsteps&#39;:10000,&#39;dt&#39;:0.001}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack2-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;,{&#39;ref_p&#39;:&#39;500.0 1.0&#39;}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack3-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;],</span>
+<span class="s2">		&#39;input-md-bilayer-s1-restr-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.0001,&#39;nsteps&#39;:50000,&#39;compressibility&#39;:&#39;0.0 4.5e-5&#39;,</span>
+<span class="s2">				&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;tau_p&#39;:0.1}],</span>
+<span class="s2">		&#39;input-md-bilayer-s2-restr-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.0002,&#39;nsteps&#39;:50000,&#39;compressibility&#39;:&#39;0.0 4.5e-5&#39;,</span>
+<span class="s2">				&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;tau_p&#39;:0.5}],</span>
+<span class="s2">		&#39;input-md-bilayer-s3-free-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.0002,&#39;nsteps&#39;:50000,&#39;compressibility&#39;:&#39;0.0 4.5e-5&#39;,</span>
+<span class="s2">				&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;tau_p&#39;:0.5}],</span>
+<span class="s2">		&#39;input-md-bilayer-s4-free-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.001,&#39;nsteps&#39;:50000,&#39;compressibility&#39;:&#39;0.0 4.5e-5&#39;,</span>
+<span class="s2">				&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;tau_p&#39;:0.5}],</span>
+<span class="s2">		&#39;input-md-bilayer-s5-free-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.002,&#39;nsteps&#39;:50000,&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;tau_p&#39;:0.5}],</span>
+<span class="s2">		&#39;input-md-bilayer-eq-in.mdp&#39;:[&#39;npt-bilayer&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.002,&#39;nsteps&#39;:100000,&#39;restrain&#39;:&#39;posre-com-only&#39;}],</span>
+<span class="s2">		&#39;input-md-in.mdp&#39;:[&#39;npt-bilayer&#39;,{&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;nsteps&#39;:500000}],},}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;bilayer_control_aamd_restrain&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;lipidome&#39;</span><span class="p">],</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;@bilayers/parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+	<span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">from amx import *</span>
+<span class="s2">init()</span>
+<span class="s2">#---note that restraint_maker is in amx/topology_tools.py loaded with amx</span>
+<span class="s2">restraint_maker()</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	this method is designed to pre-make any lipid restraints you might want</span>
+<span class="s2">	its product can be used by </span>
+<span class="s2">		(1) the bilayer maker&#39;s vacuum packing</span>
+<span class="s2">		(2) the flat bilayer maker&#39;s leaflet-specific restraints</span>
+<span class="s2">	the &quot;wants&quot; dictionary specifies the outputs and describes their restraints</span>
+<span class="s2">	the deposit site holds the automatically generated force fields</span>
+<span class="s2">	this method completely avoids using the &quot;define posre&quot; flags in GROMACS</span>
+<span class="s2">	all restraints are explicit, but this means you should avoid &quot;define posre&quot; which will restrain water</span>
+<span class="s2">	note that this experiment was copied nearly verbatim from the lipidome_expts.py</span>
+<span class="s2">	the quick script restraint function has been generalized </span>
+<span class="s2">		and moved from the martini bundle to topology_tools.py</span>
+
+<span class="s2">force field: charmm                      # we always include the force field for the Landscape class</span>
+<span class="s2">base force field: @charmm/charmm36.ff    # source force field to modify</span>
+<span class="s2">deposit site: @charmm/auto_ff            # where to write new force fields (keys in wants)</span>
+
+<span class="s2">#---specify transformed force field copies</span>
+<span class="s2">wants:|{</span>
+<span class="s2">	&#39;charmm36_upright.ff&#39;:[</span>
+<span class="s2">		{&#39;restraints&#39;:{&#39;charmm_glycerol&#39;:{&#39;z&#39;:1000},&#39;charmm_tails&#39;:{&#39;z&#39;:1000}},</span>
+<span class="s2">		&#39;naming&#39;:&#39;same&#39;,&#39;which&#39;:&#39;lipids&#39;},</span>
+<span class="s2">		{&#39;restraints&#39;:{&#39;sterol_out&#39;:{&#39;z&#39;:1000},&#39;sterol_in&#39;:{&#39;z&#39;:1000}},</span>
+<span class="s2">		&#39;naming&#39;:&#39;same&#39;,&#39;which&#39;:&#39;sterols&#39;},],</span>
+<span class="s2">	&#39;charmm36_restrain.ff&#39;:[</span>
+<span class="s2">		{&#39;restraints&#39;:{&#39;charmm_glycerol&#39;:{&#39;x&#39;:500,&#39;y&#39;:500,&#39;z&#39;:500},&#39;charmm_tails&#39;:{&#39;x&#39;:500,&#39;y&#39;:500,&#39;z&#39;:500}},</span>
+<span class="s2">			&#39;naming&#39;:&#39;same&#39;,&#39;which&#39;:&#39;lipids&#39;},</span>
+<span class="s2">		{&#39;restraints&#39;:{&#39;sterol_out&#39;:{&#39;x&#39;:500,&#39;y&#39;:500,&#39;z&#39;:500},&#39;sterol_in&#39;:{&#39;x&#39;:500,&#39;y&#39;:500,&#39;z&#39;:500}},</span>
+<span class="s2">			&#39;naming&#39;:&#39;same&#39;,&#39;which&#39;:&#39;sterols&#39;},]}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-bilayers-scripts-bilayer-py">
+<h2>inputs/bilayers/scripts/bilayer.py<a class="headerlink" href="#inputs-bilayers-scripts-bilayer-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="n">write_mdp</span><span class="p">()</span>
+<span class="n">write_continue_script</span><span class="p">()</span>
+<span class="n">build_bilayer</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;vacuum-bilayer&#39;</span><span class="p">)</span>
+<span class="n">copy_file</span><span class="p">(</span><span class="s1">&#39;vacuum-bilayer.gro&#39;</span><span class="p">,</span><span class="s1">&#39;vacuum.gro&#39;</span><span class="p">)</span>
+<span class="n">state</span><span class="o">.</span><span class="n">force_field</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">force_field_upright</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+<span class="n">vacuum_pack_loop</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-minimized&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="s1">&#39;em-vacuum-steep&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;vacuum-packed&#39;</span><span class="p">)</span>
+<span class="n">restuff</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-packed&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;solvate-dry&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="n">get_last</span><span class="p">(</span><span class="s1">&#39;tpr&#39;</span><span class="p">),</span>
+	<span class="n">ndx</span><span class="o">=</span><span class="n">get_last</span><span class="p">(</span><span class="s1">&#39;ndx&#39;</span><span class="p">))</span>
+<span class="n">solvate</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;solvate-dry&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;solvate-dense&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;solvate.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;solvate&#39;</span><span class="p">)</span>
+<span class="n">remove_jump</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;solvate-minimized&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="s1">&#39;em-solvate-steep&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;solvate-nojump&#39;</span><span class="p">)</span>
+<span class="n">counterions</span><span class="p">(</span><span class="s1">&#39;solvate-nojump&#39;</span><span class="p">,</span><span class="s1">&#39;solvate&#39;</span><span class="p">)</span>
+<span class="n">counterion_renamer</span><span class="p">(</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;counterions.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">remove_jump</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;counterions-minimized&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="s1">&#39;em-counterions-steep&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;counterions-nojump&#39;</span><span class="p">)</span>
+<span class="n">bilayer_middle</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;counterions-nojump&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">)</span>
+<span class="n">bilayer_sorter</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">,</span>
+	<span class="n">ndx</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">)</span>
+<span class="n">state</span><span class="o">.</span><span class="n">force_field</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">force_field</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="n">equilibrate</span><span class="p">(</span><span class="n">groups</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-bilayers-scripts-bilayer-careful-py">
+<h2>inputs/bilayers/scripts/bilayer-careful.py<a class="headerlink" href="#inputs-bilayers-scripts-bilayer-careful-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="n">write_mdp</span><span class="p">()</span>
+<span class="n">write_continue_script</span><span class="p">()</span>
+<span class="n">build_bilayer</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;vacuum-bilayer&#39;</span><span class="p">)</span>
+<span class="n">copy_file</span><span class="p">(</span><span class="s1">&#39;vacuum-bilayer.gro&#39;</span><span class="p">,</span><span class="s1">&#39;vacuum.gro&#39;</span><span class="p">)</span>
+<span class="n">state</span><span class="o">.</span><span class="n">force_field</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">force_field_upright</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+<span class="n">vacuum_pack_loop</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-minimized&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="s1">&#39;em-vacuum-steep&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;vacuum-packed&#39;</span><span class="p">)</span>
+<span class="n">restuff</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-packed&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;solvate-dry&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="n">get_last</span><span class="p">(</span><span class="s1">&#39;tpr&#39;</span><span class="p">),</span>
+	<span class="n">ndx</span><span class="o">=</span><span class="n">get_last</span><span class="p">(</span><span class="s1">&#39;ndx&#39;</span><span class="p">))</span>
+<span class="n">solvate</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;solvate-dry&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;solvate-dense&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;solvate.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;solvate&#39;</span><span class="p">)</span>
+<span class="n">remove_jump</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;solvate-minimized&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="s1">&#39;em-solvate-steep&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;solvate-nojump&#39;</span><span class="p">)</span>
+<span class="n">counterions</span><span class="p">(</span><span class="s1">&#39;solvate-nojump&#39;</span><span class="p">,</span><span class="s1">&#39;solvate&#39;</span><span class="p">)</span>
+<span class="n">counterion_renamer</span><span class="p">(</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;counterions.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">remove_jump</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;counterions-minimized&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="s1">&#39;em-counterions-steep&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;counterions-nojump&#39;</span><span class="p">)</span>
+<span class="n">bilayer_middle</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;counterions-nojump&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">)</span>
+<span class="n">bilayer_sorter</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">,</span>
+	<span class="n">ndx</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">)</span>
+<span class="c1">#---relax with fixed area and upright restraints</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="c1">#---note no persistent restraint positions</span>
+<span class="n">equilibrate</span><span class="p">(</span>
+	<span class="n">seq</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">equilibrate_restrain</span><span class="p">,</span>
+	<span class="n">groups</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">,</span>
+	<span class="n">stages_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1">#---release restraints and continue</span>
+<span class="n">state</span><span class="o">.</span><span class="n">force_field</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">force_field</span>
+<span class="n">move_file</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">,</span><span class="s1">&#39;system-restrain.top&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="n">equilibrate</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">equilibrate_restrain_final</span><span class="p">,</span>
+	<span class="n">seq</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">equilibrate_free</span><span class="p">,</span>
+	<span class="n">groups</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">,</span>
+	<span class="n">stages_only</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-bilayers-scripts-bilayer-release-py">
+<h2>inputs/bilayers/scripts/bilayer-release.py<a class="headerlink" href="#inputs-bilayers-scripts-bilayer-release-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">state</span><span class="o">.</span><span class="n">force_field</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">force_field</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">before</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;force_field&#39;</span><span class="p">]</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">state</span><span class="o">.</span><span class="n">mdp_specs</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">mdp_specs</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">before</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;mdp_specs&#39;</span><span class="p">]</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">state</span><span class="o">.</span><span class="n">sources</span><span class="p">:</span> <span class="n">state</span><span class="o">.</span><span class="n">sources</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">before</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s1">&#39;settings&#39;</span><span class="p">][</span><span class="s1">&#39;sources&#39;</span><span class="p">]</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="n">write_continue_script</span><span class="p">()</span>
+<span class="n">release_restraints</span><span class="p">()</span>
+<span class="n">write_mdp</span><span class="p">()</span>
+<span class="n">write_topology</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="n">grouper</span><span class="p">(</span><span class="n">protein</span><span class="o">=</span><span class="n">protein_laden</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">))</span>
+<span class="n">equilibrate</span><span class="p">(</span><span class="n">groups</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-bilayers-scripts-bilayer-flat-py">
+<h2>inputs/bilayers/scripts/bilayer-flat.py<a class="headerlink" href="#inputs-bilayers-scripts-bilayer-flat-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="n">write_mdp</span><span class="p">()</span>
+<span class="n">write_continue_script</span><span class="p">()</span>
+<span class="n">build_bilayer</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;vacuum-bilayer&#39;</span><span class="p">)</span>
+<span class="n">copy_file</span><span class="p">(</span><span class="s1">&#39;vacuum-bilayer.gro&#39;</span><span class="p">,</span><span class="s1">&#39;vacuum.gro&#39;</span><span class="p">)</span>
+<span class="n">state</span><span class="o">.</span><span class="n">force_field</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">force_field_upright</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+<span class="n">vacuum_pack_loop</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-minimized&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="s1">&#39;em-vacuum-steep&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;vacuum-packed&#39;</span><span class="p">)</span>
+<span class="n">restuff</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-packed&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;solvate-dry&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="n">get_last</span><span class="p">(</span><span class="s1">&#39;tpr&#39;</span><span class="p">),</span>
+	<span class="n">ndx</span><span class="o">=</span><span class="n">get_last</span><span class="p">(</span><span class="s1">&#39;ndx&#39;</span><span class="p">))</span>
+<span class="n">solvate</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;solvate-dry&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;solvate-dense&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;solvate.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;solvate&#39;</span><span class="p">)</span>
+<span class="n">remove_jump</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;solvate-minimized&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="s1">&#39;em-solvate-steep&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;solvate-nojump&#39;</span><span class="p">)</span>
+<span class="n">counterions</span><span class="p">(</span><span class="s1">&#39;solvate-nojump&#39;</span><span class="p">,</span><span class="s1">&#39;solvate&#39;</span><span class="p">)</span>
+<span class="n">counterion_renamer</span><span class="p">(</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;counterions.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">remove_jump</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;counterions-minimized&#39;</span><span class="p">,</span>
+	<span class="n">tpr</span><span class="o">=</span><span class="s1">&#39;em-counterions-steep&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;counterions-nojump&#39;</span><span class="p">)</span>
+<span class="n">bilayer_middle</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;counterions-nojump&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">)</span>
+<span class="n">bilayer_sorter</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">,</span>
+	<span class="n">ndx</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="n">equilibrate</span><span class="p">(</span><span class="n">groups</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">)</span>
+<span class="n">move_file</span><span class="p">(</span><span class="s1">&#39;md-npt-bilayer.gro&#39;</span><span class="p">,</span><span class="s1">&#39;md-npt-bilayer-std.gro&#39;</span><span class="p">)</span>
+<span class="n">distinguish_leaflets</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;md-npt-bilayer-std&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;system-leaflets&#39;</span><span class="p">,</span>
+	<span class="n">indices</span><span class="o">=</span><span class="s1">&#39;dat-monolayer-indices.py&#39;</span><span class="p">)</span>
+<span class="n">move_file</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">,</span><span class="s1">&#39;system-std.top&#39;</span><span class="p">)</span>
+<span class="n">state</span><span class="o">.</span><span class="n">force_field</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">force_field_flat</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="n">bilayer_flatten_for_restraints</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;system-leaflets&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;system-leaflets-flat&#39;</span><span class="p">)</span>
+<span class="n">register_file</span><span class="p">(</span><span class="s1">&#39;system-leaflets-flat.gro&#39;</span><span class="p">)</span>
+<span class="n">register_gmx_call</span><span class="p">(</span>
+	<span class="n">command</span><span class="o">=</span><span class="s1">&#39;grompp&#39;</span><span class="p">,</span><span class="n">flag</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span>
+	<span class="n">value</span><span class="o">=</span><span class="s1">&#39;system-leaflets-flat.gro&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">rnum</span><span class="p">,</span><span class="n">mdp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">flat_restart_mdps</span><span class="p">):</span>
+	<span class="n">restart_clean</span><span class="p">(</span><span class="n">part</span><span class="o">=</span><span class="n">rnum</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span><span class="n">mdp</span><span class="o">=</span><span class="n">mdp</span><span class="p">,</span>
+		<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;system-leaflets&#39;</span><span class="p">,</span>
+		<span class="n">groups</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-bilayers-scripts-bilayer-protein-py">
+<h2>inputs/bilayers/scripts/bilayer-protein.py<a class="headerlink" href="#inputs-bilayers-scripts-bilayer-protein-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="n">write_continue_script</span><span class="p">()</span>
+<span class="n">write_mdp</span><span class="p">()</span>
+<span class="n">place_protein</span><span class="p">()</span>
+<span class="n">adhere_protein_bilayer</span><span class="p">(</span><span class="s1">&#39;prepped-charged&#39;</span><span class="p">)</span>
+<span class="n">remove_ions</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s1">&#39;prepped-charged&#39;</span><span class="p">,</span><span class="n">gro</span><span class="o">=</span><span class="s1">&#39;prepped-water&#39;</span><span class="p">)</span>
+<span class="n">counterions</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s1">&#39;prepped-water&#39;</span><span class="p">,</span><span class="n">gro</span><span class="o">=</span><span class="s1">&#39;prepped&#39;</span><span class="p">)</span>
+<span class="n">counterion_renamer</span><span class="p">(</span><span class="s1">&#39;prepped&#39;</span><span class="p">)</span>
+<span class="n">write_topology</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;prepped&#39;</span><span class="p">,</span><span class="n">top</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">)</span>
+<span class="n">detect_lipids</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s1">&#39;prepped&#39;</span><span class="p">)</span>
+<span class="n">detect_ions</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s1">&#39;prepped&#39;</span><span class="p">)</span>
+<span class="n">recenter_protein_bilayer</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s1">&#39;prepped-minimized&#39;</span><span class="p">,</span><span class="n">gro</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">)</span>
+<span class="n">bilayer_sorter</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s1">&#39;prepped-minimized&#39;</span><span class="p">,</span><span class="n">ndx</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">,</span><span class="n">protein</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">equilibrate</span><span class="p">(</span><span class="n">groups</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../amx-proteins/experiments.html" title="Experiments"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

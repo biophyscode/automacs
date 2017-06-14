@@ -1,0 +1,13 @@
+Scripts
+=======
+
+inputs/polymers/script-gel.py
+-----------------------------
+
+.. literalinclude:: ../../../polymers/script-gel.py
+
+inputs/polymers/script-cg-gel.py
+--------------------------------
+
+.. literalinclude:: ../../../polymers/script-cg-gel.py
+

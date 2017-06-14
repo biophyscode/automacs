@@ -1,0 +1,332 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Experiments &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Experiments" href="../inputs-vmd/experiments.html" />
+    <link rel="prev" title="Scripts" href="scripts.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../inputs-vmd/experiments.html" title="Experiments"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Experiments</a><ul>
+<li><a class="reference internal" href="#inputs-polymers-dextran-expts-py">inputs/polymers/dextran_expts.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="scripts.html"
+                        title="previous chapter">Scripts</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../inputs-vmd/experiments.html"
+                        title="next chapter">Experiments</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/inputs-polymers/experiments.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="experiments">
+<h1>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="inputs-polymers-dextran-expts-py">
+<h2>inputs/polymers/dextran_expts.py<a class="headerlink" href="#inputs-polymers-dextran-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;dextran_dev_pentamer&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;aamd&#39;</span><span class="p">],</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;script-gel.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span><span class="s1">&#39;codes/melts.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">step: melt</span>
+<span class="s2">polymer name: AGLC</span>
+<span class="s2">equilibration: &quot;&quot;</span>
+<span class="s2">ff_includes: []</span>
+<span class="s2">include_adds: []</span>
+<span class="s2">files: [&#39;@structure-repo/dextran/aglc.gro&#39;]</span>
+<span class="s2">sources: [&#39;@charmm/charmm36.ff&#39;]</span>
+<span class="s2">aglc source: @structure-repo/dextran/aglc-example.top</span>
+<span class="s2">water buffer: 1.2</span>
+<span class="s2">on lattice: True</span>
+<span class="s2">review3d: True</span>
+<span class="s2">melt settings:|{</span>
+<span class="s2">	&#39;a0&#39;:0.439,</span>
+<span class="s2">	&#39;sizer&#39;:6,</span>
+<span class="s2">	&#39;n_p&#39;:5,</span>
+<span class="s2">	&#39;volume_limit&#39;:0.99,</span>
+<span class="s2">	&#39;uniform&#39;:True,</span>
+<span class="s2">	&#39;diagonals&#39;:False,</span>
+<span class="s2">	&#39;review&#39;:False}</span>
+
+<span class="s2">mdp specs:|{</span>
+<span class="s2">	&#39;group&#39;:&#39;aamd&#39;,</span>
+<span class="s2">	&#39;mdps&#39;:{</span>
+<span class="s2">		&#39;input-em-steep-in.mdp&#39;:[{&#39;integrator&#39;:&#39;steep&#39;,&#39;temperature&#39;:&#39;off&#39;}],</span>
+<span class="s2">		&#39;input-md-in.mdp&#39;:[{&#39;temperature&#39;:&#39;bussi-other-water&#39;}],</span>
+<span class="s2">		}</span>
+<span class="s2">	}</span>
+
+<span class="s2">place specs:|{</span>
+<span class="s2">	&#39;monomer&#39;:&#39;algc.gro&#39;,</span>
+<span class="s2">	&#39;repeat_unit&#39;:{&#39;end&#39;:&#39;O6&#39;,&#39;start&#39;:&#39;O1&#39;,&#39;next&#39;:&#39;C1&#39;},</span>
+<span class="s2">	&#39;linkage_delete_atoms&#39;:[[&#39;HO6&#39;],[&#39;HO1&#39;,&#39;O1&#39;]],</span>
+<span class="s2">	&#39;atom_name_changes&#39;:[</span>
+<span class="s2">		{&#39;from&#39;:&#39;OC311&#39;,&#39;from_charge&#39;:-0.65,&#39;to_charge&#39;:-0.36,</span>
+<span class="s2">		&#39;to&#39;:&#39;OC301&#39;,&#39;atom&#39;:&#39;O6&#39;,&#39;which&#39;:&#39;previous&#39;},</span>
+<span class="s2">		{&#39;from&#39;:&#39;CC3162&#39;,&#39;from_charge&#39;:0.34,&#39;to_charge&#39;:0.29,</span>
+<span class="s2">		&#39;to&#39;:&#39;CC3162&#39;,&#39;atom&#39;:&#39;C1&#39;,&#39;which&#39;:&#39;next&#39;},</span>
+<span class="s2">		{&#39;from&#39;:&#39;CC321&#39;,&#39;from_charge&#39;:0.050,&#39;to_charge&#39;:0.00,</span>
+<span class="s2">		&#39;to&#39;:&#39;CC321&#39;,&#39;atom&#39;:&#39;C6&#39;,&#39;which&#39;:&#39;previous&#39;}]}</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	DEMO: MAKE A POLYMER GEL</span>
+<span class="s2">	SYSTEM: AGLC in CHARMM36</span>
+<span class="s2">	needs: solvate, tune for larger systems to avoid segfaults, etc.</span>
+<span class="s2">	2016.12.09 update:</span>
+<span class="s2">		this script is running on dark to collect equilibrium statistics for the angle/dihedral </span>
+<span class="s2">			between monomers for a 5-mer</span>
+<span class="s2">		when it&#39;s complete ryan will upload to green</span>
+<span class="s2">	plan for getting a 36-mer:</span>
+<span class="s2">		1. finish 5-mer</span>
+<span class="s2">		2. collect equilibrium angles</span>
+<span class="s2">		3. decide on the &quot;second&quot; angle definition and collect those angles</span>
+<span class="s2">		4. copy the code that rotates the monomers onto a linker from the 3D-lattice code</span>
+<span class="s2">		5. write generic code for a 3D random walk with our two angles</span>
+<span class="s2">		6. add the generic polymer 3D-walk code to the automacs script </span>
+<span class="s2">			(similar to the 3D lattice version) and generate a 36-mer</span>
+<span class="s2">		7. test that the 36-mer is stable</span>
+<span class="s2">	2017.2.28 update:</span>
+<span class="s2">		ryan is porting this for the new version of automacs</span>
+<span class="s2">		codes taken from melt-v012 on dark</span>
+<span class="s2">		note there are discarded codes, viewer scripts, etc in this directory (possibly worth salvaging)</span>
+<span class="s2">		currently porting the on-lattice copy</span>
+<span class="s2">			note that it fails every fifth time at the vacuum step</span>
+<span class="s2">			this is part of why we want to do the off-lattice version</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;dextran_dev_off_lattice_36mer&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;aamd&#39;</span><span class="p">],</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;script-gel.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span><span class="s1">&#39;codes/melts.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">step: melt</span>
+<span class="s2">polymer name: AGLC</span>
+<span class="s2">equilibration: &quot;&quot;</span>
+<span class="s2">force field: charmm36</span>
+<span class="s2">files: [&#39;@structure-repo/dextran/aglc.gro&#39;]</span>
+<span class="s2">sources: [&#39;@charmm/charmm36.ff&#39;]</span>
+<span class="s2">aglc source: @structure-repo/dextran/aglc-example.top</span>
+<span class="s2">water buffer: 1.2</span>
+<span class="s2">on lattice: False</span>
+<span class="s2">review3d: False</span>
+<span class="s2">melt settings:|{</span>
+<span class="s2">	&#39;a0&#39;:0.439,</span>
+<span class="s2">	&#39;sizer&#39;:6,</span>
+<span class="s2">	&#39;n_p&#39;:36,</span>
+<span class="s2">	&#39;volume_limit&#39;:0.99,</span>
+<span class="s2">	&#39;uniform&#39;:True,</span>
+<span class="s2">	&#39;diagonals&#39;:False,</span>
+<span class="s2">	&#39;review&#39;:False,</span>
+<span class="s2">	&#39;angle&#39;:-145.0,</span>
+<span class="s2">	&#39;torsion&#39;:100.0}</span>
+
+<span class="s2">mdp specs:|{</span>
+<span class="s2">	&#39;group&#39;:&#39;aamd&#39;,</span>
+<span class="s2">	&#39;mdps&#39;:{</span>
+<span class="s2">		&#39;input-em-steep-in.mdp&#39;:[{&#39;integrator&#39;:&#39;steep&#39;,&#39;temperature&#39;:&#39;off&#39;}],</span>
+<span class="s2">		&#39;input-md-in.mdp&#39;:[{&#39;temperature&#39;:&#39;bussi-other-water&#39;}],</span>
+<span class="s2">		}</span>
+<span class="s2">	}</span>
+
+<span class="s2">place specs:|{</span>
+<span class="s2">	&#39;monomer&#39;:&#39;algc.gro&#39;,</span>
+<span class="s2">	&#39;repeat_unit&#39;:{&#39;end&#39;:&#39;O6&#39;,&#39;start&#39;:&#39;O1&#39;,&#39;next&#39;:&#39;C1&#39;},</span>
+<span class="s2">	&#39;linkage_delete_atoms&#39;:[[&#39;HO6&#39;],[&#39;HO1&#39;,&#39;O1&#39;]],</span>
+<span class="s2">	&#39;atom_name_changes&#39;:[</span>
+<span class="s2">		{&#39;from&#39;:&#39;OC311&#39;,&#39;from_charge&#39;:-0.65,&#39;to_charge&#39;:-0.36,</span>
+<span class="s2">		&#39;to&#39;:&#39;OC301&#39;,&#39;atom&#39;:&#39;O6&#39;,&#39;which&#39;:&#39;previous&#39;},</span>
+<span class="s2">		{&#39;from&#39;:&#39;CC3162&#39;,&#39;from_charge&#39;:0.34,&#39;to_charge&#39;:0.29,</span>
+<span class="s2">		&#39;to&#39;:&#39;CC3162&#39;,&#39;atom&#39;:&#39;C1&#39;,&#39;which&#39;:&#39;next&#39;},</span>
+<span class="s2">		{&#39;from&#39;:&#39;CC321&#39;,&#39;from_charge&#39;:0.050,&#39;to_charge&#39;:0.00,</span>
+<span class="s2">		&#39;to&#39;:&#39;CC321&#39;,&#39;atom&#39;:&#39;C6&#39;,&#39;which&#39;:&#39;previous&#39;}]}</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	copied from dextran_dev_pentamer</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;dextran_martini_dev&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">],</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;script-cg-gel.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span><span class="s1">&#39;codes/melts.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">step: melt</span>
+<span class="s2">polymer name: AGLC</span>
+<span class="s2">equilibration: &quot;&quot;</span>
+<span class="s2">force field: martini-sources</span>
+<span class="s2">files: []</span>
+<span class="s2">aglc source: None</span>
+<span class="s2">water buffer: 1.2</span>
+<span class="s2">on lattice: False</span>
+<span class="s2">review3d: False</span>
+<span class="s2">sol: W</span>
+<span class="s2">melt settings:|{</span>
+<span class="s2">	&#39;n_p&#39;:36,</span>
+<span class="s2">	&#39;a0&#39;:0.356,</span>
+<span class="s2">	&#39;angle&#39;:90.0,</span>
+<span class="s2">	&#39;torsion&#39;:90.0,</span>
+<span class="s2">	}</span>
+
+<span class="s2">sources:| [</span>
+<span class="s2">    &#39;inputs/martini/martini-sources.ff&#39;,</span>
+<span class="s2">    ]</span>
+
+<span class="s2">mdp specs:|{</span>
+<span class="s2">	&#39;group&#39;:&#39;cgmd-polymers&#39;,</span>
+<span class="s2">	&#39;mdps&#39;:{</span>
+<span class="s2">		&#39;input-em-steep-in.mdp&#39;:[{&#39;integrator&#39;:&#39;steep&#39;}],</span>
+<span class="s2">		}</span>
+<span class="s2">	}</span>
+
+<span class="s2">place specs:|{</span>
+<span class="s2">	&#39;monomer&#39;:&#39;algc.gro&#39;,</span>
+<span class="s2">	&#39;repeat_unit&#39;:{&#39;end&#39;:&#39;O6&#39;,&#39;start&#39;:&#39;O1&#39;,&#39;next&#39;:&#39;C1&#39;},</span>
+<span class="s2">	&#39;linkage_delete_atoms&#39;:[[&#39;HO6&#39;],[&#39;HO1&#39;,&#39;O1&#39;]],</span>
+<span class="s2">	&#39;atom_name_changes&#39;:[</span>
+<span class="s2">		{&#39;from&#39;:&#39;OC311&#39;,&#39;from_charge&#39;:-0.65,&#39;to_charge&#39;:-0.36,</span>
+<span class="s2">		&#39;to&#39;:&#39;OC301&#39;,&#39;atom&#39;:&#39;O6&#39;,&#39;which&#39;:&#39;previous&#39;},</span>
+<span class="s2">		{&#39;from&#39;:&#39;CC3162&#39;,&#39;from_charge&#39;:0.34,&#39;to_charge&#39;:0.29,</span>
+<span class="s2">		&#39;to&#39;:&#39;CC3162&#39;,&#39;atom&#39;:&#39;C1&#39;,&#39;which&#39;:&#39;next&#39;},</span>
+<span class="s2">		{&#39;from&#39;:&#39;CC321&#39;,&#39;from_charge&#39;:0.050,&#39;to_charge&#39;:0.00,</span>
+<span class="s2">		&#39;to&#39;:&#39;CC321&#39;,&#39;atom&#39;:&#39;C6&#39;,&#39;which&#39;:&#39;previous&#39;}]}</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	copied from dextran_dev_off_lattice_36mer</span>
+<span class="s2">	goal is to simulation a crude version of martini poly-glucose chain (maybe without bimodal torsions)</span>
+<span class="s2">		as a starting point for backmapping the atomistic model of dextran</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../inputs-vmd/experiments.html" title="Experiments"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,335 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Submodules &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modules" href="../inputs-charmm/modules.html" />
+    <link rel="prev" title="Experiments" href="experiments.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../inputs-charmm/modules.html" title="Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Submodules</a><ul>
+<li><a class="reference internal" href="#module-codes">codes</a><ul>
+<li><a class="reference internal" href="#module-codes.adhere_protein_bilayer">codes.adhere_protein_bilayer</a></li>
+<li><a class="reference internal" href="#module-codes.bilayer">codes.bilayer</a></li>
+<li><a class="reference internal" href="#module-codes.bilayer_bookkeeping">codes.bilayer_bookkeeping</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="experiments.html"
+                        title="previous chapter">Experiments</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../inputs-charmm/modules.html"
+                        title="next chapter">Modules</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/inputs-bilayers/submodules.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="submodules">
+<h1>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-codes">
+<span id="codes"></span><h2>codes<a class="headerlink" href="#module-codes" title="Permalink to this headline">¶</a></h2>
+<p>AUTOMACS BILAYERS</p>
+<p>Codes for making protein-membrane systems using automacs.</p>
+<div class="section" id="module-codes.adhere_protein_bilayer">
+<span id="codes-adhere-protein-bilayer"></span><h3>codes.adhere_protein_bilayer<a class="headerlink" href="#module-codes.adhere_protein_bilayer" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.adhere_protein_bilayer">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">adhere_protein_bilayer</code><span class="sig-paren">(</span><em>gro</em>, <em>debug=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.adhere_protein_bilayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>MOVING FROM bilayer.py !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+adhere_protein_cgmd_bilayer(bilayer,combo,protein_complex=None)
+Attach proteins to a CGMD (?) bilayer.
+HEAVILY MODIFIED FROM ORIGINAL AUTOMACS.
+Removed debugging, pocket lipids, etc.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.detect_ions">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">detect_ions</code><span class="sig-paren">(</span><em>structure</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.detect_ions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.detect_ions0000">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">detect_ions0000</code><span class="sig-paren">(</span><em>structure</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.detect_ions0000" title="Permalink to this definition">¶</a></dt>
+<dd><p>Referesh state.cation and state.anion for other functions e.g. bilayer_sorter.
+Insists on only one cation and one anion.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.detect_lipids">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">detect_lipids</code><span class="sig-paren">(</span><em>structure</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.detect_lipids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.detect_lipids00000">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">detect_lipids00000</code><span class="sig-paren">(</span><em>structure</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.detect_lipids00000" title="Permalink to this definition">¶</a></dt>
+<dd><p>Referesh state.lipids for other functions e.g. bilayer_sorter.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.lay_coords_flat">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">lay_coords_flat</code><span class="sig-paren">(</span><em>points</em>, <em>direction=’y’</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.lay_coords_flat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate a protein so its first principal axis is aligned with one of the cartesian directions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.make_list">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">make_list</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.make_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.place_protein">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">place_protein</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.place_protein" title="Permalink to this definition">¶</a></dt>
+<dd><p>Choose one of the protein placement options partitioned into functions below.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.place_protein_banana">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">place_protein_banana</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.place_protein_banana" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protein flat-laying banana procedure.
+In the banana procedure we start with a protein with an obvious first principal axis 
+(i.e. an elogated rod of some kind). We align the first principal axis with a cartesian direction.
+Then we select an “up” group and a “down” group. The vector between groups (hereafter: axis) is 
+projected onto the plane normal to the direction vector (now the first principal axis of the protein).
+This projected axis is used to describe a rotation. The final rotation forces two constraints on the 
+protein: its longest axis is aligned in a particular direction, and the vector between up and down groups
+is parallel to the negative z-vector. This is equivalent to enforcing an orthogonal basis for the protein,
+where the second vector is a projection of the up/down axis.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.place_protein_globular_up_down">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">place_protein_globular_up_down</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.place_protein_globular_up_down" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix the name please!</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.recenter_protein_bilayer">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">recenter_protein_bilayer</code><span class="sig-paren">(</span><em>structure</em>, <em>gro</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.recenter_protein_bilayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run this after any grompp step to put everything back in the box.
+! repetitive with center_bilayer in bilayer.py used on the standard method
+! depends on state.lipids being already identified …</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.adhere_protein_bilayer.remove_ions">
+<code class="descclassname">codes.adhere_protein_bilayer.</code><code class="descname">remove_ions</code><span class="sig-paren">(</span><em>structure</em>, <em>gro</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.adhere_protein_bilayer.remove_ions" title="Permalink to this definition">¶</a></dt>
+<dd><p>HACKISH WAY TO RE-NEUTRALIZE.
+BETTER OPTION MIGHT JUST BE TO RESOLVATE ENTIRELY ???
+#—! handle “reionize method” option ^^^</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-codes.bilayer">
+<span id="codes-bilayer"></span><h3>codes.bilayer<a class="headerlink" href="#module-codes.bilayer" title="Permalink to this headline">¶</a></h3>
+<p>Bilayer construction routines.</p>
+<dl class="function">
+<dt id="codes.bilayer.bilayer_flatten_for_restraints">
+<code class="descclassname">codes.bilayer.</code><code class="descname">bilayer_flatten_for_restraints</code><span class="sig-paren">(</span><em>structure</em>, <em>gro</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.bilayer_flatten_for_restraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a bilayer and replace its coordinates with perfectly flat ones.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.bilayer_middle">
+<code class="descclassname">codes.bilayer.</code><code class="descname">bilayer_middle</code><span class="sig-paren">(</span><em>structure</em>, <em>gro</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.bilayer_middle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the bilayer to the middle of the z-coordinate of the box.
+Note that the protein adhesion procedure works best on a slab that is centered on z=0.
+This means that the bilayer will be broken across z=0.
+For visualization it is better to center it.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.bilayer_sorter">
+<code class="descclassname">codes.bilayer.</code><code class="descname">bilayer_sorter</code><span class="sig-paren">(</span><em>structure</em>, <em>ndx=’system-groups’</em>, <em>protein=False</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.bilayer_sorter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Divide the system into groups.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.build_bilayer">
+<code class="descclassname">codes.bilayer.</code><code class="descname">build_bilayer</code><span class="sig-paren">(</span><em>name</em>, <em>random_rotation=True</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.build_bilayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new bilayer according to a particular topography.
+Historical note: comes from amx/procedures/bilayer.py</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.counterion_renamer">
+<code class="descclassname">codes.bilayer.</code><code class="descname">counterion_renamer</code><span class="sig-paren">(</span><em>structure</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.counterion_renamer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix the ion names for MARTINI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.distinguish_leaflets">
+<code class="descclassname">codes.bilayer.</code><code class="descname">distinguish_leaflets</code><span class="sig-paren">(</span><em>structure=’incoming’</em>, <em>gro=’outgoing’</em>, <em>samename=False</em>, <em>indices=’dat-monolayer-indices.py’</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.distinguish_leaflets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take a gro file and some knowledge about leaflets and distinguish them.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.lipid_upright">
+<code class="descclassname">codes.bilayer.</code><code class="descname">lipid_upright</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.lipid_upright" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assuming that incoming ITP files do not have position restraints, we add them here.
+These position restraints ensure an upright lipid in a vacuum-packed bilayer.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.makeshape">
+<code class="descclassname">codes.bilayer.</code><code class="descname">makeshape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.makeshape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate the midplane points for various bilayer shapes.
+Historical note: comes from amx/procedures/bilayer.py</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.random_lipids">
+<code class="descclassname">codes.bilayer.</code><code class="descname">random_lipids</code><span class="sig-paren">(</span><em>total</em>, <em>composition</em>, <em>binsize</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.random_lipids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a random 2D grid of lipids in an arrangement according to the aspect ratio.
+Note that this is currently designed for flat bilayers so the binsize spacing is on the XY plane.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.release_restraints">
+<code class="descclassname">codes.bilayer.</code><code class="descname">release_restraints</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.release_restraints" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom method for removing restraints.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.remove_jump">
+<code class="descclassname">codes.bilayer.</code><code class="descname">remove_jump</code><span class="sig-paren">(</span><em>structure</em>, <em>tpr</em>, <em>gro</em>, <em>pbc=’nojump’</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.remove_jump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correct that thing where the bilayer crosses the PBCs and gets split.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.solvate_bilayer">
+<code class="descclassname">codes.bilayer.</code><code class="descname">solvate_bilayer</code><span class="sig-paren">(</span><em>structure=’vacuum’</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.solvate_bilayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solvate a CGMD bilayer (possibly with proteins) avoiding overlaps.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.vacuum_pack">
+<code class="descclassname">codes.bilayer.</code><code class="descname">vacuum_pack</code><span class="sig-paren">(</span><em>structure=’vacuum’</em>, <em>name=’vacuum-pack’</em>, <em>gro=’vacuum-packed’</em>, <em>pbc=’nojump’</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.vacuum_pack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pack the lipids in the plane, gently.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="codes.bilayer.vacuum_pack_loop">
+<code class="descclassname">codes.bilayer.</code><code class="descname">vacuum_pack_loop</code><span class="sig-paren">(</span><em>structure</em>, <em>gro</em>, <em>tpr</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer.vacuum_pack_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run multiple vacuum packing loops.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-codes.bilayer_bookkeeping">
+<span id="codes-bilayer-bookkeeping"></span><h3>codes.bilayer_bookkeeping<a class="headerlink" href="#module-codes.bilayer_bookkeeping" title="Permalink to this headline">¶</a></h3>
+<p>Bilayer bookkeeping routines.</p>
+<dl class="function">
+<dt id="codes.bilayer_bookkeeping.read_bilayer">
+<code class="descclassname">codes.bilayer_bookkeeping.</code><code class="descname">read_bilayer</code><span class="sig-paren">(</span><em>structure</em><span class="sig-paren">)</span><a class="headerlink" href="#codes.bilayer_bookkeeping.read_bilayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read key features from a bilayer in order to use it as a starting substrate for a simulation.</p>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../inputs-charmm/modules.html" title="Modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

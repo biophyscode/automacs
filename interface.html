@@ -1,0 +1,165 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Interface &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Interface</a><ul>
+<li><a class="reference internal" href="#commands">Commands</a></li>
+<li><a class="reference internal" href="#additions">Additions</a></li>
+<li><a class="reference internal" href="#tricks">Tricks</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/interface.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="interface">
+<h1>Interface<a class="headerlink" href="#interface" title="Permalink to this headline">¶</a></h1>
+<p>Automacs execution is controlled almost entirely by text files which hold <a class="reference internal" href="experiments.html#customize-experiments"><span class="std std-ref">experiments</span></a>. There are a few commands that run the experiments which are executed by a very peculiar, overloaded <code class="docutils literal"><span class="pre">Makefile</span></code> which routes user commands to the appropriate python codes using the <a class="reference internal" href="base.html#module-makeface" title="makeface"><code class="xref any py py-mod docutils literal"><span class="pre">makeface</span></code></a> functions. We use this scheme because <a class="reference external" href="https://www.gnu.org/software/make/">make</a> is ubiquitous on many computer systems, it often includes automatic completion, and it’s easy to remember. The interface is extremely generic: <em>almost any python function can be exposed to the interface</em>. To see which <code class="docutils literal"><span class="pre">make</span></code> sub-commands are available, simply run <code class="docutils literal"><span class="pre">make</span></code> without arguments.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>make targets
+│
+├──back
+├──clean
+├──cluster
+├──config
+├──docs
+├──download
+├──flag_search
+├──gitcheck
+├──gitpull
+├──go
+├──gromacs_config
+├──layout
+├──locate
+├──look
+├──metarun
+├──notebook
+├──prep
+├──prep?
+├──qsub
+├──quick
+├──run
+├──set
+├──setup
+├──upload
+└──watch
+</pre></div>
+</div>
+<div class="section" id="commands">
+<h2>Commands<a class="headerlink" href="#commands" title="Permalink to this headline">¶</a></h2>
+<p>As we discused in the <a class="reference internal" href="index.html#concept-procedures"><span class="std std-ref">procedures section</span></a>, users can run experiments using <a class="reference internal" href="base.html#control.go" title="control.go"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">go</span></code></a>. To see which experiments are available, use <a class="reference internal" href="base.html#control.prep" title="control.prep"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">prep</span></code></a> which lists them. These are the two most important commands. The <a class="reference internal" href="base.html#control.go" title="control.go"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">go</span></code></a> command will run <a class="reference internal" href="base.html#control.clean" title="control.clean"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">clean</span> <span class="pre">sure</span></code></a> if you send it the <code class="docutils literal"><span class="pre">reset</span></code> flag, (this will clear any old data from the directory, so be careful) and then immediately run one of the execution commands, depending on the type of experiment, using <a class="reference internal" href="base.html#control.run" title="control.run"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">run</span></code></a>, <a class="reference internal" href="base.html#control.metarun" title="control.metarun"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">metarun</span></code></a>, or <a class="reference internal" href="base.html#control.quick" title="control.quick"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">quick</span></code></a>.</p>
+</div>
+<div class="section" id="additions">
+<h2>Additions<a class="headerlink" href="#additions" title="Permalink to this headline">¶</a></h2>
+<p>In the <a class="reference internal" href="index.html#running-commands"><span class="std std-ref">configuration</span></a> section we mentioned that the <code class="docutils literal"><span class="pre">commands</span></code> key in <code class="docutils literal"><span class="pre">config.py</span></code> tells automacs where to find new functions. Any paths set in the <code class="docutils literal"><span class="pre">commands</span></code> list are scanned by the <a class="reference internal" href="base.html#module-makeface" title="makeface"><code class="xref any py py-mod docutils literal"><span class="pre">makeface</span></code></a> module for python functions. These function names become sub-commands for <code class="docutils literal"><span class="pre">make</span></code>.</p>
+<p>Arguments are passed from the <code class="docutils literal"><span class="pre">makefile</span></code> to the python code according to a few simple rules. The functions cannot use <code class="docutils literal"><span class="pre">*args</span></code> or <code class="docutils literal"><span class="pre">**kwargs</span></code> because the interface code performs introspection to send arguments to the function. You can use <code class="docutils literal"><span class="pre">key=&quot;value&quot;</span></code> pairs to specify both arguments and keyword arguments. Sending a single flag (e.g. <code class="docutils literal"><span class="pre">sure</span></code> in <a class="reference internal" href="base.html#control.clean" title="control.clean"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">clean</span> <span class="pre">sure</span></code></a>) will send <code class="docutils literal"><span class="pre">sure=True</span></code> as a boolean to the function. Order only matters if you are passing arguments (for obvious reasons). The safest bet is to use keyword arguments to avoid mistakes, however functions are straightforward because they only take one argument e.g. <a class="reference internal" href="base.html#control.go" title="control.go"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">go</span></code></a>.</p>
+<p>Most of the automacs utility functions are found in the <a class="reference internal" href="base.html#module-cli" title="cli"><code class="xref any py py-mod docutils literal"><span class="pre">command-line</span> <span class="pre">interface</span></code></a> module and the <a class="reference internal" href="base.html#module-control" title="control"><code class="xref any py py-mod docutils literal"><span class="pre">control</span></code></a> module.</p>
+</div>
+<div class="section" id="tricks">
+<h2>Tricks<a class="headerlink" href="#tricks" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="index.html#experiments"><span class="std std-ref">experiment files</span></a> provide execution instructions to automacs depending on their format. These formats are specified in the <a class="reference internal" href="base.html#module-controlspec" title="controlspec"><code class="xref any py py-mod docutils literal"><span class="pre">controlspec</span> <span class="pre">code</span></code></a>, which determines the control flow for the execution. The remainder of the interface functions are really just helper functions that make some tasks easier. The following lists covers a few useful functions.</p>
+<ol class="arabic simple">
+<li><a class="reference internal" href="base.html#control.back" title="control.back"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">back</span></code></a> will help you run simulations in the background.</li>
+<li><a class="reference internal" href="base.html#cli.watch" title="cli.watch"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">watch</span></code></a> will monitor the newest log file in your simulation.</li>
+<li><a class="reference internal" href="base.html#cli.locate" title="cli.locate"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">locate</span></code></a> will help you find a specific function.</li>
+<li><a class="reference internal" href="base.html#cli.upload" title="cli.upload"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">upload</span></code></a> will upload files to a cluster.</li>
+<li><a class="reference internal" href="base.html#cli.download" title="cli.download"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">download</span></code></a> will download your files from the same cluster.</li>
+<li><a class="reference internal" href="base.html#cli.download" title="cli.download"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">notebook</span></code></a> will generate a <a class="reference external" href="http://jupyter.org/">Jupyter</a> notebook from an experiment.</li>
+</ol>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

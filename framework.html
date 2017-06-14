@@ -1,0 +1,256 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Framework &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Framework</a><ul>
+<li><a class="reference internal" href="#experiments">Experiments</a><ul>
+<li><a class="reference internal" href="#modes">Modes</a></li>
+<li><a class="reference internal" href="#control-flow">Control flow</a></li>
+<li><a class="reference internal" href="#settings">Settings</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#extensions">Extensions</a></li>
+<li><a class="reference internal" href="#state">State</a><ul>
+<li><a class="reference internal" href="#posterity">Posterity</a><ul>
+<li><a class="reference internal" href="#saving-variables">Saving variables</a></li>
+<li><a class="reference internal" href="#gromacs-history">GROMACS History</a></li>
+<li><a class="reference internal" href="#history">History</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#naming-conventions">Naming conventions</a><ul>
+<li><a class="reference internal" href="#directories">Directories</a></li>
+<li><a class="reference internal" href="#files">Files</a></li>
+<li><a class="reference internal" href="#getting-inputs">Getting inputs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#simplicity">Simplicity</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/framework.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="framework">
+<span id="id1"></span><h1>Framework<a class="headerlink" href="#framework" title="Permalink to this headline">¶</a></h1>
+<p>The automacs codes have developed from a set of BASH, Perl, and Python scripts designed to construct specific simulations. Over time, the automacs developers chose <a class="reference external" href="https://en.wikipedia.org/wiki/Convention_over_configuration">convention over configuration</a> when designing new codes. This means that most functions are designed to be generic, discrete simulation steps create files with coherent naming schemes, and input/output flags for most functions look very similar. This makes the codes more general, and hence easy to apply to new simulations. Most of the variations between simulations are directed by experiments described in this section. Experiments are almost entirely specified by special python dictionaries and strings which are designed for readability.</p>
+<p>In this section we describe the <a class="reference internal" href="experiments.html"><span class="doc">experiment files</span></a>, <a class="reference internal" href="index.html#directory-structure"><span class="std std-ref">file naming conventions</span></a>, and <a class="reference internal" href="index.html#wordspace"><span class="std std-ref">namespaces</span></a>.</p>
+<div class="section" id="experiments">
+<span id="id2"></span><h2>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h2>
+<p>A key design feature of automacs is that its computational experiments are specified almost entirely by text. While this text depends on many functions, we have sought to separate generic functions from highly-customized experiments so that users can easily reproduce, modify, and repeat experiments.</p>
+<p>In the <a class="reference internal" href="index.html#finding-experiments"><span class="std std-ref">finding experiments</span></a> section, we explained that experiments can be located anywhere in the automacs directory tree as long as the <code class="docutils literal"><span class="pre">config.py</span></code> is set correctly and the experiments are written to scripts suffixed with <code class="docutils literal"><span class="pre">_expts.py</span></code> which only contain a single dictionary literal. This dictionary adds new experiments to the list (and automacs protects against redundant naming).</p>
+<p><em>We highly recommend that users only create new experiments rather than modifying existing ones.</em> Our experiments have many parameters, and validated experiments in a test set should always be preserved for posterity. There is no limit to the number of experiments you can write, so the best practice is to use clear experiment names and avoid changing already-validated experiments.</p>
+<div class="section" id="modes">
+<span id="three-modes"></span><h3>Modes<a class="headerlink" href="#modes" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference internal" href="base.html#control.prep" title="control.prep"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">prep</span></code></a> command lists all available experiments organized into three modes: run, metarun, and quick. The <a class="reference internal" href="base.html#control.go" title="control.go"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">go</span></code></a> function chooses the correct mode and executes them accordingly. Setting the mode is accomplished by including the right keys in your experiment dictionary (this is explained in the <a class="reference internal" href="index.html#control-flow"><span class="std std-ref">control flow</span></a> section below). Each type has a specific use case.</p>
+<ol class="arabic simple">
+<li>Experiments run with <a class="reference internal" href="base.html#control.run" title="control.run"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">run</span></code></a> are the standard simulation type. They require a single procedure (or “parent script”) which receives a single <code class="docutils literal"><span class="pre">settings</span></code> block that contains all of the settings. The <code class="docutils literal"><span class="pre">protein</span></code> demonstration is the canonical example of a run.</li>
+<li>Experiments which use <a class="reference internal" href="base.html#control.metarun" title="control.metarun"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">metarun</span></code></a> consist of a sequence of standard “run” experiments. Each step can contain its own settings, and these settings only override the defaults specified by the corresponding run. Each run creates a distinct step in the sequence.</li>
+<li>Quick scripts are executed via <a class="reference internal" href="base.html#control.quick" title="control.quick"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">quick</span></code></a>. They do not use the <code class="docutils literal"><span class="pre">make</span> <span class="pre">prep</span></code> command, and are executed directly. Instead of using a parent script, they are executed directly from code embedded with the <code class="docutils literal"><span class="pre">quick</span></code> parameter in the experiment itself. Quick scripts can be part of a metarun sequence.</li>
+</ol>
+<p>The “metarun” method allows you to create a sequence of simulation steps (which we sometimes call “chaining”). The information is passed between steps using <code class="docutils literal"><span class="pre">state.json</span></code>, which is described below in the :any:<a href="#id3"><span class="problematic" id="id4">`</span></a>posterity &lt;posterity&gt; `</p>
+</div>
+<div class="section" id="control-flow">
+<span id="id5"></span><h3>Control flow<a class="headerlink" href="#control-flow" title="Permalink to this headline">¶</a></h3>
+<p>Recall that each experiment is an item in a dictionary literal found in files suffixed with <code class="docutils literal"><span class="pre">_expts.py</span></code> according to the <a class="reference internal" href="index.html#finding-experiments"><span class="std std-ref">configuration</span></a>. Each of the three experiment types described in the previous section must have a specific set of keys validated by the <a class="reference internal" href="base.html#module-controlspec" title="controlspec"><code class="xref any py py-mod docutils literal"><span class="pre">controlspec</span> <span class="pre">code</span></code></a>.</p>
+<p><em>The best way to make a new experiment, of any type, is to copy one that already works.</em> This saves you the effort of parsing the <a class="reference internal" href="base.html#module-controlspec" title="controlspec"><code class="xref any py py-mod docutils literal"><span class="pre">controlspec</span> <span class="pre">code</span></code></a>. This code provides lists of required keys for each experiment type, along with their minor variations. It is designed to be extensible, so you can modify the control flow without too much trouble, however most of the test sets packaged with automacs extension modules include examples of all of the variations.</p>
+<p>If you fail to include the right keys, you will receive a specific error message. The standard experiment runs are the easiest, they require the following keys: <code class="docutils literal"><span class="pre">['script','extensions','params','tags','settings','cwd']</span></code>. The <code class="docutils literal"><span class="pre">cwd</span></code> keys is appended automatically, the <code class="docutils literal"><span class="pre">script</span></code> is the relative path to the parent script, and the <code class="docutils literal"><span class="pre">settings</span></code> block holds the parameters for the experiment. The <a class="reference internal" href="index.html#extensions"><span class="std std-ref">extensions</span></a> allow your codes to import from <em>other</em> automacs extension modules (this helps eliminate redundancy across the codes). The <code class="docutils literal"><span class="pre">tags</span></code> are simple metadata used for distinguishing e.g. atomistic and coarse-grained simulations. The <code class="docutils literal"><span class="pre">params</span></code> key often points to a <code class="docutils literal"><span class="pre">parameters.py</span></code> file that can be read from <a class="reference internal" href="base.html#automacs.write_mdp" title="automacs.write_mdp"><code class="xref any py py-func docutils literal"><span class="pre">write_mdp</span></code></a>.</p>
+</div>
+<div class="section" id="settings">
+<span id="settings-blocks"></span><h3>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h3>
+<p>Aside from the <code class="docutils literal"><span class="pre">script</span></code> parameter, which supplies the path to the parent script (e.g. the <code class="docutils literal"><span class="pre">protein.py</span></code> script described <code class="xref any docutils literal"><span class="pre">earlier</span></code>), the <code class="docutils literal"><span class="pre">settings</span></code> block contains most of the parameters. The following is an example from the <code class="docutils literal"><span class="pre">protein</span></code> experiment.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">step</span><span class="p">:</span> <span class="n">protein</span>                       <span class="c1"># name of the folder is s01-protein</span>
+<span class="n">force</span> <span class="n">field</span><span class="p">:</span> <span class="n">charmm27</span>               <span class="c1"># which gromacs-standard force-field to use (see pdb2gmx list)</span>
+<span class="n">water</span><span class="p">:</span> <span class="n">tip3p</span>                        <span class="c1"># which water model (another question from pdb2gmx)</span>
+<span class="n">equilibration</span><span class="p">:</span> <span class="n">nvt</span><span class="o">-</span><span class="n">short</span><span class="p">,</span><span class="n">nvt</span><span class="p">,</span><span class="n">npt</span>    <span class="c1"># which equilibration step to use (must have `input-name-in.mdp` below)</span>
+<span class="n">pdb</span> <span class="n">source</span><span class="p">:</span> <span class="mi">1</span><span class="n">yrf</span>                    <span class="c1"># PDB code for download. overrides the start structure</span>
+<span class="n">start</span> <span class="n">structure</span><span class="p">:</span> <span class="bp">None</span>               <span class="c1"># path to PDB structure or None to use a single PDB in inputs</span>
+<span class="n">protein</span> <span class="n">water</span> <span class="n">gap</span><span class="p">:</span> <span class="mf">3.0</span>              <span class="c1"># Angstroms distance around the protein to remove water</span>
+<span class="n">water</span> <span class="nb">buffer</span><span class="p">:</span> <span class="mf">1.2</span>                   <span class="c1"># distance (nm) of solvent to the box wall</span>
+<span class="n">solvent</span><span class="p">:</span> <span class="n">spc216</span>                     <span class="c1"># starting solvent box (use spc216 from gromacs share)</span>
+<span class="n">ionic</span> <span class="n">strength</span><span class="p">:</span> <span class="mf">0.150</span>               <span class="c1"># desired molar ionic strength</span>
+<span class="n">cation</span><span class="p">:</span> <span class="n">NA</span>                          <span class="c1"># name of the cation for neutralizing the system</span>
+<span class="n">anion</span><span class="p">:</span> <span class="n">CL</span>                           <span class="c1"># name of the anion for neutralizing the system</span>
+
+<span class="c1">#---INTEGRATOR PARAMETERS generated via parameters.py</span>
+<span class="n">mdp_specs</span><span class="p">:</span><span class="o">|</span> <span class="p">{</span>
+  <span class="s1">&#39;group&#39;</span><span class="p">:</span><span class="s1">&#39;aamd&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;mdps&#39;</span><span class="p">:{</span>
+    <span class="s1">&#39;input-em-steep-in.mdp&#39;</span><span class="p">:[</span><span class="s1">&#39;minimize&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;input-em-cg-in.mdp&#39;</span><span class="p">:[</span><span class="s1">&#39;minimize&#39;</span><span class="p">,{</span><span class="s1">&#39;integrator&#39;</span><span class="p">:</span><span class="s1">&#39;cg&#39;</span><span class="p">}],</span>
+    <span class="s1">&#39;input-md-nvt-eq-in.mdp&#39;</span><span class="p">:[</span><span class="s1">&#39;nvt-protein&#39;</span><span class="p">,</span><span class="s1">&#39;nvt-protein&#39;</span><span class="p">,{</span><span class="s1">&#39;nsteps&#39;</span><span class="p">:</span><span class="mi">10000</span><span class="p">}],</span>
+    <span class="s1">&#39;input-md-nvt-short-eq-in.mdp&#39;</span><span class="p">:[</span><span class="s1">&#39;nvt-protein-short&#39;</span><span class="p">,{</span><span class="s1">&#39;nsteps&#39;</span><span class="p">:</span><span class="mi">10000</span><span class="p">}],</span>
+    <span class="s1">&#39;input-md-npt-eq-in.mdp&#39;</span><span class="p">:[</span><span class="s1">&#39;npt-protein&#39;</span><span class="p">,{</span><span class="s1">&#39;nsteps&#39;</span><span class="p">:</span><span class="mi">10000</span><span class="p">}],</span>
+    <span class="s1">&#39;input-md-in.mdp&#39;</span><span class="p">:{</span><span class="s1">&#39;nsteps&#39;</span><span class="p">:</span><span class="mi">100000</span><span class="p">},</span>
+    <span class="p">},</span>
+  <span class="p">}</span>
+</pre></div>
+</div>
+<p>The settings block is designed in a format meant to resemble <a class="reference external" href="http://www.yaml.org/">YAML</a> for its readability. Keys and values are separated by a colon, whitespace is omitted, and everything that follows the colon is interpreted first as python syntax, and if that fails, then as a float or a string. Multiline values (see <code class="docutils literal"><span class="pre">mdp_specs</span></code> above) are noted with <code class="docutils literal"><span class="pre">:|</span></code> instead of just a colon, and they continue until the arbitrary tab at the beginning of each line is absent. Commonts are allowed with hashes. These blocks are interpreted by the <code class="xref any docutils literal"><span class="pre">yamlb</span> <span class="pre">function</span></code>, which also uses the <code class="xref any docutils literal"><span class="pre">jsonify</span></code> function to check for repeated keys.</p>
+<p>All of the settings are passed to <code class="docutils literal"><span class="pre">expt.json</span></code>, unpacked into the global namespace variable mysteriously labelled <code class="docutils literal"><span class="pre">settings</span></code>, and thereby exposed to any python functions imported by automacs. Note that the global namespace variable called <code class="docutils literal"><span class="pre">state</span></code> <a class="reference internal" href="index.html#wordspace"><span class="std std-ref">described below</span></a> will check <code class="docutils literal"><span class="pre">settings</span></code> if it cannot find a key that you ask for. In that sense, the <code class="docutils literal"><span class="pre">settings</span></code> are available everywhere in your code. See the <a class="reference internal" href="index.html#wordspace"><span class="std std-ref">state</span></a> section below for more details.</p>
+</div>
+</div>
+<div class="section" id="extensions">
+<span id="id6"></span><h2>Extensions<a class="headerlink" href="#extensions" title="Permalink to this headline">¶</a></h2>
+<p>To avoid redundant codes in separate modules, the automacs modules can import codes from other modules. These codes are imported based on a list of <cite>globs &lt;https://en.wikipedia.org/wiki/Glob_(programming)&gt;</cite> in the <code class="docutils literal"><span class="pre">extensions</span></code> item of the experiment. These can be paths relative to the root directory that point to other modules. Alternately, users can use syntax sugar to access other modules by the name of their directory. For example, adding all of the codes in bilayer module to your experiment can be done by adding <code class="docutils literal"><span class="pre">&#64;bilayer/codes/*.py</span></code> to your extensions list. The <code class="docutils literal"><span class="pre">&#64;bilayer</span></code> will be replaced by the location of the bilayer module according to <code class="docutils literal"><span class="pre">config.py</span></code>, typically <code class="docutils literal"><span class="pre">inputs/bilayers</span></code>. The <code class="docutils literal"><span class="pre">&#64;module</span></code> syntax sugar works in <em>any key in the settings blocks</em>, so that your experiments can draw from other extension modules without knowing where they are ahead of time. The path substitutions are handled in <code class="xref any docutils literal"><span class="pre">a</span> <span class="pre">special</span> <span class="pre">settings</span> <span class="pre">parser</span></code>.</p>
+<p>Any objects imported by the main <code class="docutils literal"><span class="pre">amx</span></code> module can be overridden by objects in the extension modules by adding their names to the <code class="docutils literal"><span class="pre">_extension_override</span></code> list at the top of the script. Similarly, objects can be automatically shared between extensions using the <code class="docutils literal"><span class="pre">_shared_extensions</span></code> list. These allow you to write a single code that either changes a core functionality in the main <code class="docutils literal"><span class="pre">amx</span></code> module or is shared with in-development extension modules. The import scheme is handled almost entirely in the <code class="docutils literal"><span class="pre">runner/importer.py</span></code>, which is omitted from the documentation for technical reasons. One example of a shared extension is the <a class="reference internal" href="base.html#common.dotplace" title="common.dotplace"><code class="xref any py py-func docutils literal"><span class="pre">dotplace</span></code></a> function, which makes sure <code class="docutils literal"><span class="pre">gro</span></code> file output has aligned decimal places.</p>
+</div>
+<div class="section" id="state">
+<span id="wordspace"></span><h2>State<a class="headerlink" href="#state" title="Permalink to this headline">¶</a></h2>
+<p>In order to transmit key settings and measurements between simulation procedure steps or within functions in the same procedure, we store them in an overloaded dictionary called the <code class="docutils literal"><span class="pre">state</span></code>. We use a special <code class="xref any docutils literal"><span class="pre">DotDict</span></code> class to access dictionary keys as attributes. For this reason, <em>all spaces in the keys are replaced with underscores.</em></p>
+<p>As we mentioned above, the <code class="docutils literal"><span class="pre">state</span></code> consults the <code class="docutils literal"><span class="pre">settings</span></code> when it cannot find a key that you ask for. This means that you can keep simulation parameters sequestered in the <code class="docutils literal"><span class="pre">settings</span></code> while keeping on-the-fly calculations in <code class="docutils literal"><span class="pre">state</span></code>. Everything gets saved to <code class="docutils literal"><span class="pre">state.json</span></code> at the end.</p>
+<p>We recommend accessing settings by using <code class="docutils literal"><span class="pre">state</span></code>. In the example experiment above (in the <a class="reference internal" href="index.html#settings-blocks"><span class="std std-ref">settings block</span></a> section), the water model is set by <code class="docutils literal"><span class="pre">water</span></code> in settings. You could access it using the following syntax:</p>
+<ol class="arabic simple">
+<li><code class="docutils literal"><span class="pre">settings['water']</span></code></li>
+<li><code class="docutils literal"><span class="pre">settings.water</span></code></li>
+<li><code class="docutils literal"><span class="pre">settings.get('water','tips3p')</span></code></li>
+<li><code class="docutils literal"><span class="pre">state['water']</span></code></li>
+<li><code class="docutils literal"><span class="pre">state.water</span></code></li>
+<li><code class="docutils literal"><span class="pre">state.q('water','tips3p')</span></code></li>
+</ol>
+<p>We prefer the last two methods. Use <code class="docutils literal"><span class="pre">settings.get</span></code> or <code class="docutils literal"><span class="pre">state.q</span></code> if you wish to set a default in case the parameter is absent. Requesting an absent parameter from <code class="docutils literal"><span class="pre">settings</span></code> will throw an exception, however, requesting an absent parameter from the <code class="docutils literal"><span class="pre">state</span></code> always returns <code class="docutils literal"><span class="pre">None</span></code>. This means that you can write e.g. <code class="docutils literal"><span class="pre">if</span> <span class="pre">state.add_proteins:</span> <span class="pre">...</span></code> to concisely control the execution of your simulation.</p>
+<div class="section" id="posterity">
+<span id="id7"></span><h3>Posterity<a class="headerlink" href="#posterity" title="Permalink to this headline">¶</a></h3>
+<p>In the introduction to the documentation we described the <a class="reference internal" href="index.html#sec-supervised-execution"><span class="std std-ref">“supervised execution”</span></a> of automacs codes. In short, this feature allows you to continue from the last command in a failed execution, but more importantly, it sends the <code class="docutils literal"><span class="pre">state</span></code> everywhere and saves it to <code class="docutils literal"><span class="pre">state.json</span></code> when the simulation is finished.</p>
+<div class="section" id="saving-variables">
+<h4>Saving variables<a class="headerlink" href="#saving-variables" title="Permalink to this headline">¶</a></h4>
+<p>These features provide a simple way to create a sequence of simulation steps that depend on each other. These simulations are executed by <a class="reference internal" href="base.html#control.metarun" title="control.metarun"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">metarun</span></code></a> — sometimes we call this “chaining”. Information can passed to the next step simply by saving it in the state. For example, you might want to make a small bilayer larger by using the <code class="docutils literal"><span class="pre">multiply</span></code> function (currently located in the <code class="docutils literal"><span class="pre">extras</span></code> module). After constructing a simple bilayer, the composition is stored in <code class="docutils literal"><span class="pre">state.composition</span></code>. In the second step of the metarun, the <code class="docutils literal"><span class="pre">multiply.py</span></code> parent script can refer to <code class="docutils literal"><span class="pre">state.before[-1]</span></code> to access a dictionary that holds the previous state. This also includes the settings at <code class="docutils literal"><span class="pre">state.before[-1]['settings']</span></code> so that you don’t need to repeat your settings in the following steps of the metarun. This scheme allows sequential steps to communicate important details about the outcome, geometry, or other features of a simulation.</p>
+</div>
+<div class="section" id="gromacs-history">
+<h4>GROMACS History<a class="headerlink" href="#gromacs-history" title="Permalink to this headline">¶</a></h4>
+<p>In addition to saving the previous states, automacs also intercepts any calls to GROMACS commands and logs them in a special variable called <code class="docutils literal"><span class="pre">history_gmx</span></code>. Users can call e.g. <a class="reference internal" href="base.html#calls.get_last_gmx_call" title="calls.get_last_gmx_call"><code class="xref any py py-func docutils literal"><span class="pre">get_last_gmx_call('mdrun')</span></code></a> to retrieve the inputs and ouputs for the most recent call to any gromacs utility, typically <code class="docutils literal"><span class="pre">mdrun</span></code>. This makes it easy to get the last checkpoint, run input file, or structure.</p>
+</div>
+<div class="section" id="history">
+<h4>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h4>
+<p>A complete record of everything that automacs does is recorded in <code class="docutils literal"><span class="pre">state.history</span></code>. Every time an automacs function is called, it is added to this list in a pythonic format, with explicit <code class="docutils literal"><span class="pre">*args</span></code> and <code class="docutils literal"><span class="pre">**kwargs</span></code>. This feat is accomplished by the <code class="xref any docutils literal"><span class="pre">loud</span></code> function, which decorates every imported function, except for those named in the <code class="docutils literal"><span class="pre">_acme_silence</span></code> variable (so that you can silence functions with extremely long arguments). The history is also written to a log file in each step folder called e.g. <code class="docutils literal"><span class="pre">s01-protein/s01-protein.log</span></code>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="naming-conventions">
+<span id="directory-structure"></span><h2>Naming conventions<a class="headerlink" href="#naming-conventions" title="Permalink to this headline">¶</a></h2>
+<p>While the <code class="docutils literal"><span class="pre">state</span></code> and <code class="docutils literal"><span class="pre">settings</span></code> described above are explicit features of automacs that determine its execution, we also follow a number of more implicit rules about preparing the data. These are fairly general, and only serve to make it easy to keep track of all of your data.</p>
+<div class="section" id="directories">
+<h3>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h3>
+<p>In order to ensure that automacs procedures can be re-used in many different situations, we enforce a consistent directory structure. This makes it easy for users to write shorter codes which infer the location of previous files without elaborate control statements. The basic rule is that each procedure gets a separate folder, and that subsequent procedures can find input data from the previous procedure folder.</p>
+<p>We find it hard to imagine that users would chain more than 99 steps together, so we name each step with a common convention that includes the step number e.g. <code class="docutils literal"><span class="pre">s01-bilayer</span></code> and <code class="docutils literal"><span class="pre">s02-large-bilayer</span></code> etc. Many automacs functions rely on this naming structure. For example, the <a class="reference internal" href="base.html#cli.upload" title="cli.upload"><code class="xref py py-meth docutils literal"><span class="pre">upload</span></code></a> function is designed to send only your latest checkpoint to a supercomputer to continue a simulation, and thereby avoid sending all of your data to a new system. The step folders also correspond to discrete states of the system, which are backed up to e.g. <code class="docutils literal"><span class="pre">state_1.json</span></code> when the step is complete. When chaining runs together as part of a <a class="reference internal" href="index.html#three-modes"><span class="std std-ref">metarun</span></a>, users can access previous states by using the <a class="reference internal" href="index.html#posterity"><span class="std std-ref">history variables</span></a> which record a history of what automacs has done so far.</p>
+<p>The step name is always provided by the <code class="docutils literal"><span class="pre">step</span></code> variable in the settings block. To create the directory, each parent script typically calls <code class="xref any docutils literal"><span class="pre">make_step(settings.step)</span></code> after its required <a class="reference internal" href="base.html#automacs.init" title="automacs.init"><code class="xref any py py-func docutils literal"><span class="pre">initialization</span></code></a>. You will see <code class="docutils literal"><span class="pre">state.here</span></code> used throughout the codes. It points to the current step directory.</p>
+</div>
+<div class="section" id="files">
+<span id="file-names"></span><h3>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h3>
+<p>Within each procedure directory, we also enforce a file naming scheme that reflects much of the underlying GROMACS conventions. In particular, when simulations are extended across multiple executions, we follow the <code class="docutils literal"><span class="pre">md.part0001.xtc</span></code> numbering rules. Every time the <code class="docutils literal"><span class="pre">mdrun</span></code> integrator is invoked, automacs writes individual trajectory, input binary, and checkpoint files. Where possible, it also writes a configuration file at the conclusion of each run.</p>
+<p>When we construct new simulations, we also follow a looser set of rules that makes it easy to see how the simulations were built.</p>
+<ol class="arabic simple">
+<li>All GROMACS output to standard output and standard errors streams (that is, written to the terminal) is captured and stored in files prefixed with <code class="docutils literal"><span class="pre">log-&lt;gromacs_binary&gt;</span></code>. In this case we label the log file with the gromacs utility function used to generate it. Since many of these functions are called several times, we also use a name for that part of the procedure. For example, during bilayer construction, the file <code class="docutils literal"><span class="pre">s01-bilayer/log-grompp-solvate-steep</span></code> holds the preprocessor output for the steepest descent minimization of the water-solvated structure.</li>
+<li>While output streams are routed to log files, the formal outputs from the GROMACS utilities are suffixed with a name that corresponds to their portion of the construction procedure. We use the prefix <code class="docutils literal"><span class="pre">em</span></code> to denote energy minimization and <code class="docutils literal"><span class="pre">md</span></code> to denote molecular dynamics. For example, minimizing a protein in vaccuum might output files such as <code class="docutils literal"><span class="pre">em-vacuum.tpr</span></code> while the NVT equilibration step might be labelled <code class="docutils literal"><span class="pre">md-nvt.xtc</span></code>.</li>
+<li>Intermediate steps that do not involve minimization or dynamics are typically prefixed with a consistent name. For example, when adding water to a protein or a bilayer, automacs will generate several intermediate structures, all prefixed with the word “solvate” e.g. <code class="docutils literal"><span class="pre">solvate-dense.gro</span></code>.</li>
+</ol>
+</div>
+<div class="section" id="getting-inputs">
+<span id="retrieval"></span><h3>Getting inputs<a class="headerlink" href="#getting-inputs" title="Permalink to this headline">¶</a></h3>
+<p>A few protected keywords in the <code class="docutils literal"><span class="pre">settings</span></code> blocks will copy input files for you. The <code class="docutils literal"><span class="pre">sources</span></code> list should be a list of folders to copy into the current step, while <code class="docutils literal"><span class="pre">files</span></code> points to individual files. All paths should be relative to the root directory, however there is syntax sugar for <a class="reference internal" href="index.html#extensions"><span class="std std-ref">pointing to extensions</span></a>.</p>
+</div>
+</div>
+<div class="section" id="simplicity">
+<h2>Simplicity<a class="headerlink" href="#simplicity" title="Permalink to this headline">¶</a></h2>
+<p>In this section we have described how automacs organizes files. In general the file-naming rules are not absolute requirements for the simulations to complete. Instead, these “rules” have two purposes. First, if you use highly consistent and descriptive naming schemes, then you can easily re-use code in new situations. For example, many of the automacs procedures were developed for atomistic simulations. A few simple name changes along with some extra input files are oftentimes enough to port these procedures to coarse-grained systems or develop more complicated simulations.</p>
+<p>The second purpose of our elaborate-yet-consistent naming scheme is to ensure that the data you produce are <strong>durable</strong>. Carefuly naming can ensure that future users who wish to study your data will not require an excessive amount of training to understand what it holds. An obvious naming scheme makes it easy to share data, find old simulations, and more importantly, parse the data with analysis programs once the dataset is complete. The <a class="reference external" href="http://github.com/biophyscode/omnicalc">omnicalc</a> analysis package is designed to process data prepared by automacs, and these file-naming rules and saved <code class="docutils literal"><span class="pre">state.json</span></code> files make it easy for these programs to be used together.</p>
+<p>This concludes the automacs walkthrough. Check out the <a class="reference external" href="biophyscode.github.io">BioPhysCode</a> project for extra calculation codes, that are designed to read and interpret simulations produced with automacs. Good luck!</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

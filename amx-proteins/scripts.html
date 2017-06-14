@@ -1,0 +1,357 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scripts &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Experiments" href="experiments.html" />
+    <link rel="prev" title="1   Concept" href="../index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="1   Concept"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Scripts</a><ul>
+<li><a class="reference internal" href="#amx-proteins-protein-expts-py">amx/proteins/protein_expts.py</a></li>
+<li><a class="reference internal" href="#amx-proteins-protein-topology-only-py">amx/proteins/protein-topology-only.py</a></li>
+<li><a class="reference internal" href="#amx-proteins-protein-py">amx/proteins/protein.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../index.html"
+                        title="previous chapter">1&nbsp;&nbsp;&nbsp;Concept</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="experiments.html"
+                        title="next chapter">Experiments</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/amx-proteins/scripts.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scripts">
+<h1>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="amx-proteins-protein-expts-py">
+<h2>amx/proteins/protein_expts.py<a class="headerlink" href="#amx-proteins-protein-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;protein&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;aamd&#39;</span><span class="p">,</span><span class="s1">&#39;protein&#39;</span><span class="p">],</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;protein.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">step: protein                       # name of the folder is s01-protein</span>
+<span class="s2">force field: charmm27               # which gromacs-standard force-field to use (see pdb2gmx list)</span>
+<span class="s2">water: tip3p                        # which water model (another question from pdb2gmx)</span>
+<span class="s2">equilibration: nvt-short,nvt,npt    # which equilibration step to use (must have `input-name-in.mdp` below)</span>
+<span class="s2">pdb source: 1yrf                    # PDB code for download. overrides the start structure</span>
+<span class="s2">start structure: none               # path to PDB structure or None to use a single PDB in inputs</span>
+<span class="s2">protein water gap: 3.0              # Angstroms distance around the protein to remove water</span>
+<span class="s2">water buffer: 1.2                   # distance (nm) of solvent to the box wall </span>
+<span class="s2">solvent: spc216                     # starting solvent box (use spc216 from gromacs share)</span>
+<span class="s2">ionic strength: 0.150               # desired molar ionic strength</span>
+<span class="s2">cation: NA                          # name of the cation for neutralizing the system</span>
+<span class="s2">anion: CL                           # name of the anion for neutralizing the system</span>
+
+<span class="s2">#---INTEGRATOR PARAMETERS generated via parameters.py</span>
+<span class="s2">mdp_specs:| {</span>
+<span class="s2">	&#39;group&#39;:&#39;aamd&#39;,</span>
+<span class="s2">	&#39;mdps&#39;:{</span>
+<span class="s2">		&#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;],</span>
+<span class="s2">		&#39;input-em-cg-in.mdp&#39;:[&#39;minimize&#39;,{&#39;integrator&#39;:&#39;cg&#39;}],</span>
+<span class="s2">		&#39;input-md-nvt-eq-in.mdp&#39;:[&#39;nvt-protein&#39;,&#39;nvt-protein&#39;,{&#39;nsteps&#39;:10000}],</span>
+<span class="s2">		&#39;input-md-nvt-short-eq-in.mdp&#39;:[&#39;nvt-protein-short&#39;,{&#39;nsteps&#39;:10000}],</span>
+<span class="s2">		&#39;input-md-npt-eq-in.mdp&#39;:[&#39;npt-protein&#39;,{&#39;nsteps&#39;:10000}],</span>
+<span class="s2">		&#39;input-md-in.mdp&#39;:{&#39;nsteps&#39;:100000},</span>
+<span class="s2">		},</span>
+<span class="s2">	}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;generate_charmm_landscape&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;aamd&#39;</span><span class="p">,</span><span class="s1">&#39;landscape&#39;</span><span class="p">],</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;@bilayers/parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+	<span class="s1">&#39;@charmm/landscape.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">from amx import *</span>
+<span class="s2">init()</span>
+<span class="s2">write_charmm_landscape()</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">landscape at: @charmm/landscape.json</span>
+<span class="s2">lipids: [&#39;DOPC&#39;,&#39;DOPS&#39;,&#39;PI2P&#39;,&#39;CHL1&#39;,&#39;DOPE&#39;,&#39;POPC&#39;]</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,},</span>
+
+<span class="s1">&#39;bilayer_protein_topology_only&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;aamd&#39;</span><span class="p">,</span><span class="s1">&#39;protein&#39;</span><span class="p">],</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;protein-topology-only.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">step: protein                       # name of the folder is s01-protein</span>
+<span class="s2">force field: charmm27               # which gromacs-standard force-field to use (see pdb2gmx list)</span>
+<span class="s2">water: tip3p                        # which water model (another question from pdb2gmx)</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;trialanine-demo&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;vmd_protein&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">step: v01-look</span>
+<span class="s2">video name: video</span>
+<span class="s2">view mode: video</span>
+
+<span class="s2">#---video settings</span>
+<span class="s2">max frames: 300         # aim for this many frames in the unbroken trajectory</span>
+<span class="s2">video size: 30          # size in megabytes (requires ffmpeg 2-pass encoding)</span>
+<span class="s2">duration: 0.0           # desired duration (requires ffmpeg)</span>
+<span class="s2">webm: True              # make a webm copy as well</span>
+
+<span class="s2">#---resolution</span>
+<span class="s2">viewbox: (800,800)      # pixels in the VMD viewer (must match the resolution proportions)</span>
+<span class="s2">resolution: (2400,1800) # snapshot and video resolution</span>
+<span class="s2">which view: xview       # camera direction</span>
+<span class="s2">scale: scale by 1.75    # zoom factor (may require some tuning)</span>
+
+<span class="s2">#---recipes set the aesthetics of the rendering</span>
+<span class="s2">recipe collection: video aamd atomistic bilayer protein</span>
+
+<span class="s2">#---align the protein</span>
+<span class="s2">backbone align name: &quot;name CA&quot;</span>
+
+<span class="s2">#---custom selections (see lib_vmdmake for details)</span>
+<span class="s2">selections:| [{&#39;basic_residues&#39;:&#39;protein and (resname HIS or resname ARG or resname LYS)&#39;,</span>
+<span class="s2">  &#39;smooth&#39;:True,&#39;style&#39;:&#39;licorice&#39;,&#39;goodsell&#39;:True},</span>
+<span class="s2">  ][1:0]</span>
+<span class="s2">#---^^^ customizations turned off if the list is sliced over 1:0&quot;!</span>
+<span class="s2">#---note: do not use smooth on some items but not others (induces a non-physical asynchronicity)</span>
+<span class="s2">#---note: SEE lib_vmdmake.py and the vmdmake documentation for more details</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="s1">&#39;jupyter_coda&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="si">%%</span><span class="s2">HTML</span>
+<span class="s2">&lt;video width=&quot;100%&quot; controls&gt;</span>
+<span class="s2">&lt;source src=&quot;./v01-look/video.webm&quot;&gt;</span>
+<span class="s2">&lt;/video&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">}]},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="amx-proteins-protein-topology-only-py">
+<h2>amx/proteins/protein-topology-only.py<a class="headerlink" href="#amx-proteins-protein-topology-only-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PROTEIN SIMULATION</span>
+<span class="sd">Topology only!</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">pdb_source</span><span class="p">:</span> <span class="n">get_pdb</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">pdb_source</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span> <span class="n">get_start_structure</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">start_structure</span><span class="p">)</span>
+<span class="n">remove_hetero_atoms</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;start-structure.pdb&#39;</span><span class="p">,</span>
+	<span class="n">out</span><span class="o">=</span><span class="s1">&#39;start-structure-trim.pdb&#39;</span><span class="p">)</span>
+<span class="n">gmx</span><span class="p">(</span><span class="s1">&#39;pdb2gmx&#39;</span><span class="p">,</span>
+	<span class="n">base</span><span class="o">=</span><span class="s1">&#39;vacuum&#39;</span><span class="p">,</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;start-structure-trim.pdb&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;vacuum-alone&#39;</span><span class="p">,</span>
+	<span class="n">water</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">water</span><span class="p">,</span>
+	<span class="n">ff</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">force_field</span><span class="p">,</span>
+	<span class="n">log</span><span class="o">=</span><span class="s1">&#39;pdb2gmx&#39;</span><span class="p">)</span>
+<span class="n">itp</span> <span class="o">=</span> <span class="n">extract_itp</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="c1">#---extract_itp always produces protein.itp</span>
+<span class="n">last_call</span> <span class="o">=</span> <span class="n">get_last_gmx_call</span><span class="p">(</span><span class="s1">&#39;pdb2gmx&#39;</span><span class="p">)</span>
+<span class="n">prepped_files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;itp&#39;</span><span class="p">:</span><span class="n">state</span><span class="o">.</span><span class="n">here</span><span class="o">+</span><span class="n">itp</span><span class="p">}</span>
+<span class="k">for</span> <span class="n">flag</span><span class="p">,</span><span class="n">key</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;-i&#39;</span><span class="p">,</span><span class="s1">&#39;posre&#39;</span><span class="p">),(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span><span class="s1">&#39;gro&#39;</span><span class="p">)]:</span> 
+	<span class="n">prepped_files</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">here</span><span class="o">+</span><span class="n">last_call</span><span class="p">[</span><span class="s1">&#39;flags&#39;</span><span class="p">][</span><span class="n">flag</span><span class="p">]</span>
+<span class="n">state</span><span class="o">.</span><span class="n">protein_prepared</span> <span class="o">=</span> <span class="n">prepped_files</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="amx-proteins-protein-py">
+<h2>amx/proteins/protein.py<a class="headerlink" href="#amx-proteins-protein-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PROTEIN SIMULATION</span>
+<span class="sd">Atomistic protein in water.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="n">write_mdp</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">pdb_source</span><span class="p">:</span> <span class="n">get_pdb</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">pdb_source</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span> <span class="n">get_start_structure</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">start_structure</span><span class="p">)</span>
+<span class="n">remove_hetero_atoms</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;start-structure.pdb&#39;</span><span class="p">,</span>
+	<span class="n">out</span><span class="o">=</span><span class="s1">&#39;start-structure-trim.pdb&#39;</span><span class="p">)</span>
+<span class="n">gmx</span><span class="p">(</span><span class="s1">&#39;pdb2gmx&#39;</span><span class="p">,</span>
+	<span class="n">base</span><span class="o">=</span><span class="s1">&#39;vacuum&#39;</span><span class="p">,</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;start-structure-trim.pdb&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;vacuum-alone&#39;</span><span class="p">,</span>
+	<span class="n">water</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">water</span><span class="p">,</span>
+	<span class="n">ff</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">force_field</span><span class="p">,</span>
+	<span class="n">log</span><span class="o">=</span><span class="s1">&#39;pdb2gmx&#39;</span><span class="p">)</span>
+<span class="n">copy_file</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">,</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">extract_itp</span><span class="p">(</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">gmx</span><span class="p">(</span><span class="s1">&#39;editconf&#39;</span><span class="p">,</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-alone&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;vacuum&#39;</span><span class="p">,</span>
+	<span class="n">c</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">settings</span><span class="o">.</span><span class="n">water_buffer</span><span class="p">,</span>
+	<span class="n">log</span><span class="o">=</span><span class="s1">&#39;editconf-vacuum-room&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;vacuum&#39;</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;steep&#39;</span><span class="p">)</span>
+<span class="n">solvate_protein</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-minimized&#39;</span><span class="p">,</span>
+	<span class="n">top</span><span class="o">=</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;solvate&#39;</span><span class="p">)</span>
+<span class="n">counterions</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;solvate-minimized&#39;</span><span class="p">,</span>
+	<span class="n">top</span><span class="o">=</span><span class="s1">&#39;solvate&#39;</span><span class="p">,</span>
+	<span class="n">ff_includes</span><span class="o">=</span><span class="s1">&#39;ions&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">write_structure_pdb</span><span class="p">(</span>
+	<span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;start-structure.pdb&#39;</span><span class="p">,</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="n">equilibrate</span><span class="p">()</span>
+<span class="n">finished</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="1   Concept"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

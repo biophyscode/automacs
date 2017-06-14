@@ -1,0 +1,33 @@
+Experiments
+===========
+
+inputs/bilayers/bilayer_protein_aamd_expts.py
+---------------------------------------------
+
+.. literalinclude:: ../../../bilayers/bilayer_protein_aamd_expts.py
+
+inputs/bilayers/bilayer_aamd_expts.py
+-------------------------------------
+
+.. literalinclude:: ../../../bilayers/bilayer_aamd_expts.py
+
+inputs/bilayers/testset_v0_expts.py
+-----------------------------------
+
+.. literalinclude:: ../../../bilayers/testset_v0_expts.py
+
+inputs/bilayers/testset_v1_expts.py
+-----------------------------------
+
+.. literalinclude:: ../../../bilayers/testset_v1_expts.py
+
+inputs/bilayers/bilayer_cgmd_expts.py
+-------------------------------------
+
+.. literalinclude:: ../../../bilayers/bilayer_cgmd_expts.py
+
+inputs/bilayers/bilayer_protein_cgmd_expts.py
+---------------------------------------------
+
+.. literalinclude:: ../../../bilayers/bilayer_protein_cgmd_expts.py
+

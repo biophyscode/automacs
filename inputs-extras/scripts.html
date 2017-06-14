@@ -1,0 +1,394 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scripts &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Experiments" href="experiments.html" />
+    <link rel="prev" title="Modules" href="../inputs-docs/modules.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../inputs-docs/modules.html" title="Modules"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Scripts</a><ul>
+<li><a class="reference internal" href="#inputs-extras-test-fast-expts-py">inputs/extras/test_fast_expts.py</a></li>
+<li><a class="reference internal" href="#inputs-extras-scripts-coiled-coil-only-py">inputs/extras/scripts/coiled_coil_only.py</a></li>
+<li><a class="reference internal" href="#inputs-extras-scripts-multiply-py">inputs/extras/scripts/multiply.py</a></li>
+<li><a class="reference internal" href="#inputs-extras-scripts-coiled-coil-linker-dev-py">inputs/extras/scripts/coiled_coil_linker_dev.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../inputs-docs/modules.html"
+                        title="previous chapter">Modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="experiments.html"
+                        title="next chapter">Experiments</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/inputs-extras/scripts.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scripts">
+<h1>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="inputs-extras-test-fast-expts-py">
+<h2>inputs/extras/test_fast_expts.py<a class="headerlink" href="#inputs-extras-test-fast-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;table&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">import amx,shutil</span>
+<span class="s2">shutil.copyfile(amx.settings.ready,amx.settings.store)</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="p">},</span>
+
+<span class="s1">&#39;ultra&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: bilayer</span>
+<span class="s2">monolayer top: 90</span>
+<span class="s2">composition top: {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;table&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">ready: s01-bilayer/md.part0001.gro</span>
+<span class="s2">store: inputs/bilayer-cgmd-small.gro</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;martinize&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">start structure: inputs/helix0.pdb</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;adhere&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">force field: martini_upright_alt</span>
+<span class="s2">sources: [&#39;@martini/auto_ff/martini_upright_alt.ff&#39;]</span>
+<span class="s2">placement method: banana</span>
+<span class="s2">group up: resid 19</span>
+<span class="s2">group down: resid 7</span>
+<span class="s2">group origin: resid 7</span>
+<span class="s2">bilayer structure: inputs/bilayer-cgmd-small-flat.gro</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:1.0,</span>
+<span class="s2">	}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">]},</span>
+
+<span class="s1">&#39;bilayer288&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: bilayer</span>
+<span class="s2">monolayer top: 144</span>
+<span class="s2">composition top: {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0}</span>
+<span class="s2">thickness: 18</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;table&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">ready: s01-bilayer/md.part0001.gro</span>
+<span class="s2">store: inputs/structure-repo/bilayers-cgmd/bilayer-cgmd-288.gro</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">]},</span>
+
+<span class="s1">&#39;enth-martini-demo&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;martinize&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">start structure: inputs/structure-repo/proteins/1H0A-prepped.pdb</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;adhere&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">force field: martini_upright_alt</span>
+<span class="s2">sources: [&#39;@martini/auto_ff/martini_upright_alt.ff&#39;]</span>
+<span class="s2">placement method: globular_up_down</span>
+<span class="s2">group up: all</span>
+<span class="s2">group down: [&#39;resid 1-22&#39;,&#39;resid 68-72&#39;]</span>
+<span class="s2">group origin: [&#39;resid 1-22&#39;,&#39;resid 68-72&#39;]</span>
+<span class="s2">bilayer structure: inputs/structure-repo/bilayers-cgmd/bilayer-cgmd-288.gro</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:1.0,</span>
+<span class="s2">	}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">]},</span>
+
+<span class="s1">&#39;ultra2&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: bilayer</span>
+<span class="s2">monolayer top: 90</span>
+<span class="s2">composition top: {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;table&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">ready: s01-bilayer/md.part0001.gro</span>
+<span class="s2">store: inputs/bilayer-cgmd-small.gro</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control_flat&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: bilayer</span>
+<span class="s2">monolayer top: 90</span>
+<span class="s2">composition top: {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;table&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">ready: s01-bilayer/md.part0001.gro</span>
+<span class="s2">store: inputs/bilayer-cgmd-small-flat.gro</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;martinize&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">start structure: inputs/helix0.pdb</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;adhere&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">force field: martini-sources</span>
+<span class="s2">sources: [&#39;@martini/martini-sources.ff&#39;]</span>
+<span class="s2">placement method: banana</span>
+<span class="s2">group up: resid 19</span>
+<span class="s2">group down: resid 7</span>
+<span class="s2">group origin: resid 7</span>
+<span class="s2">bilayer structure: inputs/bilayer-cgmd-small.gro</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:1.0,</span>
+<span class="s2">	}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;martinize&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">start structure: inputs/helix0.pdb</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;adhere&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">force field: martini_upright_alt</span>
+<span class="s2">sources: [&#39;@martini/auto_ff/martini_upright_alt.ff&#39;]</span>
+<span class="s2">placement method: banana</span>
+<span class="s2">group up: resid 19</span>
+<span class="s2">group down: resid 7</span>
+<span class="s2">group origin: resid 7</span>
+<span class="s2">bilayer structure: inputs/bilayer-cgmd-small-flat.gro</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:1.0,</span>
+<span class="s2">	}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">]},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-extras-scripts-coiled-coil-only-py">
+<h2>inputs/extras/scripts/coiled_coil_only.py<a class="headerlink" href="#inputs-extras-scripts-coiled-coil-only-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">STRUCTURE EXPLORER</span>
+<span class="sd">make cool new structures?</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="n">write_mdp</span><span class="p">()</span>
+<span class="n">make_coiled_coil</span><span class="p">(</span><span class="n">gro</span><span class="o">=</span><span class="s1">&#39;structure-crude&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+<span class="n">prepped_files</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;gro&#39;</span><span class="p">:</span><span class="n">state</span><span class="o">.</span><span class="n">here</span><span class="o">+</span><span class="s1">&#39;vacuum-minimized.gro&#39;</span><span class="p">}</span>
+<span class="n">state</span><span class="o">.</span><span class="n">protein_prepared</span> <span class="o">=</span> <span class="n">prepped_files</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-extras-scripts-multiply-py">
+<h2>inputs/extras/scripts/multiply.py<a class="headerlink" href="#inputs-extras-scripts-multiply-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">MULTIPLY (a bilayer) to make it larger.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="n">write_continue_script</span><span class="p">()</span>
+<span class="n">get_last_sources</span><span class="p">()</span>
+<span class="n">get_last_frame</span><span class="p">()</span>
+<span class="n">get_last_mdps</span><span class="p">()</span>
+<span class="c1">#---adding mdp_specs to settings will overwrite them</span>
+<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">mdp_specs</span><span class="p">:</span> <span class="n">write_mdp</span><span class="p">(</span><span class="n">param_file</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">mdp_parameters</span><span class="p">)</span>
+<span class="n">multiply</span><span class="p">(</span><span class="n">nx</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">nx</span><span class="p">,</span><span class="n">ny</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">ny</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="n">bilayer_sorter</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">,</span><span class="n">ndx</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="s1">&#39;minimize&#39;</span><span class="p">,</span><span class="kc">False</span><span class="p">):</span> <span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;system&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span> <span class="n">copy_file</span><span class="p">(</span><span class="s1">&#39;system.gro&#39;</span><span class="p">,</span><span class="s1">&#39;system-minimized.gro&#39;</span><span class="p">)</span>
+<span class="c1">#---the multiply procedure can benefit from a sequence of topology changes</span>
+<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">equilibrate_tops</span><span class="p">:</span>
+	<span class="c1">#---using a sequence of mdp/ff changes overrides the settings.equilibration</span>
+	<span class="k">for</span> <span class="n">rnum</span><span class="p">,(</span><span class="n">mdp</span><span class="p">,</span><span class="n">top</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">equilibrate_tops</span><span class="p">):</span>
+		<span class="n">state</span><span class="o">.</span><span class="n">force_field</span> <span class="o">=</span> <span class="n">top</span>
+		<span class="n">write_topology</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+		<span class="n">restart_clean</span><span class="p">(</span><span class="n">part</span><span class="o">=</span><span class="n">rnum</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">mdp</span><span class="o">=</span><span class="s1">&#39;input-md-</span><span class="si">%s</span><span class="s1">-eq-in&#39;</span><span class="o">%</span><span class="n">mdp</span> <span class="k">if</span> <span class="n">mdp</span> <span class="k">else</span> <span class="s1">&#39;input-md-in&#39;</span><span class="p">,</span>
+			<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;system-minimized&#39;</span> <span class="k">if</span> <span class="n">rnum</span><span class="o">==</span><span class="mi">0</span> <span class="k">else</span> <span class="s1">&#39;md.part</span><span class="si">%04d</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">rnum</span><span class="p">,</span>
+			<span class="n">groups</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">)</span>
+<span class="c1">#---equilibration requires a sequence of MDP files from the previous step</span>
+<span class="k">else</span><span class="p">:</span> <span class="n">equilibrate</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s1">&#39;system-minimized&#39;</span><span class="p">,</span><span class="n">groups</span><span class="o">=</span><span class="s1">&#39;system-groups&#39;</span><span class="p">)</span>
+
+<span class="c1">#---! iterative development restart with::: rm -rf s02-large state.json &amp;&amp; cp state_1.json state.json &amp;&amp; make prep exo70_control_pc_ps &amp;&amp; cp expt_2.json expt.json &amp;&amp; python -B script_2.py</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-extras-scripts-coiled-coil-linker-dev-py">
+<h2>inputs/extras/scripts/coiled_coil_linker_dev.py<a class="headerlink" href="#inputs-extras-scripts-coiled-coil-linker-dev-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">STRUCTURE EXPLORER</span>
+<span class="sd">make cool new structures?</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="n">write_mdp</span><span class="p">()</span>
+<span class="n">make_coiled_coil</span><span class="p">(</span><span class="n">gro</span><span class="o">=</span><span class="s1">&#39;structure-crude&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+<span class="n">solvate</span><span class="p">(</span><span class="s1">&#39;vacuum-minimized&#39;</span><span class="p">,</span><span class="n">gro</span><span class="o">=</span><span class="s1">&#39;solvate&#39;</span><span class="p">,</span><span class="n">edges</span><span class="o">=</span><span class="n">state</span><span class="o">.</span><span class="n">water_edges</span><span class="p">,</span><span class="n">center</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;solvate.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;solvate&#39;</span><span class="p">)</span>
+<span class="n">counterions</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s1">&#39;solvate&#39;</span><span class="p">,</span><span class="n">gro</span><span class="o">=</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">counterion_renamer</span><span class="p">(</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">copy_file</span><span class="p">(</span><span class="s1">&#39;counterions-minimized.gro&#39;</span><span class="p">,</span><span class="s1">&#39;system.gro&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="n">grouper</span><span class="p">(</span><span class="n">protein</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">lipids</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">equilibrate</span><span class="p">(</span><span class="n">groups</span><span class="o">=</span><span class="s1">&#39;system-groups.ndx&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../inputs-docs/modules.html" title="Modules"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+Experiments
+===========
+
+inputs/extras/extras_expts.py
+-----------------------------
+
+.. literalinclude:: ../../../extras/extras_expts.py
+
+inputs/extras/test_fast_expts.py
+--------------------------------
+
+.. literalinclude:: ../../../extras/test_fast_expts.py
+
+inputs/extras/structures_expts.py
+---------------------------------
+
+.. literalinclude:: ../../../extras/structures_expts.py
+

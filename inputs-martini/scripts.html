@@ -1,0 +1,513 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scripts &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Experiments" href="experiments.html" />
+    <link rel="prev" title="Modules" href="../inputs-extras/modules.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../inputs-extras/modules.html" title="Modules"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Scripts</a><ul>
+<li><a class="reference internal" href="#inputs-martini-lipidome-structlib-py">inputs/martini/lipidome/structlib.py</a></li>
+<li><a class="reference internal" href="#inputs-martini-lipidome-lipidome-restraints-py">inputs/martini/lipidome/lipidome-restraints.py</a></li>
+<li><a class="reference internal" href="#inputs-martini-lipidome-lipidome-py">inputs/martini/lipidome/lipidome.py</a></li>
+<li><a class="reference internal" href="#inputs-martini-lipidome-lipidome-expts-py">inputs/martini/lipidome/lipidome_expts.py</a></li>
+<li><a class="reference internal" href="#inputs-martini-scripts-protein-py">inputs/martini/scripts/protein.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../inputs-extras/modules.html"
+                        title="previous chapter">Modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="experiments.html"
+                        title="next chapter">Experiments</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/inputs-martini/scripts.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scripts">
+<h1>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="inputs-martini-lipidome-structlib-py">
+<h2>inputs/martini/lipidome/structlib.py<a class="headerlink" href="#inputs-martini-lipidome-structlib-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span><span class="nn">sys</span><span class="o">,</span><span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">tempfile</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">amx</span>
+
+<span class="c1">#---! note that you can explicitly use amx in these libraries if you want</span>
+
+<span class="c1">###---ORIGINAL, ENERGY MINIMIZE METHOD HERE</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Collect the MARTINI lipidome for use in AUTOMACS.</span>
+
+<span class="sd">peudocode:</span>
+<span class="sd">	import all ITP files</span>
+<span class="sd">	group ITP</span>
+<span class="sd">	for each ITP</span>
+<span class="sd">		make a temporary directory for each ITP</span>
+<span class="sd">		get the number of points and add them to a GRO</span>
+<span class="sd">		run a short minimization in vacuum</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">#---! make sure the error induced by np.zeros() is obvious. weird that it&#39;s only in ast</span>
+
+<span class="c1">#---! started developing here but that was dump because it couldn&#39;t get the sidewash</span>
+<span class="c1">#---! then moved to structlib.py, but those functions assumed amx was in amx and not in globals</span>
+<span class="c1">#---! then figured it out and removed &quot;amx.&quot; from the extension module</span>
+
+<span class="k">def</span> <span class="nf">straighten_lipid</span><span class="p">(</span><span class="n">structure</span><span class="p">,</span><span class="n">gro</span><span class="o">=</span><span class="s1">&#39;protein-flat.gro&#39;</span><span class="p">,</span><span class="n">direction</span><span class="o">=</span><span class="s1">&#39;z&#39;</span><span class="p">,</span><span class="n">cwd</span><span class="o">=</span><span class="s1">&#39;./&#39;</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Assume the first atom should be positive.</span>
+<span class="sd">	Heavily adapted from the lipid-handling routine in lib_place_proteins.py.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">struct</span> <span class="o">=</span> <span class="n">amx</span><span class="o">.</span><span class="n">GMXStructure</span><span class="p">(</span><span class="n">structure</span><span class="p">)</span>
+	<span class="n">lpts</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">points</span>
+	<span class="c1">#---define the reference axis</span>
+	<span class="n">refaxis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+	<span class="n">refaxis</span><span class="p">[</span><span class="s1">&#39;xyz&#39;</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">direction</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="c1">#---rotate the lipid to the reference axis</span>
+	<span class="n">lpts</span> <span class="o">-=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lpts</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+	<span class="c1">#---take the first principal component as the axis</span>
+	<span class="n">eigs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">lpts</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">lpts</span><span class="p">))</span>
+	<span class="n">principal_axis_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">eigs</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+	<span class="n">axis</span> <span class="o">=</span> <span class="n">vecnorm</span><span class="p">(</span><span class="n">eigs</span><span class="p">[</span><span class="mi">1</span><span class="p">][:,</span><span class="n">principal_axis_index</span><span class="p">])</span>
+	<span class="c1">#---sometimes lipids are flipped upside down so we choose the option that brings the lipid</span>
+	<span class="c1">#---...closest to the &quot;lipid_top&quot; atom</span>
+	<span class="n">xyzs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">lpts</span><span class="p">,</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">vecnorm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">refaxis</span><span class="p">,</span><span class="n">axis</span><span class="p">)),</span>
+		<span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">refaxis</span><span class="p">,</span><span class="n">axis</span><span class="p">))))</span> 
+	<span class="n">xyzs_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">lpts</span><span class="p">,</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">vecnorm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">refaxis</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="n">axis</span><span class="p">)),</span>
+		<span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">refaxis</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="n">axis</span><span class="p">))))</span> 
+	<span class="c1">#---we assume that the &quot;top&quot; of the lipid is the first bead in the structure</span>
+	<span class="n">lipid_top</span> <span class="o">=</span> <span class="mi">0</span>
+	<span class="n">xyzs_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">lpts</span><span class="p">,</span><span class="n">rotation_matrix</span><span class="p">(</span><span class="n">vecnorm</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">refaxis</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="n">axis</span><span class="p">)),</span>
+		<span class="n">np</span><span class="o">.</span><span class="n">arccos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">refaxis</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="o">*</span><span class="n">axis</span><span class="p">))))</span> 
+	<span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">xyzs</span><span class="p">,</span><span class="n">xyzs_b</span><span class="p">]</span>
+	<span class="n">xyzs</span> <span class="o">=</span> <span class="n">candidates</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> 
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="n">j</span><span class="p">[</span><span class="n">lipid_top</span><span class="p">]</span><span class="o">-</span><span class="n">j</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">-</span><span class="n">refaxis</span> 
+		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">]])]</span>
+	<span class="n">struct</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">xyzs</span><span class="o">-</span><span class="n">xyzs</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+	<span class="n">struct</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">gro</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">generate_simple_structure_via_em</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">itps</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	INCORRECT METHOD</span>
+<span class="sd">	Use energy minimization to generate a simple structure from an ITP.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">me</span> <span class="o">=</span> <span class="n">itps</span><span class="o">.</span><span class="n">molecules</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+	<span class="n">amx</span><span class="o">.</span><span class="n">make_step</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+	<span class="n">amx</span><span class="o">.</span><span class="n">write_mdp</span><span class="p">()</span>
+	<span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">me</span><span class="p">[</span><span class="s1">&#39;atoms&#39;</span><span class="p">])</span>
+	<span class="c1">#######coords[:,0] = 0.4*np.arange(n_atoms)</span>
+	<span class="n">coords</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random_sample</span><span class="p">((</span><span class="n">n_atoms</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span><span class="o">*</span><span class="mf">0.4</span>
+	<span class="n">repack</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="s1">&#39;pts&#39;</span><span class="p">:</span><span class="n">coords</span><span class="p">,</span>
+		<span class="s1">&#39;atom_names&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;atom&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">me</span><span class="p">[</span><span class="s1">&#39;atoms&#39;</span><span class="p">]]),</span>
+		<span class="s1">&#39;residue_names&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;resname&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">me</span><span class="p">[</span><span class="s1">&#39;atoms&#39;</span><span class="p">]]),</span>
+		<span class="s1">&#39;residue_indices&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_atoms</span><span class="p">)),</span>
+		<span class="s1">&#39;box&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.</span><span class="p">,</span><span class="mf">10.</span><span class="p">,</span><span class="mf">10.</span><span class="p">]),</span>
+		<span class="p">}</span>
+	<span class="n">struct</span> <span class="o">=</span> <span class="n">amx</span><span class="o">.</span><span class="n">GMXStructure</span><span class="p">(</span><span class="o">**</span><span class="n">repack</span><span class="p">)</span>
+	<span class="n">struct</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">amx</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">here</span><span class="o">+</span><span class="s1">&#39;init.gro&#39;</span><span class="p">)</span>
+	<span class="n">amx</span><span class="o">.</span><span class="n">component</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">count</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+	<span class="n">amx</span><span class="o">.</span><span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+	<span class="n">amx</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;init&#39;</span><span class="p">,</span><span class="n">top</span><span class="o">=</span><span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+	<span class="n">copy_file</span><span class="p">(</span><span class="s1">&#39;em-init-steep.gro&#39;</span><span class="p">,</span><span class="s1">&#39;vacuum.gro&#39;</span><span class="p">)</span>
+	<span class="n">amx</span><span class="o">.</span><span class="n">equilibrate</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum&#39;</span><span class="p">,</span><span class="n">top</span><span class="o">=</span><span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+	<span class="n">amx</span><span class="o">.</span><span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;md.part0001&#39;</span><span class="p">,</span><span class="n">top</span><span class="o">=</span><span class="s1">&#39;vacuum&#39;</span><span class="p">)</span>
+	<span class="n">straighten_lipid</span><span class="p">(</span><span class="n">structure</span><span class="o">=</span><span class="n">amx</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">here</span><span class="o">+</span><span class="s1">&#39;init.gro&#39;</span><span class="p">,</span><span class="n">gro</span><span class="o">=</span><span class="n">amx</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">here</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;.gro&#39;</span><span class="p">)</span>
+
+<span class="c1">###---EXPLICIT METHOD</span>
+
+<span class="c1">#---magic for local import when you run from elsewhere</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">),</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())))</span>
+<span class="kn">from</span> <span class="nn">structlib_defs</span> <span class="k">import</span> <span class="n">defs_lipids</span><span class="p">,</span><span class="n">defs_ptdins</span><span class="p">,</span><span class="n">defs_pts_lipids</span><span class="p">,</span><span class="n">defs_pts_ptdins</span>
+
+<span class="k">def</span> <span class="nf">guess_lipid_coords</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">itps</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">me</span> <span class="o">=</span> <span class="n">itps</span><span class="o">.</span><span class="n">molecules</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+	<span class="n">amx</span><span class="o">.</span><span class="n">make_step</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+	<span class="n">amx</span><span class="o">.</span><span class="n">write_mdp</span><span class="p">()</span>
+	<span class="n">n_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">me</span><span class="p">[</span><span class="s1">&#39;atoms&#39;</span><span class="p">])</span>
+	<span class="c1">#---parse the definitions for lipids only </span>
+	<span class="n">defs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">group_name</span><span class="p">,</span>
+		<span class="nb">dict</span><span class="p">([(</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">0</span><span class="p">]))</span>
+		<span class="k">for</span> <span class="n">group_name</span><span class="p">,</span><span class="n">d</span> <span class="ow">in</span> <span class="p">[(</span><span class="s1">&#39;lipids&#39;</span><span class="p">,</span><span class="n">defs_lipids</span><span class="p">),(</span><span class="s1">&#39;ptdins&#39;</span><span class="p">,</span><span class="n">defs_ptdins</span><span class="p">)]])</span>
+	<span class="n">defs_pts</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="s1">&#39;lipids&#39;</span><span class="p">,</span><span class="n">defs_pts_lipids</span><span class="p">),(</span><span class="s1">&#39;ptdins&#39;</span><span class="p">,</span><span class="n">defs_pts_ptdins</span><span class="p">)])</span>
+	<span class="c1">#---select the group for this lipid</span>
+	<span class="n">group_has</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">defs</span> <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">defs</span><span class="p">[</span><span class="n">key</span><span class="p">]]</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">group_has</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;cannot find lipid </span><span class="si">%s</span><span class="s1"> in the definitions&#39;</span><span class="o">%</span><span class="n">name</span><span class="p">)</span>
+	<span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">group_has</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;lipid </span><span class="si">%s</span><span class="s1"> in more than one definition set&#39;</span><span class="o">%</span><span class="n">name</span><span class="p">)</span> 
+	<span class="k">else</span><span class="p">:</span> <span class="n">group_name</span> <span class="o">=</span> <span class="n">group_has</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="c1">#---select the correct group</span>
+	<span class="n">defs</span> <span class="o">=</span> <span class="n">defs</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span>
+	<span class="n">defs_pts</span> <span class="o">=</span> <span class="n">defs_pts</span><span class="p">[</span><span class="n">group_name</span><span class="p">]</span>
+	<span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">defs</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;lipid </span><span class="si">%s</span><span class="s1"> not in definitions for group </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">group_name</span><span class="p">))</span>
+	<span class="c1">#---get coordinates from standard definitions</span>
+	<span class="c1">#---note that this information was published in the &quot;insane&quot; paper</span>
+	<span class="n">base_pts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">defs_pts</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+	<span class="c1">#---subselect the base points by atom names</span>
+	<span class="n">subsel</span> <span class="o">=</span> <span class="p">[]</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">itps</span><span class="o">.</span><span class="n">molecules</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s1">&#39;atoms&#39;</span><span class="p">]:</span>
+		<span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="s1">&#39;atom&#39;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">defs</span><span class="p">[</span><span class="n">name</span><span class="p">]:</span> 
+			<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;cannot find </span><span class="si">%s</span><span class="s1"> from molecule </span><span class="si">%s</span><span class="s1"> in name list </span><span class="si">%s</span><span class="s1">:</span><span class="se">\n</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span>
+				<span class="n">i</span><span class="p">[</span><span class="s1">&#39;atom&#39;</span><span class="p">],</span><span class="n">name</span><span class="p">,</span><span class="n">defs</span><span class="p">[</span><span class="n">name</span><span class="p">],</span><span class="nb">str</span><span class="p">(</span><span class="n">itps</span><span class="o">.</span><span class="n">molecules</span><span class="p">[</span><span class="n">name</span><span class="p">])))</span>
+		<span class="n">subsel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">defs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;atom&#39;</span><span class="p">]))</span>
+	<span class="n">coords</span> <span class="o">=</span> <span class="n">base_pts</span><span class="p">[</span><span class="n">subsel</span><span class="p">]</span><span class="o">*</span><span class="mf">0.25</span>
+	<span class="c1">#---center the points at zero (the bilayer maker handles the box)</span>
+	<span class="n">coords</span> <span class="o">=</span> <span class="n">coords</span><span class="o">-</span><span class="n">coords</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+	<span class="n">repack</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="s1">&#39;pts&#39;</span><span class="p">:</span><span class="n">coords</span><span class="p">,</span>
+		<span class="s1">&#39;atom_names&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;atom&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">me</span><span class="p">[</span><span class="s1">&#39;atoms&#39;</span><span class="p">]]),</span>
+		<span class="s1">&#39;residue_names&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[</span><span class="s1">&#39;resname&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">me</span><span class="p">[</span><span class="s1">&#39;atoms&#39;</span><span class="p">]]),</span>
+		<span class="s1">&#39;residue_indices&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">n_atoms</span><span class="p">)),</span>
+		<span class="s1">&#39;box&#39;</span><span class="p">:</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.</span><span class="p">,</span><span class="mf">10.</span><span class="p">,</span><span class="mf">10.</span><span class="p">]),</span>
+		<span class="p">}</span>
+	<span class="n">struct</span> <span class="o">=</span> <span class="n">amx</span><span class="o">.</span><span class="n">GMXStructure</span><span class="p">(</span><span class="o">**</span><span class="n">repack</span><span class="p">)</span>
+	<span class="n">out_fn</span> <span class="o">=</span> <span class="n">amx</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">here</span><span class="o">+</span><span class="n">name</span><span class="o">+</span><span class="s1">&#39;.gro&#39;</span>
+	<span class="n">struct</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">out_fn</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">out_fn</span>
+
+<span class="k">def</span> <span class="nf">martini_lipidome</span><span class="p">():</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Generate structures for all martini Lipids.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1">#---prepare a directory in the inputs/martini repo to deposit these</span>
+	<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">amx</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">deposit_at</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;refusing to overwrite </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">amx</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">deposit_at</span><span class="p">)</span>
+	<span class="k">else</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">amx</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">deposit_at</span><span class="p">)</span>
+	<span class="n">itp_source</span> <span class="o">=</span> <span class="n">amx</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="s1">&#39;itp_source&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">itp_source</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;settings must include itp_source, the path to a lipidome ITP file&#39;</span><span class="p">)</span>
+	<span class="n">itp_source</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">itp_source</span><span class="p">))</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">itp_source</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;cannot find ITP </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">itp_source</span><span class="p">)</span>
+	<span class="n">itps</span> <span class="o">=</span> <span class="n">amx</span><span class="o">.</span><span class="n">GMXTopology</span><span class="p">(</span><span class="n">itp_source</span><span class="p">)</span>
+	<span class="n">mols</span> <span class="o">=</span> <span class="n">itps</span><span class="o">.</span><span class="n">molecules</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+	<span class="n">mols</span> <span class="o">=</span> <span class="n">amx</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">q</span><span class="p">(</span><span class="s1">&#39;molecules&#39;</span><span class="p">,</span><span class="n">itps</span><span class="o">.</span><span class="n">molecules</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+	<span class="n">missing_mols</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">mols</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">itps</span><span class="o">.</span><span class="n">molecules</span><span class="p">]</span>
+	<span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">missing_mols</span><span class="p">):</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;missing molecules from the ITP: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">missing_mols</span><span class="p">)</span>
+	<span class="c1">#---loop over each molecule and generate a structure</span>
+	<span class="n">fns</span> <span class="o">=</span> <span class="p">[</span><span class="n">guess_lipid_coords</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span><span class="n">itps</span><span class="p">)</span> <span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="n">mols</span><span class="p">]</span>
+	<span class="c1">#---copy paths from assumed step folder numbering (better to be more explicit but this should work)</span>
+	<span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fns</span><span class="p">:</span> <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">amx</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">deposit_at</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">fn</span><span class="p">)))</span>
+
+<span class="k">def</span> <span class="nf">write_martini_landscape</span><span class="p">():</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	WILL BE REMOVED IN PLACE OF LANDSCAPE OBJECT IN AMX/FFTOOLS ... !!!</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="c1">#---note that the following is hardcoded and lipids are autodetected</span>
+	<span class="n">land</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;objects&#39;</span><span class="p">:{},</span><span class="s1">&#39;alias&#39;</span><span class="p">:{}}</span>
+	<span class="n">land</span><span class="p">[</span><span class="s1">&#39;alias&#39;</span><span class="p">][</span><span class="s1">&#39;protein&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;GLH&#39;</span><span class="p">,</span><span class="s1">&#39;ILE&#39;</span><span class="p">,</span><span class="s1">&#39;ALAD&#39;</span><span class="p">,</span><span class="s1">&#39;GLUH&#39;</span><span class="p">,</span><span class="s1">&#39;GLN&#39;</span><span class="p">,</span><span class="s1">&#39;HISH&#39;</span><span class="p">,</span><span class="s1">&#39;ASN1&#39;</span><span class="p">,</span><span class="s1">&#39;HYP&#39;</span><span class="p">,</span><span class="s1">&#39;GLY&#39;</span><span class="p">,</span><span class="s1">&#39;HIP&#39;</span><span class="p">,</span>
+		<span class="s1">&#39;ARGN&#39;</span><span class="p">,</span><span class="s1">&#39;MSE&#39;</span><span class="p">,</span><span class="s1">&#39;CYS1&#39;</span><span class="p">,</span><span class="s1">&#39;GLU&#39;</span><span class="p">,</span><span class="s1">&#39;CYS2&#39;</span><span class="p">,</span><span class="s1">&#39;CYS&#39;</span><span class="p">,</span><span class="s1">&#39;HISE&#39;</span><span class="p">,</span><span class="s1">&#39;ASP&#39;</span><span class="p">,</span><span class="s1">&#39;SER&#39;</span><span class="p">,</span><span class="s1">&#39;HSD&#39;</span><span class="p">,</span><span class="s1">&#39;HSE&#39;</span><span class="p">,</span><span class="s1">&#39;PRO&#39;</span><span class="p">,</span><span class="s1">&#39;CYX&#39;</span><span class="p">,</span><span class="s1">&#39;ASPH&#39;</span><span class="p">,</span>
+		<span class="s1">&#39;ORN&#39;</span><span class="p">,</span><span class="s1">&#39;HSP&#39;</span><span class="p">,</span><span class="s1">&#39;HID&#39;</span><span class="p">,</span><span class="s1">&#39;HIE&#39;</span><span class="p">,</span><span class="s1">&#39;LYN&#39;</span><span class="p">,</span><span class="s1">&#39;DAB&#39;</span><span class="p">,</span><span class="s1">&#39;ASN&#39;</span><span class="p">,</span><span class="s1">&#39;CYM&#39;</span><span class="p">,</span><span class="s1">&#39;HISD&#39;</span><span class="p">,</span><span class="s1">&#39;VAL&#39;</span><span class="p">,</span><span class="s1">&#39;THR&#39;</span><span class="p">,</span><span class="s1">&#39;HISB&#39;</span><span class="p">,</span><span class="s1">&#39;HIS&#39;</span><span class="p">,</span><span class="s1">&#39;HIS1&#39;</span><span class="p">,</span>
+		<span class="s1">&#39;HIS2&#39;</span><span class="p">,</span><span class="s1">&#39;TRP&#39;</span><span class="p">,</span><span class="s1">&#39;HISA&#39;</span><span class="p">,</span><span class="s1">&#39;ACE&#39;</span><span class="p">,</span><span class="s1">&#39;ASH&#39;</span><span class="p">,</span><span class="s1">&#39;CYSH&#39;</span><span class="p">,</span><span class="s1">&#39;PGLU&#39;</span><span class="p">,</span><span class="s1">&#39;LYS&#39;</span><span class="p">,</span><span class="s1">&#39;PHE&#39;</span><span class="p">,</span><span class="s1">&#39;ALA&#39;</span><span class="p">,</span><span class="s1">&#39;QLN&#39;</span><span class="p">,</span><span class="s1">&#39;MET&#39;</span><span class="p">,</span><span class="s1">&#39;LYSH&#39;</span><span class="p">,</span><span class="s1">&#39;NME&#39;</span><span class="p">,</span>
+		<span class="s1">&#39;LEU&#39;</span><span class="p">,</span><span class="s1">&#39;ARG&#39;</span><span class="p">,</span><span class="s1">&#39;TYR&#39;</span><span class="p">]</span>
+	<span class="c1">#---note that MARTINI generates ION,NA+ (this is handled in lib_place_proteins.detect_composition)</span>
+	<span class="n">land</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="s1">&#39;NA+&#39;</span><span class="p">:{</span><span class="s1">&#39;charge&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;is&#39;</span><span class="p">:</span><span class="s1">&#39;ion&#39;</span><span class="p">,</span><span class="s1">&#39;parts&#39;</span><span class="p">:[</span><span class="s1">&#39;resname&#39;</span><span class="p">],</span><span class="s1">&#39;ffs&#39;</span><span class="p">:[</span><span class="s1">&#39;martini&#39;</span><span class="p">]},</span>
+		<span class="s1">&#39;CL-&#39;</span><span class="p">:{</span><span class="s1">&#39;charge&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;is&#39;</span><span class="p">:</span><span class="s1">&#39;ion&#39;</span><span class="p">,</span><span class="s1">&#39;parts&#39;</span><span class="p">:[</span><span class="s1">&#39;resname&#39;</span><span class="p">],</span><span class="s1">&#39;ffs&#39;</span><span class="p">:[</span><span class="s1">&#39;martini&#39;</span><span class="p">]},</span>
+		<span class="s1">&#39;W&#39;</span><span class="p">:{</span><span class="s1">&#39;charge&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;is&#39;</span><span class="p">:</span><span class="s1">&#39;water&#39;</span><span class="p">,</span><span class="s1">&#39;parts&#39;</span><span class="p">:[</span><span class="s1">&#39;resname&#39;</span><span class="p">],</span><span class="s1">&#39;ffs&#39;</span><span class="p">:[</span><span class="s1">&#39;martini&#39;</span><span class="p">]},}</span>
+	<span class="k">for</span> <span class="n">mol</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">molecules</span><span class="p">:</span>
+		<span class="k">if</span> <span class="n">mol</span> <span class="ow">in</span> <span class="n">land</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">]:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;molecule </span><span class="si">%s</span><span class="s1"> is already in the landscape&#39;</span><span class="o">%</span><span class="n">mol</span><span class="p">)</span>
+		<span class="n">land</span><span class="p">[</span><span class="s1">&#39;objects&#39;</span><span class="p">][</span><span class="n">mol</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;is&#39;</span><span class="p">:</span><span class="s1">&#39;lipid&#39;</span><span class="p">,</span><span class="s1">&#39;parts&#39;</span><span class="p">:[</span><span class="s1">&#39;resname&#39;</span><span class="p">],</span><span class="s1">&#39;ffs&#39;</span><span class="p">:[</span><span class="s1">&#39;martini&#39;</span><span class="p">]}</span>
+	<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">landscape_at</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span> <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">land</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-martini-lipidome-lipidome-restraints-py">
+<h2>inputs/martini/lipidome/lipidome-restraints.py<a class="headerlink" href="#inputs-martini-lipidome-lipidome-restraints-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">topology_maker</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-martini-lipidome-lipidome-py">
+<h2>inputs/martini/lipidome/lipidome.py<a class="headerlink" href="#inputs-martini-lipidome-lipidome-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">martini_lipidome</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-martini-lipidome-lipidome-expts-py">
+<h2>inputs/martini/lipidome/lipidome_expts.py<a class="headerlink" href="#inputs-martini-lipidome-lipidome-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;lipidome&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;clear_lipidome&#39;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;generate_lipidome_structures&#39;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;generate_lipidome_restraints&#39;</span><span class="p">}</span>
+<span class="p">]},</span>
+
+<span class="s1">&#39;clear_lipidome&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">from amx import *</span>
+<span class="s2">import os,shutil,glob</span>
+<span class="s2">for fn in (glob.glob(settings.auto_ff+os.sep+&#39;*&#39;)+</span>
+<span class="s2">	glob.glob(settings.structure_drop)):</span>
+<span class="s2">	if os.path.isdir(fn): shutil.rmtree(fn)</span>
+<span class="s2">	else: os.remove(fn)</span>
+<span class="s2">if not os.path.isdir(settings.auto_ff): os.mkdir(settings.auto_ff)</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">auto ff: inputs/martini/auto_ff</span>
+<span class="s2">structure drop: inputs/martini/library-lipidome-structs</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="p">},</span>
+
+<span class="s1">&#39;generate_lipidome_structures&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;lipidome&#39;</span><span class="p">],</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;@bilayers/parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+	<span class="s1">&#39;structlib.py&#39;</span><span class="p">,</span>
+	<span class="s1">&#39;topology_maker.py&#39;</span><span class="p">,</span>
+	<span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">from amx import *</span>
+<span class="s2">init()</span>
+<span class="s2">martini_lipidome()</span>
+<span class="s2">write_martini_landscape()</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	clear the &quot;deposit_at&quot; directory above</span>
+<span class="s2">	run &quot;make clean sure &amp;&amp; make prep generate_lipidome_structures &amp;&amp; make run&quot;</span>
+<span class="s2">	this regenerates &quot;crude&quot; starting structures in the deposit at directory</span>
+<span class="s2">	!!! need to update the landscape.yaml file</span>
+<span class="s2">	!!! need to clear and regenerate the library whenever you want to add new lipids</span>
+<span class="s2">	note that the `molecules` setting below controls the available lipids</span>
+
+<span class="s2">#---source ITP with all MARTINI lipids</span>
+<span class="s2">itp_source: inputs/martini/martini-sources.ff/martini_v2.0_lipids_all_201506.itp</span>
+<span class="s2">molecules: &quot;DOPC DOPS DOPE POP2 POP3 POPI POPC DPPC&quot;.split()</span>
+
+<span class="s2">equilibration: []</span>
+<span class="s2">mdp specs:| {&#39;group&#39;:&#39;cgmd&#39;,&#39;mdps&#39;:{</span>
+<span class="s2">	&#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;],</span>
+<span class="s2">	&#39;input-md-in.mdp&#39;:[&#39;invisible&#39;],</span>
+<span class="s2">	}}</span>
+
+<span class="s2">force_field: martini_cv2</span>
+<span class="s2">force_field_defs: martini-v2.2.itp</span>
+<span class="s2">sources: [&#39;inputs/martini/martini-sources.ff&#39;]</span>
+
+<span class="s2">#---path to deposit gro and itp folders from root</span>
+<span class="s2">deposit at:    inputs/martini/library-lipidome-structs</span>
+<span class="s2">landscape at:  inputs/martini/auto_ff/landscape.json</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;generate_lipidome_restraints&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;lipidome&#39;</span><span class="p">],</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;@bilayers/parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+	<span class="s1">&#39;structlib.py&#39;</span><span class="p">,</span>
+	<span class="s1">&#39;topology_maker.py&#39;</span><span class="p">,</span>
+	<span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">from amx import *</span>
+<span class="s2">init()</span>
+<span class="s2">topology_maker_martini_restraints()</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	this method is designed to pre-make any lipid restraints you might want</span>
+<span class="s2">	its product can be used by </span>
+<span class="s2">		(1) the bilayer maker&#39;s vacuum packing</span>
+<span class="s2">		(2) the flat bilayer maker&#39;s leaflet-specific restraints</span>
+<span class="s2">	the &quot;wants&quot; dictionary specifies the outputs and describes their restraints</span>
+<span class="s2">	the deposit site holds the automatically generated force fields</span>
+<span class="s2">	this method completely avoids using the &quot;define posre&quot; flags in GROMACS</span>
+<span class="s2">	all restraints are explicit, but this means you should avoid &quot;define posre&quot; which will restrain water</span>
+<span class="s2">	!!! note: missing DPP2 and CHL1</span>
+
+<span class="s2">base force field: inputs/martini/martini-sources.ff  # source force field to modify</span>
+<span class="s2">deposit site: inputs/martini/auto_ff                 # where to write new force fields (keys in wants)</span>
+
+<span class="s2">#---specify transformed force field copies</span>
+<span class="s2">wants:|{</span>
+<span class="s2">	&#39;martini_upright.ff&#39;:{</span>
+<span class="s2">		&#39;restraints&#39;:{&#39;martini_glycerol&#39;:{&#39;z&#39;:100},&#39;martini_tails&#39;:{&#39;z&#39;:100}},</span>
+<span class="s2">		&#39;naming&#39;:&#39;same&#39;,&#39;which&#39;:&#39;lipids&#39;</span>
+<span class="s2">		},</span>
+<span class="s2">	&#39;martini_upright_alt.ff&#39;:{</span>
+<span class="s2">		&#39;restraints&#39;:{&#39;martini_glycerol&#39;:{&#39;z&#39;:1000}},</span>
+<span class="s2">		&#39;naming&#39;:&#39;alternate&#39;,&#39;which&#39;:&#39;lipids&#39;</span>
+<span class="s2">		},</span>
+<span class="s2">	&#39;martini_prison.ff&#39;:{</span>
+<span class="s2">		&#39;restraints&#39;:{&#39;martini_glycerol&#39;:{&#39;z&#39;:1000},&#39;martini_tails&#39;:{&#39;z&#39;:1000}},</span>
+<span class="s2">		&#39;naming&#39;:&#39;alternate_restrain_both&#39;,&#39;which&#39;:&#39;lipids&#39;</span>
+<span class="s2">		},</span>
+<span class="s2">	}</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-martini-scripts-protein-py">
+<h2>inputs/martini/scripts/protein.py<a class="headerlink" href="#inputs-martini-scripts-protein-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Coarse-grained protein in MARTINI.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">start_structure</span><span class="p">):</span> 
+	<span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;cannot locate state.start_structure: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">state</span><span class="o">.</span><span class="n">start_structure</span><span class="p">)</span>
+<span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">start_structure</span><span class="p">,</span><span class="n">state</span><span class="o">.</span><span class="n">here</span><span class="o">+</span><span class="s1">&#39;protein-start.pdb&#39;</span><span class="p">)</span>
+<span class="n">martinize</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../inputs-extras/modules.html" title="Modules"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

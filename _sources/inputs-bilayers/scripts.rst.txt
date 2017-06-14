@@ -1,0 +1,33 @@
+Scripts
+=======
+
+inputs/bilayers/bilayer_aamd_expts.py
+-------------------------------------
+
+.. literalinclude:: ../../../bilayers/bilayer_aamd_expts.py
+
+inputs/bilayers/scripts/bilayer.py
+----------------------------------
+
+.. literalinclude:: ../../../bilayers/scripts/bilayer.py
+
+inputs/bilayers/scripts/bilayer-careful.py
+------------------------------------------
+
+.. literalinclude:: ../../../bilayers/scripts/bilayer-careful.py
+
+inputs/bilayers/scripts/bilayer-release.py
+------------------------------------------
+
+.. literalinclude:: ../../../bilayers/scripts/bilayer-release.py
+
+inputs/bilayers/scripts/bilayer-flat.py
+---------------------------------------
+
+.. literalinclude:: ../../../bilayers/scripts/bilayer-flat.py
+
+inputs/bilayers/scripts/bilayer-protein.py
+------------------------------------------
+
+.. literalinclude:: ../../../bilayers/scripts/bilayer-protein.py
+

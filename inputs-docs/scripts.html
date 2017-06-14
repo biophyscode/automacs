@@ -1,0 +1,184 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Scripts &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modules" href="modules.html" />
+    <link rel="prev" title="Modules" href="../inputs-charmm/modules.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../inputs-charmm/modules.html" title="Modules"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Scripts</a><ul>
+<li><a class="reference internal" href="#inputs-docs-code-examples-protein-py">inputs/docs/code_examples/protein.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../inputs-charmm/modules.html"
+                        title="previous chapter">Modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="next chapter">Modules</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/inputs-docs/scripts.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="scripts">
+<h1>Scripts<a class="headerlink" href="#scripts" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="inputs-docs-code-examples-protein-py">
+<h2>inputs/docs/code_examples/protein.py<a class="headerlink" href="#inputs-docs-code-examples-protein-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PROTEIN SIMULATION</span>
+<span class="sd">Atomistic protein in water.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="n">write_mdp</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">pdb_source</span><span class="p">:</span> <span class="n">get_pdb</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">pdb_source</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span> <span class="n">get_start_structure</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">start_structure</span><span class="p">)</span>
+<span class="n">remove_hetero_atoms</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;start-structure.pdb&#39;</span><span class="p">,</span>
+	<span class="n">out</span><span class="o">=</span><span class="s1">&#39;start-structure-trim.pdb&#39;</span><span class="p">)</span>
+<span class="n">gmx</span><span class="p">(</span><span class="s1">&#39;pdb2gmx&#39;</span><span class="p">,</span>
+	<span class="n">base</span><span class="o">=</span><span class="s1">&#39;vacuum&#39;</span><span class="p">,</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;start-structure-trim.pdb&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;vacuum-alone&#39;</span><span class="p">,</span>
+	<span class="n">water</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">water</span><span class="p">,</span>
+	<span class="n">ff</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">force_field</span><span class="p">,</span>
+	<span class="n">log</span><span class="o">=</span><span class="s1">&#39;pdb2gmx&#39;</span><span class="p">)</span>
+<span class="n">copy_file</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">,</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">extract_itp</span><span class="p">(</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">gmx</span><span class="p">(</span><span class="s1">&#39;editconf&#39;</span><span class="p">,</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-alone&#39;</span><span class="p">,</span>
+	<span class="n">gro</span><span class="o">=</span><span class="s1">&#39;vacuum&#39;</span><span class="p">,</span>
+	<span class="n">c</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">settings</span><span class="o">.</span><span class="n">water_buffer</span><span class="p">,</span>
+	<span class="n">log</span><span class="o">=</span><span class="s1">&#39;editconf-vacuum-room&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;vacuum&#39;</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;steep&#39;</span><span class="p">)</span>
+<span class="n">solvate_protein</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-minimized&#39;</span><span class="p">,</span>
+	<span class="n">top</span><span class="o">=</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;solvate&#39;</span><span class="p">)</span>
+<span class="n">counterions</span><span class="p">(</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;solvate-minimized&#39;</span><span class="p">,</span>
+	<span class="n">top</span><span class="o">=</span><span class="s1">&#39;solvate&#39;</span><span class="p">,</span>
+	<span class="n">ff_includes</span><span class="o">=</span><span class="s1">&#39;ions&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">write_structure_pdb</span><span class="p">(</span>
+	<span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;start-structure.pdb&#39;</span><span class="p">,</span>
+	<span class="n">structure</span><span class="o">=</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="n">equilibrate</span><span class="p">()</span>
+<span class="n">finished</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../inputs-charmm/modules.html" title="Modules"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1247 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Basecode &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Basecode</a><ul>
+<li><a class="reference internal" href="#amx-module">AMX Module</a><ul>
+<li><a class="reference internal" href="#command-line-interface">Command-line interface</a></li>
+<li><a class="reference internal" href="#common">COMMON</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-control">Runner</a><ul>
+<li><a class="reference internal" href="#control-specification">CONTROL SPECIFICATION</a></li>
+<li><a class="reference internal" href="#acme-experiments">ACME EXPERIMENTS</a></li>
+<li><a class="reference internal" href="#makeface-a-k-a-makefile-interface">MAKEFACE (a.k.a. MAKEfile interFACE)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/base.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="basecode">
+<h1>Basecode<a class="headerlink" href="#basecode" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="amx-module">
+<h2>AMX Module<a class="headerlink" href="#amx-module" title="Permalink to this headline">¶</a></h2>
+<p>The basecode comes with the standard automacs distribution, and is included here so it makes it into the master index.
+This documentation section is included only so that the functions are loaded into the index.</p>
+<span class="target" id="module-automacs"></span><dl class="function">
+<dt id="automacs.commands_interpret">
+<code class="descclassname">automacs.</code><code class="descname">commands_interpret</code><span class="sig-paren">(</span><em>templates</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.commands_interpret" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="automacs.commands_interpret_deprecated">
+<code class="descclassname">automacs.</code><code class="descname">commands_interpret_deprecated</code><span class="sig-paren">(</span><em>block</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.commands_interpret_deprecated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpret a block of command templates for GROMACS.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="automacs.component">
+<code class="descclassname">automacs.</code><code class="descname">component</code><span class="sig-paren">(</span><em>name</em>, <em>count=None</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.component" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add or modify the composition of the system and return the count if none is provided.
+Originally designed for protein_atomistic.py.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="automacs.delve">
+<code class="descclassname">automacs.</code><code class="descname">delve</code><span class="sig-paren">(</span><em>o</em>, <em>*k</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.delve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="automacs.get_last_frame">
+<code class="descclassname">automacs.</code><code class="descname">get_last_frame</code><span class="sig-paren">(</span><em>gro=’system-previous’</em>, <em>dest=None</em>, <em>source=None</em>, <em>tpr=False</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.get_last_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare or locate a snapshot of the last state of the system.</p>
+<p>This function makes “chaining” possible by connecting one step to the next (along with a 
+portion of <cite>init</cite> which checks for previous states). It defaults to the current step, but you can 
+also set the source and destination. 
+The default output filename is “system-previous” because this is designed for chaining. 
+The default source is obtained by first checking for a previous state, in which case we get the 
+state from there. The primary alternate behavior is to get the last frame of the current directory, but
+this is typically suited to quick analysis, video-making, etc, in which case the user would have to 
+explicitly set the <cite>source</cite> keyword to <cite>state.here</cite>. If no previous state is available, we fall back to
+using <cite>state.here</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="automacs.get_trajectory">
+<code class="descclassname">automacs.</code><code class="descname">get_trajectory</code><span class="sig-paren">(</span><em>dest=None</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.get_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the trajectory to reassemble broken molecules.
+Requires items from the history_gmx.
+Note that this is customized for vmdmake but it could be generalized and added to automacs.py.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="automacs.include">
+<code class="descclassname">automacs.</code><code class="descname">include</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.include" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an ITP file to the itp (non-ff includes) list but avoid redundancies 
+which cause errors in GROMACS.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="automacs.init">
+<code class="descclassname">automacs.</code><code class="descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#automacs.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the automacs state.
+Note that all automacs variables are defined here.
+Structure of the state Cursors: here = current directory with trailing slash 
+step = current step name
+stepno = current step number
+History: steps = list of steps in order
+State-only interactors: calls.py make_step</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="automacs.minimize_deprecated">
+<code class="descclassname">automacs.</code><code class="descname">minimize_deprecated</code><span class="sig-paren">(</span><em>name</em>, <em>method=’steep’</em>, <em>top=None</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.minimize_deprecated" title="Permalink to this definition">¶</a></dt>
+<dd><p>minimize(name,method=’steep’)
+Standard minimization procedure.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="automacs.q">
+<code class="descclassname">automacs.</code><code class="descname">q</code><span class="sig-paren">(</span><em>key</em>, <em>val=None</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.q" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check either settings or the state for a variable name.
+This takes the place of (indiscriminately) loading all settings into the state.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="automacs.register">
+<code class="descclassname">automacs.</code><code class="descname">register</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>Collect utility functions in the state.
+[Typically this would be a decorator, but the import scheme makes that unworkable.]</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="automacs.trim_waters_deprecated">
+<code class="descclassname">automacs.</code><code class="descname">trim_waters_deprecated</code><span class="sig-paren">(</span><em>structure=’solvate-dense’</em>, <em>gro=’solvate’</em>, <em>gap=3</em>, <em>boxvecs=None</em>, <em>method=’aamd’</em>, <em>boxcut=True</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.trim_waters_deprecated" title="Permalink to this definition">¶</a></dt>
+<dd><p>trim_waters(structure=’solvate-dense’,gro=’solvate’,gap=3,boxvecs=None)
+Remove waters within a certain number of Angstroms of the protein.
+#### water and all (water and (same residue as water within 10 of not water))
+note that we vided the solvate.gro as a default so this can be used with any output gro file</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="automacs.write_mdp">
+<code class="descclassname">automacs.</code><code class="descname">write_mdp</code><span class="sig-paren">(</span><em>param_file=None</em>, <em>rootdir=’./’</em>, <em>outdir=”</em>, <em>extras=None</em><span class="sig-paren">)</span><a class="headerlink" href="#automacs.write_mdp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Universal MDP file writer which creates input files based on a unified dictionary.
+All MDP parameters should be stored in <em>mdpdefs</em> within <code class="docutils literal"><span class="pre">inputs/input_specs_mdp.py</span></code>. 
+We assemble MDP files according to rules that can be found in the <em>mdp</em> entry for the specs 
+dictionary contained in the <code class="docutils literal"><span class="pre">input_specs_PROCEDURE.py</span></code> file. Other simulation steps may 
+use this function to access the mdp_section entry from the same specs dictionary in order 
+to write more MDP files for e.g. equilibration steps.</p>
+<p>In the <code class="docutils literal"><span class="pre">inputs/input_specs_mdp.py</span></code> file we define the “mdpdefs” (read: Molecular Dynamics 
+Parameter DEFinitionS) dictionary, which is a customizable description of how to run the GROMACS 
+integrator. The mdpdefs variable has a few specific kinds of entries denoted by comments and
+and described here.</p>
+<p>The top level of mdpdefs is a “group” set in the <em>mdp</em> entry of the specs dictionary. This allows us
+to organize our parameters into distinct groups depending on the task. For example, we might have 
+different groups of parameters for coarse-grained and atomistic simulations. We whittle the full
+mdpspecs dictionary by the group name below.</p>
+<p>Our whittled dictionary then contains three kinds of entries.</p>
+<ol class="arabic simple">
+<li><dl class="first docutils">
+<dt>The entry called <code class="docutils literal"><span class="pre">defaults</span></code> is a dictionary which tells you which dictionaries to use if no extra information </dt>
+<dd>is provided. Each key in the defaults dictionary describes a type of parameters (e.g. 
+“output” refers to the parameters that specify how to write files). If the associated value is “None” 
+then we assume that the key is found at the top level of mdpdefs. Otherwise the value allows us to 
+descend one more level and choose between competing sets of parameters.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Other entries with keys defined in <code class="docutils literal"><span class="pre">defaults</span></code> contain either a single dictionary for that default </dt>
+<dd>(recall that we just use None to refer to these) or multiple dictionaries with names referred to by 
+the defaults. These entries are usually grouped by type e.g. output or coupling parameters.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Override keys at the top level of mdpdefs which do not appear in defaults contain dictionaries which </dt>
+<dd>are designed to override the default ones wholesale. They can be used by including their names in the 
+list associated with a particular mdp file name in specs. If they contain a dictionary, then this 
+dictionary will override the default dictionary with that key. Otherwise, they should contain 
+key-value pairs that can lookup a default in the same way that the defaults section does.</dd>
+</dl>
+</li>
+</ol>
+<p>Except for the “group” entry, the specs key mdp_section (remember that this is defined in 
+<code class="docutils literal"><span class="pre">input_specs_PROCEDURE.py</span></code>) should include keys with desired MDP file names pointing to lists that 
+contain override keys and dictionaries. If you include a dictionary in the value for a particular MDP 
+file then its key-value pairs will either override an MDP setting directly or override a key-value
+pair in the defaults.
+Note that this function was updated from the original automacs to be more explicit.</p>
+</dd></dl>
+
+<span class="target" id="module-calls"></span><dl class="function">
+<dt id="calls.convert_gmx_template_to_call">
+<code class="descclassname">calls.</code><code class="descname">convert_gmx_template_to_call</code><span class="sig-paren">(</span><em>spec</em>, <em>kwargs</em>, <em>strict=False</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.convert_gmx_template_to_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use gromacs call instructions along with kwargs to make a new command.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.copy_file">
+<code class="descclassname">calls.</code><code class="descname">copy_file</code><span class="sig-paren">(</span><em>src</em>, <em>dst</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.copy_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for copying files.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.copy_files">
+<code class="descclassname">calls.</code><code class="descname">copy_files</code><span class="sig-paren">(</span><em>src</em>, <em>dst</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.copy_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for copying files with a glob.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.get_gmx_paths">
+<code class="descclassname">calls.</code><code class="descname">get_gmx_paths</code><span class="sig-paren">(</span><em>override=False</em>, <em>gmx_series=False</em>, <em>hostname=None</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.get_gmx_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>!!!</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.get_gmx_share">
+<code class="descclassname">calls.</code><code class="descname">get_gmx_share</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#calls.get_gmx_share" title="Permalink to this definition">¶</a></dt>
+<dd><p>Figure out the share/gromacs/top directory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.get_last_gmx_call">
+<code class="descclassname">calls.</code><code class="descname">get_last_gmx_call</code><span class="sig-paren">(</span><em>name</em>, <em>this_state=None</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.get_last_gmx_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>The gmx call history is loaded by convert_gmx_template_to_call. We can retrieve the last call to a 
+particular gromacs utility using this function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.get_machine_config">
+<code class="descclassname">calls.</code><code class="descname">get_machine_config</code><span class="sig-paren">(</span><em>hostname=None</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.get_machine_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>!!!</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.gmx">
+<code class="descclassname">calls.</code><code class="descname">gmx</code><span class="sig-paren">(</span><em>program</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.gmx" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a GROMACS command and either run it or queue it in a script.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.gmx_run">
+<code class="descclassname">calls.</code><code class="descname">gmx_run</code><span class="sig-paren">(</span><em>cmd</em>, <em>log</em>, <em>nonessential=False</em>, <em>inpipe=None</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.gmx_run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a GROMACS command instantly and log the results to a file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.make_sidestep">
+<code class="descclassname">calls.</code><code class="descname">make_sidestep</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.make_sidestep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a new step folder which is off-pathway.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.make_step">
+<code class="descclassname">calls.</code><code class="descname">make_step</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.make_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a new step folder. See automacs.py docstring for defining variables in the state.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.modules_load">
+<code class="descclassname">calls.</code><code class="descname">modules_load</code><span class="sig-paren">(</span><em>machine_config</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.modules_load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interact with environment modules to load software.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.move_file">
+<code class="descclassname">calls.</code><code class="descname">move_file</code><span class="sig-paren">(</span><em>src</em>, <em>dest</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.move_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for moving files.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.register_file">
+<code class="descclassname">calls.</code><code class="descname">register_file</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.register_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maintain a list of new, essential files. T
+hese have not specific categories (in contrast to e.g. ITP files)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="calls.register_gmx_call">
+<code class="descclassname">calls.</code><code class="descname">register_gmx_call</code><span class="sig-paren">(</span><em>command</em>, <em>flag</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#calls.register_gmx_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register an automatic rule for adding flags to gromacs calls.</p>
+</dd></dl>
+
+<span class="target" id="module-cli"></span><div class="section" id="command-line-interface">
+<h3>Command-line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">¶</a></h3>
+<p>A collection of (helpful) command-line utilities. The interface is managed by the <a class="reference internal" href="#module-makeface" title="makeface"><code class="xref any py py-mod docutils literal"><span class="pre">makeface</span></code></a> 
+module.</p>
+<dl class="function">
+<dt id="cli.locate">
+<code class="descclassname">cli.</code><code class="descname">locate</code><span class="sig-paren">(</span><em>keyword</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.locate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Locate the source code for a python function which is visible to the controller.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>keyword</strong> : string</p>
+<blockquote class="last">
+<div><p>Any part of a function name (including regular expressions)</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>This controller script is grepped by the makefile in order to expose its python functions to the makefile
+interface so that users can run e.g. “make program protein” in orer to access the <code class="docutils literal"><span class="pre">program</span></code> function
+above. The <code class="docutils literal"><span class="pre">makeface</span></code> function routes makefile arguments and keyword arguments into python’s functions.
+The makefile also detects python functions from any scripts located in amx/procedures/extras.
+The <code class="docutils literal"><span class="pre">locate</span></code> function is useful for finding functions which may be found in many parts of the automacs
+directory structure.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.flag_search">
+<code class="descclassname">cli.</code><code class="descname">flag_search</code><span class="sig-paren">(</span><em>keyword</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.flag_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search the codebase for cases where a settings flag is requested.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.config">
+<code class="descclassname">cli.</code><code class="descname">config</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cli.config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the config in a tree form using the (hidden) asciitree function above.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.watch">
+<code class="descclassname">cli.</code><code class="descname">watch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cli.watch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for a command which tails the oldest mdrun command.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.layout">
+<code class="descclassname">cli.</code><code class="descname">layout</code><span class="sig-paren">(</span><em>name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.layout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map all teh codes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.gromacs_config">
+<code class="descclassname">cli.</code><code class="descname">gromacs_config</code><span class="sig-paren">(</span><em>where=None</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.gromacs_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make sure there is a gromacs configuration available.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.setup">
+<code class="descclassname">cli.</code><code class="descname">setup</code><span class="sig-paren">(</span><em>name=”</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run this after cloning a fresh copy of automacs in order to clone some standard</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.notebook">
+<code class="descclassname">cli.</code><code class="descname">notebook</code><span class="sig-paren">(</span><em>procedure</em>, <em>rewrite=False</em>, <em>go=False</em>, <em>name=’notebook.ipynb’</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.notebook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make an IPython notebook for a particular procedure.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.upload">
+<code class="descclassname">cli.</code><code class="descname">upload</code><span class="sig-paren">(</span><em>alias</em>, <em>path=’~’</em>, <em>sure=False</em>, <em>state_fn=’state.json’</em>, <em>bulk=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.upload" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upload the data to a supercomputer.
+!Bulk is not implemented yet.
+!Note that putting sure before path ruins the argument handling hence makeface needs fix</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.download">
+<code class="descclassname">cli.</code><code class="descname">download</code><span class="sig-paren">(</span><em>sure=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a simulation from the cluster if it has already been uploaded.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.cluster">
+<code class="descclassname">cli.</code><code class="descname">cluster</code><span class="sig-paren">(</span><em>hostname=None</em>, <em>overwrite=True</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a cluster header according to the machine configuration.
+The machine configuration is read from <code class="docutils literal"><span class="pre">~/.automacs.py</span></code> but can be overriden by a local <code class="docutils literal"><span class="pre">config.py</span></code>
+which can be created with <code class="xref py py-meth docutils literal"><span class="pre">make</span> <span class="pre">config</span> <span class="pre">local</span></code>.
+This code will concatenate the cluster submission header with a continuation script.
+Note that we do not log this operation because it only manipulates BASH scripts.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.qsub">
+<code class="descclassname">cli.</code><code class="descname">qsub</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cli.qsub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Submits the job to the queue. This saves you from changing into the latest step directory.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.gitcheck">
+<code class="descclassname">cli.</code><code class="descname">gitcheck</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cli.gitcheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check all git repos for changes.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.gitpull">
+<code class="descclassname">cli.</code><code class="descname">gitpull</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cli.gitpull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pull in each git module.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.rewrite_config">
+<code class="descclassname">cli.</code><code class="descname">rewrite_config</code><span class="sig-paren">(</span><em>source=’config.py’</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.rewrite_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reformat the config.py file in case you change it and want it to look normal again.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.codecheck">
+<code class="descclassname">cli.</code><code class="descname">codecheck</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.codecheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check a file for evaluation from the command line.
+This utility is useful when you want to see if a file with dict literals passes the JSON check.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.collect_parameters">
+<code class="descclassname">cli.</code><code class="descname">collect_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cli.collect_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scan for all parameters files.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.write_continue_script">
+<code class="descclassname">cli.</code><code class="descname">write_continue_script</code><span class="sig-paren">(</span><em>hostname=None</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="headerlink" href="#cli.write_continue_script" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the continue script if it does not yet exist.
+Note that this script wraps the same function in amx.continue_script for the CLI.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.show_kickstarters">
+<code class="descclassname">cli.</code><code class="descname">show_kickstarters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cli.show_kickstarters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the available kickstarters for the user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cli.hardstart">
+<code class="descclassname">cli.</code><code class="descname">hardstart</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cli.hardstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a state.json to initiate a hard restart.
+This functionality is useful for dropping CPT and TPR files into a new directory for a continuation.</p>
+</dd></dl>
+
+</div>
+<span class="target" id="module-common"></span><div class="section" id="common">
+<h3>COMMON<a class="headerlink" href="#common" title="Permalink to this headline">¶</a></h3>
+<p>Extra functions common to many simulations.
+Generic extensions used by: proteins, bilayers
+Someday this might become part of the amx canon.</p>
+<dl class="function">
+<dt id="common.atomistic_or_coarse">
+<code class="descclassname">common.</code><code class="descname">atomistic_or_coarse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#common.atomistic_or_coarse" title="Permalink to this definition">¶</a></dt>
+<dd><p>We rely on tags to identify atomistic and coarse-grained simulations rather than settings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.center_by_group">
+<code class="descclassname">common.</code><code class="descname">center_by_group</code><span class="sig-paren">(</span><em>structure</em>, <em>gro</em>, <em>selection</em><span class="sig-paren">)</span><a class="headerlink" href="#common.center_by_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Center a particular selection in the box.
+Similar to “restuff” above.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.contiguous_encode">
+<code class="descclassname">common.</code><code class="descname">contiguous_encode</code><span class="sig-paren">(</span><em>items</em><span class="sig-paren">)</span><a class="headerlink" href="#common.contiguous_encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handy method for encoding tuples into single objects in numpy for uniqueness checking.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.count_molecules">
+<code class="descclassname">common.</code><code class="descname">count_molecules</code><span class="sig-paren">(</span><em>structure</em>, <em>resname</em><span class="sig-paren">)</span><a class="headerlink" href="#common.count_molecules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Count the number of molecules in a system using make_ndx.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.counterions">
+<code class="descclassname">common.</code><code class="descname">counterions</code><span class="sig-paren">(</span><em>structure</em>, <em>top</em><span class="sig-paren">)</span><a class="headerlink" href="#common.counterions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard procedure for adding counterions.
+The resname must be understandable by “r RESNAME” in make_ndx and writes to the top file.
+Note that the <code class="docutils literal"><span class="pre">top</span></code> argument is not used and should be removed after checking downstream.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.dotplace">
+<code class="descclassname">common.</code><code class="descname">dotplace</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#common.dotplace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="common.equilibrate">
+<code class="descclassname">common.</code><code class="descname">equilibrate</code><span class="sig-paren">(</span><em>groups=None</em>, <em>structure=’system’</em>, <em>top=’system’</em>, <em>stages_only=False</em>, <em>seq=None</em><span class="sig-paren">)</span><a class="headerlink" href="#common.equilibrate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard equilibration procedure.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.equilibrate_check">
+<code class="descclassname">common.</code><code class="descname">equilibrate_check</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#common.equilibrate_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the gro file for this step has been written.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.extract_itp">
+<code class="descclassname">common.</code><code class="descname">extract_itp</code><span class="sig-paren">(</span><em>topfile</em><span class="sig-paren">)</span><a class="headerlink" href="#common.extract_itp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract a <code class="docutils literal"><span class="pre">protein.itp</span></code> file from a <cite>top</cite> file which is automatically generated by <cite>pdb2gmx</cite>.
+Note that parts of this function was poached to read_top in common.
+This always generates a single ITP file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.get_box_vectors">
+<code class="descclassname">common.</code><code class="descname">get_box_vectors</code><span class="sig-paren">(</span><em>structure</em>, <em>gro=None</em>, <em>d=0</em>, <em>log=’checksize’</em><span class="sig-paren">)</span><a class="headerlink" href="#common.get_box_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the box vectors.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.get_last">
+<code class="descclassname">common.</code><code class="descname">get_last</code><span class="sig-paren">(</span><em>name</em>, <em>cwd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#common.get_last" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the last of a particular file by extension.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.get_last_file">
+<code class="descclassname">common.</code><code class="descname">get_last_file</code><span class="sig-paren">(</span><em>name</em>, <em>cwd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#common.get_last_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the last of a particular file by extension.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.get_last_mdps">
+<code class="descclassname">common.</code><code class="descname">get_last_mdps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#common.get_last_mdps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all of the mdp files from a previous step.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.get_last_sources">
+<code class="descclassname">common.</code><code class="descname">get_last_sources</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#common.get_last_sources" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the sources retrieved from the previous step (this gets the originals).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.get_pdb">
+<code class="descclassname">common.</code><code class="descname">get_pdb</code><span class="sig-paren">(</span><em>code</em><span class="sig-paren">)</span><a class="headerlink" href="#common.get_pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download a PDB from the database or copy from file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.get_start_structure">
+<code class="descclassname">common.</code><code class="descname">get_start_structure</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#common.get_start_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a start structure or auto-detect a PDB in the inputs.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.gro_combinator">
+<code class="descclassname">common.</code><code class="descname">gro_combinator</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#common.gro_combinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate an arbitrary number of GRO files.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.grouper">
+<code class="descclassname">common.</code><code class="descname">grouper</code><span class="sig-paren">(</span><em>ndx=’system-groups’</em>, <em>protein=True</em>, <em>lipids=True</em><span class="sig-paren">)</span><a class="headerlink" href="#common.grouper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic replacement for generating system-groups.ndx for various configurations.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.minimize">
+<code class="descclassname">common.</code><code class="descname">minimize</code><span class="sig-paren">(</span><em>name</em>, <em>method=’steep’</em><span class="sig-paren">)</span><a class="headerlink" href="#common.minimize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard minimization procedure.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.protein_laden">
+<code class="descclassname">common.</code><code class="descname">protein_laden</code><span class="sig-paren">(</span><em>structure=’system’</em><span class="sig-paren">)</span><a class="headerlink" href="#common.protein_laden" title="Permalink to this definition">¶</a></dt>
+<dd><p>Infer if there are proteins in the simulation.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.read_gro">
+<code class="descclassname">common.</code><code class="descname">read_gro</code><span class="sig-paren">(</span><em>gro</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#common.read_gro" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a GRO file and return its XYZ coordinates and atomnames. 
+!Note that this is highly redundant with a cgmd_bilayer.read_molecule so you might replace that one.
+!RE-ADD NUMPY AND CENTER FOR reionize/cgmd_bilayer
+!Note that we drop velocities which should be read separately or with a flag.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.read_molecule">
+<code class="descclassname">common.</code><code class="descname">read_molecule</code><span class="sig-paren">(</span><em>gro</em><span class="sig-paren">)</span><a class="headerlink" href="#common.read_molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a molecule in GRO form and return its XYZ coordinates and atomnames.
+!REPLACE WITH common.read_gro</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.remove_hetero_atoms">
+<code class="descclassname">common.</code><code class="descname">remove_hetero_atoms</code><span class="sig-paren">(</span><em>structure</em>, <em>out</em><span class="sig-paren">)</span><a class="headerlink" href="#common.remove_hetero_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove heteroatoms from a PDB.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.restart_clean">
+<code class="descclassname">common.</code><code class="descname">restart_clean</code><span class="sig-paren">(</span><em>part</em>, <em>structure</em>, <em>groups</em>, <em>posres_coords=None</em>, <em>mdp=’input-md-in’</em><span class="sig-paren">)</span><a class="headerlink" href="#common.restart_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a hard-restart that mimics the md.part0001 naming scheme.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.restuff">
+<code class="descclassname">common.</code><code class="descname">restuff</code><span class="sig-paren">(</span><em>structure</em>, <em>gro</em>, <em>tpr</em>, <em>ndx</em><span class="sig-paren">)</span><a class="headerlink" href="#common.restuff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restuff everything in the box.
+Used as a prelude for the generic solvate function.
+! Desperately needs a better name.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.solvate">
+<code class="descclassname">common.</code><code class="descname">solvate</code><span class="sig-paren">(</span><em>structure</em>, <em>gro</em>, <em>edges=None</em>, <em>center=False</em><span class="sig-paren">)</span><a class="headerlink" href="#common.solvate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Standard solvate procedure for atomistic protein in water.
+Often requires restuff above.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.solvate_protein">
+<code class="descclassname">common.</code><code class="descname">solvate_protein</code><span class="sig-paren">(</span><em>structure</em>, <em>top</em><span class="sig-paren">)</span><a class="headerlink" href="#common.solvate_protein" title="Permalink to this definition">¶</a></dt>
+<dd><p>solvate(structure,top)
+Standard solvate procedure for atomistic protein in water.
+! STILL USING THIS BECAUSE NO scipy and because we cannot find spc216 in the other one</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.trim_waters">
+<code class="descclassname">common.</code><code class="descname">trim_waters</code><span class="sig-paren">(</span><em>structure=’solvate-dense’</em>, <em>gro=’solvate’</em>, <em>gap=3</em>, <em>boxvecs=None</em>, <em>method=’aamd’</em>, <em>boxcut=True</em><span class="sig-paren">)</span><a class="headerlink" href="#common.trim_waters" title="Permalink to this definition">¶</a></dt>
+<dd><p>ABSOLUTE FINAL VERSION OF THIS FUNCTION HOPEFULLY GOD WILLING
+trim_waters(structure=’solvate-dense’,gro=’solvate’,gap=3,boxvecs=None)
+Remove waters within a certain number of Angstroms of the protein.
+#### water and all (water and (same residue as water within 10 of not water))
+note that we vided the solvate.gro as a default so this can be used with any output gro file
+IS IT A PROBLEM THAT THIS DOESN’T TOUCH THE IONS??</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.unique">
+<code class="descclassname">common.</code><code class="descname">unique</code><span class="sig-paren">(</span><em>items</em><span class="sig-paren">)</span><a class="headerlink" href="#common.unique" title="Permalink to this definition">¶</a></dt>
+<dd><p>…</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.write_gro">
+<code class="descclassname">common.</code><code class="descname">write_gro</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#common.write_gro" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a GRO file with new coordinates.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.write_structure_pdb">
+<code class="descclassname">common.</code><code class="descname">write_structure_pdb</code><span class="sig-paren">(</span><em>structure</em>, <em>pdb</em><span class="sig-paren">)</span><a class="headerlink" href="#common.write_structure_pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Infer the starting residue from the original PDB and write structure.pdb with the correct indices
+according to the latest GRO structure (typically counterions.gro).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.write_top">
+<code class="descclassname">common.</code><code class="descname">write_top</code><span class="sig-paren">(</span><em>topfile</em><span class="sig-paren">)</span><a class="headerlink" href="#common.write_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a topology.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.write_top_original">
+<code class="descclassname">common.</code><code class="descname">write_top_original</code><span class="sig-paren">(</span><em>topfile</em><span class="sig-paren">)</span><a class="headerlink" href="#common.write_top_original" title="Permalink to this definition">¶</a></dt>
+<dd><p>write_top(topfile)
+Write the topology file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="common.write_topology">
+<code class="descclassname">common.</code><code class="descname">write_topology</code><span class="sig-paren">(</span><em>topfile</em><span class="sig-paren">)</span><a class="headerlink" href="#common.write_topology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a topology.</p>
+</dd></dl>
+
+</div>
+<span class="target" id="module-force_field_tools"></span><p>Force field tools mediate naming schemes between various force fields.</p>
+<dl class="class">
+<dt id="force_field_tools.Landscape">
+<em class="property">class </em><code class="descclassname">force_field_tools.</code><code class="descname">Landscape</code><span class="sig-paren">(</span><em>ff=None</em>, <em>cwd=None</em><span class="sig-paren">)</span><a class="headerlink" href="#force_field_tools.Landscape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Handle force field naming schemes.</p>
+<p>! lay out the types in meta.json?
+This class reads the force field files according to types and exposes them to automacs in a way that
+makes it easy to ask for ion definitions by type.</p>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="force_field_tools.Landscape.anions">
+<code class="descname">anions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#force_field_tools.Landscape.anions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="force_field_tools.Landscape.cations">
+<code class="descname">cations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#force_field_tools.Landscape.cations" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="force_field_tools.Landscape.ions">
+<code class="descname">ions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#force_field_tools.Landscape.ions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="force_field_tools.Landscape.lipids">
+<code class="descname">lipids</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#force_field_tools.Landscape.lipids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="force_field_tools.Landscape.my">
+<code class="descname">my</code><span class="sig-paren">(</span><em>struct</em>, <em>cat</em><span class="sig-paren">)</span><a class="headerlink" href="#force_field_tools.Landscape.my" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the item names for a GMXStructure.
+Uses atom names. Returns any atom names that apply, so this is really ion-specific !!!</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="force_field_tools.Landscape.objects_by_category">
+<code class="descname">objects_by_category</code><span class="sig-paren">(</span><em>cat</em><span class="sig-paren">)</span><a class="headerlink" href="#force_field_tools.Landscape.objects_by_category" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all object names in a particular category.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="force_field_tools.Landscape.protein_residues">
+<code class="descname">protein_residues</code><em class="property"> = [‘GLH’, ‘ILE’, ‘ALAD’, ‘GLUH’, ‘GLN’, ‘HISH’, ‘ASN1’, ‘HYP’, ‘GLY’, ‘HIP’, ‘ARGN’, ‘MSE’, ‘CYS1’, ‘GLU’, ‘CYS2’, ‘CYS’, ‘HISE’, ‘ASP’, ‘SER’, ‘HSD’, ‘HSE’, ‘PRO’, ‘CYX’, ‘ASPH’, ‘ORN’, ‘HSP’, ‘HID’, ‘HIE’, ‘LYN’, ‘DAB’, ‘ASN’, ‘CYM’, ‘HISD’, ‘VAL’, ‘THR’, ‘HISB’, ‘HIS’, ‘HIS1’, ‘HIS2’, ‘TRP’, ‘HISA’, ‘ACE’, ‘ASH’, ‘CYSH’, ‘PGLU’, ‘LYS’, ‘PHE’, ‘ALA’, ‘QLN’, ‘MET’, ‘LYSH’, ‘NME’, ‘LEU’, ‘ARG’, ‘TYR’]</em><a class="headerlink" href="#force_field_tools.Landscape.protein_residues" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="force_field_tools.Landscape.protein_selection">
+<code class="descname">protein_selection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#force_field_tools.Landscape.protein_selection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a protein selection string for make_ndx.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="force_field_tools.Landscape.sterols">
+<code class="descname">sterols</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#force_field_tools.Landscape.sterols" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="force_field_tools.force_field_family">
+<code class="descclassname">force_field_tools.</code><code class="descname">force_field_family</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#force_field_tools.force_field_family" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the family name for the force field i.e. charmm or martini.</p>
+</dd></dl>
+
+<span class="target" id="module-structure_tools"></span><dl class="class">
+<dt id="structure_tools.GMXStructure">
+<em class="property">class </em><code class="descclassname">structure_tools.</code><code class="descname">GMXStructure</code><span class="sig-paren">(</span><em>fn=None</em>, <em>center=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Methods</p>
+<dl class="method">
+<dt id="structure_tools.GMXStructure.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>another</em>, <em>before=False</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add another GRO to this one.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.cog">
+<code class="descname">cog</code><span class="sig-paren">(</span><em>*inds</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.cog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a set of index lists (presumably returned from select), return the centroid of centroids.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.detect_composition">
+<code class="descname">detect_composition</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.detect_composition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Infer the topology.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.detect_composition_NEWISH">
+<code class="descname">detect_composition_NEWISH</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.detect_composition_NEWISH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Detect the composition of a system in order to write an accurate topology file.
+pseudocode:</p>
+<blockquote>
+<div><p>see if there are blocks with proteins
+if PROTEINS</p>
+<blockquote>
+<div><p>search for ITP files
+if multiple ITP files throw an error
+if itp then</p>
+<blockquote>
+<div>read in distinct protein objects
+scan resnames for residues that correspond to them
+if any gaps/etc throw an error
+otherwise log the proteins in their position in the sequence
+then recapitulate the original composition method</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.fix_residue_numbering">
+<code class="descname">fix_residue_numbering</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.fix_residue_numbering" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ensure coherent residue numbering.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.get_landscape">
+<code class="descname">get_landscape</code><span class="sig-paren">(</span><em>fn=None</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.get_landscape" title="Permalink to this definition">¶</a></dt>
+<dd><p>REPLACE WITH force_field_tools.py</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="structure_tools.GMXStructure.meta_keys">
+<code class="descname">meta_keys</code><em class="property"> = [‘atom_names’, ‘residue_names’, ‘residue_indices’, ‘points’]</em><a class="headerlink" href="#structure_tools.GMXStructure.meta_keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.read_box_vectors">
+<code class="descname">read_box_vectors</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.read_box_vectors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpret box vectors. The GRO box vector is a list of space-separated reals.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.regroup">
+<code class="descname">regroup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.regroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort everything in the system so it follows the composition order.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.remove">
+<code class="descname">remove</code><span class="sig-paren">(</span><em>inds</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove atoms corresponding to a selection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.renumber">
+<code class="descname">renumber</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.renumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renumber residues.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.select">
+<code class="descname">select</code><span class="sig-paren">(</span><em>text</em>, <em>return_bools=False</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return atom indices for items that match a particular selection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.select_center">
+<code class="descname">select_center</code><span class="sig-paren">(</span><em>selections</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.select_center" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wraps a common call to cog which retrieves the center of geometry for a list of selections.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.trim">
+<code class="descname">trim</code><span class="sig-paren">(</span><em>gap=0.3</em>, <em>subject=None</em>, <em>discard=None</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.trim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove nearby waters. Recapitulates much of trim_waters in common.py but is adapted slightly.
+The discard</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>out_fn</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a GRO file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="structure_tools.GMXStructure.write_box">
+<code class="descname">write_box</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.GMXStructure.write_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn the box vectors from a triplet into a string.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="structure_tools.operator">
+<code class="descclassname">structure_tools.</code><code class="descname">operator</code><span class="sig-paren">(</span><em>x</em>, <em>op</em>, <em>y</em>, <em>structure</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.operator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a single logical operation on an atom selection.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="structure_tools.operator_abstract">
+<code class="descclassname">structure_tools.</code><code class="descname">operator_abstract</code><span class="sig-paren">(</span><em>a</em>, <em>op</em>, <em>b</em>, <em>sentence</em>, <em>structure</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.operator_abstract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursive function which calls for operations on “a operator b” phrases in parentheses.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="structure_tools.parse">
+<code class="descclassname">structure_tools.</code><code class="descname">parse</code><span class="sig-paren">(</span><em>text</em>, <em>structure</em><span class="sig-paren">)</span><a class="headerlink" href="#structure_tools.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a sentence with explicit order of operations defined by parentheses.</p>
+</dd></dl>
+
+<span class="target" id="module-topology_tools"></span><dl class="class">
+<dt id="topology_tools.GMXForceField">
+<em class="property">class </em><code class="descclassname">topology_tools.</code><code class="descname">GMXForceField</code><span class="sig-paren">(</span><em>dirname</em><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXForceField" title="Permalink to this definition">¶</a></dt>
+<dd><p>A collection of GMXTopology files</p>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="topology_tools.GMXForceField.molecule">
+<code class="descname">molecule</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXForceField.molecule" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="topology_tools.GMXForceField.molecules_list">
+<code class="descname">molecules_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXForceField.molecules_list" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="topology_tools.GMXTopology">
+<em class="property">class </em><code class="descclassname">topology_tools.</code><code class="descname">GMXTopology</code><span class="sig-paren">(</span><em>itp=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXTopology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a molecule topology.</p>
+<p class="rubric">Methods</p>
+<dl class="method">
+<dt id="topology_tools.GMXTopology.add_molecule">
+<code class="descname">add_molecule</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXTopology.add_molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new molecule.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="topology_tools.GMXTopology.dd">
+<code class="descname">dd</code><em class="property"> = 3</em><a class="headerlink" href="#topology_tools.GMXTopology.dd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="topology_tools.GMXTopology.details">
+<code class="descname">details</code><em class="property"> = {‘records’: ‘i j funct length’}</em><a class="headerlink" href="#topology_tools.GMXTopology.details" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="topology_tools.GMXTopology.entry_pre_proc">
+<code class="descname">entry_pre_proc</code><span class="sig-paren">(</span><em>match</em><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXTopology.entry_pre_proc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Catalogue and apply preprocessor flags, namely ifdef.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology_tools.GMXTopology.entry_proc">
+<code class="descname">entry_proc</code><span class="sig-paren">(</span><em>name</em>, <em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXTopology.entry_proc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process a single entry type in ???</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="topology_tools.GMXTopology.kw">
+<code class="descname">kw</code><em class="property"> = ‘length’</em><a class="headerlink" href="#topology_tools.GMXTopology.kw" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="topology_tools.GMXTopology.molecule_rename">
+<code class="descname">molecule_rename</code><span class="sig-paren">(</span><em>old</em>, <em>rename</em><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXTopology.molecule_rename" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="topology_tools.GMXTopology.name">
+<code class="descname">name</code><em class="property"> = ‘constraints’</em><a class="headerlink" href="#topology_tools.GMXTopology.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="topology_tools.GMXTopology.preproc">
+<code class="descname">preproc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXTopology.preproc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="topology_tools.GMXTopology.process_moleculetype">
+<code class="descname">process_moleculetype</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXTopology.process_moleculetype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpret a single moleculetype entry from a GROMACS itp file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology_tools.GMXTopology.restrain_atoms">
+<code class="descname">restrain_atoms</code><span class="sig-paren">(</span><em>*names</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXTopology.restrain_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a restraint to a molecule.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="topology_tools.GMXTopology.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>fn</em>, <em>overwrite=False</em><span class="sig-paren">)</span><a class="headerlink" href="#topology_tools.GMXTopology.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write an ITP file.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-utils"></span><dl class="function">
+<dt id="utils.bash">
+<code class="descclassname">utils.</code><code class="descname">bash</code><span class="sig-paren">(</span><em>command</em>, <em>log=None</em>, <em>cwd=None</em>, <em>inpipe=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.bash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a bash command</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="utils.status">
+<code class="descclassname">utils.</code><code class="descname">status</code><span class="sig-paren">(</span><em>string</em>, <em>i=0</em>, <em>looplen=None</em>, <em>bar_character=None</em>, <em>width=25</em>, <em>tag=”</em>, <em>start=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a status bar and counter for a fixed-length operation.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-control">
+<span id="runner"></span><h2>Runner<a class="headerlink" href="#module-control" title="Permalink to this headline">¶</a></h2>
+<p>CONTROL</p>
+<p>Specify all control flow for codes managed by ACME.</p>
+<p>This module contains the entire command-line interface for ACME, and hence it should be found in “commands” 
+setting inside config.py. It includes functions which prepare and execute the experiments. It consults
+controlspec.py, which describes the rules for writing experiment files loaded by acme.py. Each experiment 
+typically comes with extra paths and imports, alongside a “settings” text block. The <code class="docutils literal"><span class="pre">_keysets</span></code> function
+validates all of the incoming experiments to make sure they have all of the required metadata.</p>
+<dl class="function">
+<dt id="control.look">
+<code class="descclassname">control.</code><code class="descname">look</code><span class="sig-paren">(</span><em>state=’state.json’</em><span class="sig-paren">)</span><a class="headerlink" href="#control.look" title="Permalink to this definition">¶</a></dt>
+<dd><p>View the current state from the commandline. Useful for debugging.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="control.quick">
+<code class="descclassname">control.</code><code class="descname">quick</code><span class="sig-paren">(</span><em>procname</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#control.quick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare and run a script embedded inside an experiment file. 
+If we supply a stepno as a keyword argument, then we assume this is a metarun, and we write the 
+appropriate experiment file and script without executing it. Otherwise exeuction happens immediately.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="control.prep">
+<code class="descclassname">control.</code><code class="descname">prep</code><span class="sig-paren">(</span><em>procname=None</em>, <em>noscript=False</em>, <em>v=False</em><span class="sig-paren">)</span><a class="headerlink" href="#control.prep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare an experiment from inputs specified by the config.
+There are two modes: a “metarun” or a single program.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="control.run">
+<code class="descclassname">control.</code><code class="descname">run</code><span class="sig-paren">(</span><em>procname=None</em>, <em>over=’expt.json’</em>, <em>script=’script.py’</em>, <em>PYTHON_DEBUG=None</em>, <em>look=False</em><span class="sig-paren">)</span><a class="headerlink" href="#control.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a prepared acme script read from the experiment settings.
+Note that all scripts look for expt.json. 
+So if you want to run things manually, just copy your experiments, and run their script.
+But the expts have the script name so we could write a wrapper that finds the right script from an expt.
+But this function does that and even more, so it’s pretty useful.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="control.metarun">
+<code class="descclassname">control.</code><code class="descname">metarun</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#control.metarun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a series of simulation steps.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="control.clean">
+<code class="descclassname">control.</code><code class="descname">clean</code><span class="sig-paren">(</span><em>sure=False</em><span class="sig-paren">)</span><a class="headerlink" href="#control.clean" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="control.back">
+<code class="descclassname">control.</code><code class="descname">back</code><span class="sig-paren">(</span><em>command=None</em>, <em>cwd=’.’</em>, <em>log=’log-back’</em>, <em>go=None</em><span class="sig-paren">)</span><a class="headerlink" href="#control.back" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a command in the background and generate a kill switch.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>command</strong> : string</p>
+<blockquote class="last">
+<div><p>A terminal command used to execute the script in the background e.g. <code class="docutils literal"><span class="pre">./script-protein.py</span></code>. You
+can also use other targets in the command e.g. <code class="docutils literal"><span class="pre">make</span> <span class="pre">back</span> <span class="pre">command=&quot;make</span> <span class="pre">metarun</span> <span class="pre">&lt;name&gt;&quot;</span></code>.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="control.preplist">
+<code class="descclassname">control.</code><code class="descname">preplist</code><span class="sig-paren">(</span><em>silent=False</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#control.preplist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify all available experiments and print them for the user.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="control.set_config">
+<code class="descclassname">control.</code><code class="descname">set_config</code><span class="sig-paren">(</span><em>what</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#control.set_config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Command-line interface to update configuration in config_fn (typically config.py). 
+This function routes <code class="docutils literal"><span class="pre">make</span> <span class="pre">set</span> <span class="pre">...`</span> <span class="pre">requests</span> <span class="pre">to</span> <span class="pre">functions</span> <span class="pre">here</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">acme.py</span> <span class="pre">module,</span> <span class="pre">which</span> <span class="pre">manages</span> <span class="pre">all</span> 
+<span class="pre">experiments.</span> <span class="pre">Since</span> <span class="pre">``set</span></code> is a python type, we make use of the config.py alias scheme to map this 
+function to <code class="docutils literal"><span class="pre">make</span> <span class="pre">set</span> <span class="pre">...</span></code>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="control.go">
+<code class="descclassname">control.</code><code class="descname">go</code><span class="sig-paren">(</span><em>procname</em>, <em>clean=False</em>, <em>back=False</em><span class="sig-paren">)</span><a class="headerlink" href="#control.go" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sugar for running <code class="docutils literal"><span class="pre">make</span> <span class="pre">prep</span> <span class="pre">(name)</span> <span class="pre">&amp;&amp;</span> <span class="pre">make</span> <span class="pre">run</span></code> which also works for metaruns or quick scripts.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="control.prep_json">
+<code class="descclassname">control.</code><code class="descname">prep_json</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#control.prep_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the experiments list in JSON format. Useful for  the factory.</p>
+</dd></dl>
+
+<span class="target" id="module-controlspec"></span><div class="section" id="control-specification">
+<h3>CONTROL SPECIFICATION<a class="headerlink" href="#control-specification" title="Permalink to this headline">¶</a></h3>
+<p>This code includes only a single variable called <code class="docutils literal"><span class="pre">controlspec</span></code>, which provides instructions for validating experiments so that they are fully specified at runtime. The <code class="docutils literal"><span class="pre">controlspec['keysets']</span></code> variables provides sets of keys (ironically for the <code class="docutils literal"><span class="pre">_keysets</span></code> function in <code class="docutils literal"><span class="pre">control.py</span></code>), at least one which must match with the keys in each experiment. See <a class="reference internal" href="#module-control" title="control"><code class="xref any py py-mod docutils literal"><span class="pre">control.py</span></code></a> for more details; this code uses the <code class="docutils literal"><span class="pre">controlspec</span></code> variable to direct the execution.</p>
+<p>The <code class="docutils literal"><span class="pre">controlspec</span></code> variable below sets the required keys for different run types. For example, the first of the <code class="docutils literal"><span class="pre">keysets</span></code> tells you that any <code class="docutils literal"><span class="pre">run</span></code> must contain the following keys: <code class="docutils literal"><span class="pre">['script','extensions','params','tags','settings','cwd']</span></code>. These keys are always required (though some can be <code class="docutils literal"><span class="pre">None</span></code> or empty lists) and ensure that the correct <code class="docutils literal"><span class="pre">script</span></code> is executed with the right <code class="docutils literal"><span class="pre">settings</span></code>.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>    <span class="s1">&#39;run&#39;</span><span class="p">:{(</span><span class="s1">&#39;script&#39;</span><span class="p">,</span><span class="s1">&#39;extensions&#39;</span><span class="p">,</span><span class="s1">&#39;params&#39;</span><span class="p">,</span><span class="s1">&#39;tags&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">,</span><span class="s1">&#39;cwd&#39;</span><span class="p">):</span><span class="s1">&#39;std&#39;</span><span class="p">},</span>
+    <span class="s1">&#39;metarun&#39;</span><span class="p">:{(</span><span class="s1">&#39;metarun&#39;</span><span class="p">,</span><span class="s1">&#39;cwd&#39;</span><span class="p">):</span><span class="kc">True</span><span class="p">},</span>
+    <span class="s1">&#39;metarun_steps&#39;</span><span class="p">:{</span>
+      <span class="p">(</span><span class="s1">&#39;step&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">):</span><span class="s1">&#39;simple&#39;</span><span class="p">,</span>
+      <span class="p">(</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">):</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span>
+      <span class="p">(</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">,</span><span class="s1">&#39;jupyter_coda&#39;</span><span class="p">):</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span>
+      <span class="p">(</span><span class="s1">&#39;step&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">):</span><span class="s1">&#39;settings&#39;</span><span class="p">,},</span>
+    <span class="s1">&#39;quick&#39;</span><span class="p">:{</span>
+      <span class="p">(</span><span class="s1">&#39;quick&#39;</span><span class="p">,):</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span>
+      <span class="p">(</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span><span class="s1">&#39;jupyter_coda&#39;</span><span class="p">):</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span>
+      <span class="p">(</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span><span class="s1">&#39;cwd&#39;</span><span class="p">,):</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span>
+      <span class="p">(</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">,</span><span class="s1">&#39;cwd&#39;</span><span class="p">):</span><span class="s1">&#39;basic&#39;</span><span class="p">,</span>
+      <span class="p">(</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">,</span><span class="s1">&#39;cwd&#39;</span><span class="p">,</span><span class="s1">&#39;params&#39;</span><span class="p">,</span><span class="s1">&#39;extensions&#39;</span><span class="p">,</span><span class="s1">&#39;tags&#39;</span><span class="p">):</span><span class="s1">&#39;extensions&#39;</span><span class="p">,</span>
+      <span class="p">(</span><span class="s1">&#39;quick&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">,</span><span class="s1">&#39;cwd&#39;</span><span class="p">,</span><span class="s1">&#39;params&#39;</span><span class="p">,</span><span class="s1">&#39;extensions&#39;</span><span class="p">,</span><span class="s1">&#39;tags&#39;</span><span class="p">,</span><span class="s1">&#39;imports&#39;</span><span class="p">):</span><span class="s1">&#39;extensions_imports&#39;</span><span class="p">},},}</span>
+</pre></div>
+</div>
+</div>
+<span class="target" id="module-acme"></span><div class="section" id="acme-experiments">
+<h3>ACME EXPERIMENTS<a class="headerlink" href="#acme-experiments" title="Permalink to this headline">¶</a></h3>
+<p>Codes in this module manage reading and writing experiments. Experiments for acme-inflected simulation runs 
+are written to special data structures found in python scripts containing dictionary literals. The files are 
+located by <code class="xref any docutils literal"><span class="pre">get_input_files</span></code>.</p>
+<p><strong>Note!</strong> Your experiment files may use paths that depend on your specific configuration. You can manage these 
+paths in two ways. You can either decide on a configuration (described largely by the modules list in 
+config.py) and then if you decide to move something, perform batch replacements on your paths inside of the
+experiment files. A more advanced option is to label paths in other modules with the “&#64;module” syntactic 
+sugar. If “module” is the directory name for a module, then &#64;module/path/to/file will be replaced with the 
+correct path, regardless of where the module is. This is handled in loadstate.py, which is the only place 
+where experiments are unpacked.</p>
+</div>
+<span class="target" id="module-makeface"></span><div class="section" id="makeface-a-k-a-makefile-interface">
+<h3>MAKEFACE (a.k.a. MAKEfile interFACE)<a class="headerlink" href="#makeface-a-k-a-makefile-interface" title="Permalink to this headline">¶</a></h3>
+<p>A crude but convenient way to make a command-line interface for python. This makeface.py connects the makefile 
+to arbitrary python functions found in files specified by the <code class="docutils literal"><span class="pre">commands</span></code> key in <code class="docutils literal"><span class="pre">config.py</span></code> which is 
+managed by the <a class="reference internal" href="#module-acme" title="acme"><code class="xref any py py-mod docutils literal"><span class="pre">acme</span></code></a> module.</p>
+<p>Note: you avoid using <code class="docutils literal"><span class="pre">make</span></code> keywords as python argument names (e.g. “w” and “s”) and avoid using <code class="docutils literal"><span class="pre">*args</span></code> 
+and <code class="docutils literal"><span class="pre">**kwargs</span></code> because arguments are passed from the <code class="docutils literal"><span class="pre">Makefile</span></code> to the python functions by using the 
+<a class="reference external" href="https://docs.python.org/2/library/inspect.html">inspect</a> module for introspection. You can access python 
+functions from the terminal by running <code class="docutils literal"><span class="pre">make</span> <span class="pre">my_python_function</span> <span class="pre">some_true_bool_flag</span> <span class="pre">kwarg=&quot;some</span> <span class="pre">value&quot;</span></code>. 
+Set <code class="docutils literal"><span class="pre">commands</span></code> in the <code class="docutils literal"><span class="pre">config.py</span></code> managed by <a class="reference internal" href="#module-acme" title="acme"><code class="xref any py py-mod docutils literal"><span class="pre">acme</span></code></a> to specify which files provide functions 
+to the interface. You can set <code class="docutils literal"><span class="pre">__all__</span></code> in these files to hide extraneous functions from <code class="docutils literal"><span class="pre">make</span></code>.</p>
+<dl class="function">
+<dt id="makeface.abspath">
+<code class="descclassname">makeface.</code><code class="descname">abspath</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface.abspath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the right path.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface.fab">
+<code class="descclassname">makeface.</code><code class="descname">fab</code><span class="sig-paren">(</span><em>text</em>, <em>*flags</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface.fab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Colorize the text.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface.fab_deprecated">
+<code class="descclassname">makeface.</code><code class="descname">fab_deprecated</code><span class="sig-paren">(</span><em>text</em>, <em>*flags</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface.fab_deprecated" title="Permalink to this definition">¶</a></dt>
+<dd><p>On the chopping block.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface.import_local">
+<code class="descclassname">makeface.</code><code class="descname">import_local</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface.import_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a local script manually.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface.import_remote">
+<code class="descclassname">makeface.</code><code class="descname">import_remote</code><span class="sig-paren">(</span><em>script</em>, <em>is_script=False</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface.import_remote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a script as a module, directly, iff it is not in the path.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface.makeface">
+<code class="descclassname">makeface.</code><code class="descname">makeface</code><span class="sig-paren">(</span><em>*arglist</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface.makeface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Route <code class="docutils literal"><span class="pre">make</span></code> commands into python.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface.str_or_list">
+<code class="descclassname">makeface.</code><code class="descname">str_or_list</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface.str_or_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn a string or a list into a list.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface.strip_builtins">
+<code class="descclassname">makeface.</code><code class="descname">strip_builtins</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface.strip_builtins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove builtins from a hash in place.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface.tracebacker">
+<code class="descclassname">makeface.</code><code class="descname">tracebacker</code><span class="sig-paren">(</span><em>e</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface.tracebacker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

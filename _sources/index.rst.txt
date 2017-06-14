@@ -1,0 +1,133 @@
+
+
+.. title:: amx
+.. sectnum::
+	:depth: 3
+
+
+
+**"Automatic GROMACS"** (a.k.a. AUTOMACS or just **amx** for short) is a biophysics simulation pipeline designed to help you run scalable, reproducible, and extensible simulations using the popular `GROMACS <www.gromacs.org>`_ integrator. The documentation :ref:`walkthrough <contents>` below describes how the codes work (and how you should use them). The :ref:`components <components>` section describes the codes available in **this particular** copy of automacs, including any extensions you may have downloaded.
+
+Everything but the kitchen sink can be found by :ref:`searching <search>` the :ref:`index <genindex>`. Before starting the walkthrough, you must collect additional automacs modules by running the following :any:`setup <cli.setup>` command with the ``all`` recipe. If this is your first time running automacs on a particular computer, you should also :ref:`configure the gromacs paths <gmx_config>` by running :any:`make gromacs_config <cli.gromacs_config>`.
+
+.. code-block :: bash
+  
+  make gromacs_config local
+  make setup all
+
+.. _contents:
+
+The following sections explain how you can interact with the codes and outline the relatively minimal set of design constraints required for extending the codes to new use cases. The :ref:`components <components>` section at the end includes the "live" documentation for your extension modules.
+
+.. include:: concept.rst
+.. include:: configuration.rst
+.. include:: interface.rst
+.. include:: framework.rst
+
+.. try: toctree:: :glob: :maxdepth: 1 ... and a list of the top-level rst files if you want them on separate pages
+
+.. _components:
+
+Components
+==========
+
+This section catalogs the codes loaded into the current copy of automacs. It parses the codes according to the local copy of :doc:`config.py <config>`, which configures the connections to external codes.
+
+proteins
+--------
+
+The ``Proteins`` extension is a component of automacs located at ``amx/proteins`` and sourced from ``http://github.com/biophyscode/amx-proteins.git``.
+
+.. toctree::
+	:maxdepth: 4
+
+	amx-proteins/scripts.rst
+	amx-proteins/experiments.rst
+
+
+bilayers
+--------
+
+The ``Bilayers`` extension is a component of automacs located at ``inputs/bilayers`` and sourced from ``http://github.com/bradleyrp/amx-bilayers.git``.
+
+.. toctree::
+	:maxdepth: 4
+
+	inputs-bilayers/scripts.rst
+	inputs-bilayers/experiments.rst
+	inputs-bilayers/submodules.rst
+
+
+charmm
+------
+
+The ``Charmm`` extension is a component of automacs located at ``inputs/charmm`` and sourced from ``http://github.com/bradleyrp/amx-charmm.git``.
+
+.. toctree::
+	:maxdepth: 4
+
+	inputs-charmm/modules.rst
+
+
+docs
+----
+
+The ``Docs`` extension is a component of automacs located at ``inputs/docs`` and sourced from ``http://github.com/bradleyrp/amx-docs.git``.
+
+.. toctree::
+	:maxdepth: 4
+
+	inputs-docs/scripts.rst
+	inputs-docs/modules.rst
+
+
+extras
+------
+
+The ``Extras`` extension is a component of automacs located at ``inputs/extras`` and sourced from ``http://github.com/bradleyrp/amx-extras.git``.
+
+.. toctree::
+	:maxdepth: 4
+
+	inputs-extras/scripts.rst
+	inputs-extras/experiments.rst
+	inputs-extras/modules.rst
+
+
+martini
+-------
+
+The ``Martini`` extension is a component of automacs located at ``inputs/martini`` and sourced from ``http://github.com/bradleyrp/amx-martini.git``.
+
+.. toctree::
+	:maxdepth: 4
+
+	inputs-martini/scripts.rst
+	inputs-martini/experiments.rst
+	inputs-martini/modules.rst
+
+
+polymers
+--------
+
+The ``Polymers`` extension is a component of automacs located at ``inputs/polymers`` and sourced from ``http://github.com/bradleyrp/amx-polymers.git``.
+
+.. toctree::
+	:maxdepth: 4
+
+	inputs-polymers/scripts.rst
+	inputs-polymers/experiments.rst
+
+
+vmd
+---
+
+The ``Vmd`` extension is a component of automacs located at ``inputs/vmd`` and sourced from ``http://github.com/bradleyrp/amx-vmd.git``.
+
+.. toctree::
+	:maxdepth: 4
+
+	inputs-vmd/experiments.rst
+	inputs-vmd/modules.rst
+
+
