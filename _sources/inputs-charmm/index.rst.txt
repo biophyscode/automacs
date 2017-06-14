@@ -1,0 +1,28 @@
+
+.. bilayers documentation master file, created by ACME DOCS !!!
+   sphinx-quickstart on Sat Jan 14 10:36:25 2017.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Charmm extension
+============================
+
+The ``Charmm`` extension is a component of automacs located at ``inputs/charmm`` and sourced from ``http://github.com/bradleyrp/amx-charmm.git``.
+
+Contents
+--------
+
+
+
+.. toctree::
+	:maxdepth: 4
+
+	modules
+
+
+Indices and tables
+------------------
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

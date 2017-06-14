@@ -1,0 +1,8 @@
+Scripts
+=======
+
+inputs/docs/code_examples/protein.py
+------------------------------------
+
+.. literalinclude:: ../../code_examples/protein.py
+

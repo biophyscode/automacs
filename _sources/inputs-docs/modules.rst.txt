@@ -1,0 +1,19 @@
+Modules
+=======
+
+sphinx_auto
+-----------
+
+.. automodule:: sphinx_auto
+	:members:
+	:undoc-members:
+	:show-inheritance:
+
+docs
+----
+
+.. automodule:: docs
+	:members:
+	:undoc-members:
+	:show-inheritance:
+

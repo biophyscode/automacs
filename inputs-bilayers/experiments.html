@@ -1,0 +1,1006 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Experiments &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Submodules" href="submodules.html" />
+    <link rel="prev" title="Scripts" href="scripts.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="submodules.html" title="Submodules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Experiments</a><ul>
+<li><a class="reference internal" href="#inputs-bilayers-bilayer-protein-aamd-expts-py">inputs/bilayers/bilayer_protein_aamd_expts.py</a></li>
+<li><a class="reference internal" href="#inputs-bilayers-bilayer-aamd-expts-py">inputs/bilayers/bilayer_aamd_expts.py</a></li>
+<li><a class="reference internal" href="#inputs-bilayers-testset-v0-expts-py">inputs/bilayers/testset_v0_expts.py</a></li>
+<li><a class="reference internal" href="#inputs-bilayers-testset-v1-expts-py">inputs/bilayers/testset_v1_expts.py</a></li>
+<li><a class="reference internal" href="#inputs-bilayers-bilayer-cgmd-expts-py">inputs/bilayers/bilayer_cgmd_expts.py</a></li>
+<li><a class="reference internal" href="#inputs-bilayers-bilayer-protein-cgmd-expts-py">inputs/bilayers/bilayer_protein_cgmd_expts.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="scripts.html"
+                        title="previous chapter">Scripts</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="submodules.html"
+                        title="next chapter">Submodules</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/inputs-bilayers/experiments.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="experiments">
+<h1>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="inputs-bilayers-bilayer-protein-aamd-expts-py">
+<h2>inputs/bilayers/bilayer_protein_aamd_expts.py<a class="headerlink" href="#inputs-bilayers-bilayer-protein-aamd-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;bilayer_protein_aamd_banana&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_topology_only&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">#---PROTEIN START STRUCTURE</span>
+<span class="s2">start structure: inputs/structure-repo/proteins/gel-prepped.pdb</span>
+
+<span class="s2">step: protein                       # name of the folder is s01-protein</span>
+<span class="s2">force field: charmm36               # which gromacs-standard force-field to use (see pdb2gmx list)</span>
+<span class="s2">sources: [&#39;@charmm/charmm36.ff&#39;]    # grab a local copy of charmm36.ff</span>
+<span class="s2">water: tip3p                        # which water model (another question from pdb2gmx)</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion_aamd&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">bilayer structure: inputs/structure-repo/bilayers-aamd/bilayer-pip2-20pct-top-ow-dopc-dops-4to1.gro</span>
+
+<span class="s2">placement method: banana                 # several distinct methods to choose from (see other expts)</span>
+<span class="s2">group up: resid 161                      # banana method: this group points up *after* laying the banana flat</span>
+<span class="s2">group down: [&#39;resid 150&#39;,&#39;resid 169&#39;]    # banana method: this group points down *after* laying the banana flat</span>
+<span class="s2">group origin: [&#39;resid 150&#39;,&#39;resid 169&#39;]  # reference/pivot point for the protein (set to origin)</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">]},</span>
+
+<span class="s1">&#39;bilayer_protein_aamd_banana_ion_change&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_topology_only&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">#---PROTEIN START STRUCTURE</span>
+<span class="s2">start structure: inputs/structure-repo/proteins/gel-prepped.pdb</span>
+
+<span class="s2">step: protein                       # name of the folder is s01-protein</span>
+<span class="s2">force field: charmm36               # which gromacs-standard force-field to use (see pdb2gmx list)</span>
+<span class="s2">sources: [&#39;@charmm/charmm36.ff&#39;]    # grab a local copy of charmm36.ff</span>
+<span class="s2">water: tip3p                        # which water model (another question from pdb2gmx)</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion_aamd&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">bilayer structure: inputs/structure-repo/bilayers-aamd/bilayer-pip2-20pct-top-ow-dopc-dops-4to1.gro</span>
+
+<span class="s2">placement method: banana                 # several distinct methods to choose from (see other expts)</span>
+<span class="s2">group up: resid 161                      # banana method: this group points up *after* laying the banana flat</span>
+<span class="s2">group down: [&#39;resid 150&#39;,&#39;resid 169&#39;]    # banana method: this group points down *after* laying the banana flat</span>
+<span class="s2">group origin: [&#39;resid 150&#39;,&#39;resid 169&#39;]  # reference/pivot point for the protein (set to origin)</span>
+<span class="s2">cation: MG                               # we change the cation on the adhesion step</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">]},</span>
+
+<span class="s1">&#39;bilayer_protein_aamd_globular_ions_restraints&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_topology_only&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">#---PROTEIN START STRUCTURE</span>
+<span class="s2">start structure: inputs/structure-repo/proteins/nwasp-peptide.pdb</span>
+
+<span class="s2">step: protein                       # name of the folder is s01-protein</span>
+<span class="s2">force field: charmm36               # which gromacs-standard force-field to use (see pdb2gmx list)</span>
+<span class="s2">sources: [&#39;@charmm/charmm36.ff&#39;]    # grab a local copy of charmm36.ff</span>
+<span class="s2">water: tip3p                        # which water model (another question from pdb2gmx)</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion_aamd&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">bilayer structure: inputs/structure-repo/bilayers-aamd/bilayer-pip2-20pct-phys-drop.gro</span>
+
+<span class="s2">placement method: globular_up_down       # several distinct methods to choose from (see other expts)</span>
+<span class="s2">group up: all                            # globular_up_down method: this group points up</span>
+<span class="s2">group down: [&#39;resid 12-16&#39;]              # globular_up_down method: this group points down</span>
+<span class="s2">group origin: [&#39;resid 12-16&#39;]            # reference/pivot point for the protein (set to origin)</span>
+<span class="s2">cation: MG                               # any bilayer_protein_adhesion_aamd step can use different ions</span>
+
+<span class="s2">#---note we must set the equilibration flag otherwise it jumps to production</span>
+<span class="s2">equilibration: npt-bilayer-short,npt-restrain-protein</span>
+<span class="s2">#---note that we override mdp specs from the original</span>
+<span class="s2">mdp specs:|{</span>
+<span class="s2">    &#39;group&#39;:&#39;aamd&#39;,</span>
+<span class="s2">    &#39;mdps&#39;:{</span>
+<span class="s2">         &#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;,{&#39;potential&#39;:&#39;verlet&#39;,&#39;emtol&#39;:10}],</span>
+<span class="s2">         &#39;input-md-npt-bilayer-short-eq-in.mdp&#39;:[&#39;npt-bilayer-protein-simple&#39;,</span>
+<span class="s2">            {&#39;restrain&#39;:&#39;posre&#39;,&#39;nsteps&#39;:50000,&#39;dt&#39;:0.0005}],</span>
+<span class="s2">         &#39;input-md-npt-restrain-protein-eq-in.mdp&#39;:[&#39;npt-bilayer-protein-simple&#39;,</span>
+<span class="s2">            {&#39;restrain&#39;:&#39;posre&#39;,&#39;nsteps&#39;:50000,&#39;dt&#39;:0.002}],</span>
+<span class="s2">         &#39;input-md-in.mdp&#39;:[&#39;npt-bilayer-protein&#39;],</span>
+<span class="s2">        },</span>
+<span class="s2">    }</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">]},</span>
+
+<span class="s1">&#39;bilayer_protein_adhesion_aamd&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/bilayer-protein.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters-aamd.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;aamd&#39;</span><span class="p">,</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;protein-bilayer&#39;</span><span class="p">],</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+    <span class="s1">&#39;@extras/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codes/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	requires a pre-equilibrated, flat bilayer</span>
+<span class="s2">    gets the protein details automatically from state.protein_prepared</span>
+<span class="s2">    bilayer structure and force field are coded below, however you can override them in a metarun</span>
+<span class="s2">    since you can override in a metarun, we have only one adhesion routine</span>
+<span class="s2">	</span>
+<span class="s2">step: adhere</span>
+
+<span class="s2">#---STARTING STRUCTURES</span>
+<span class="s2">bilayer structure: None</span>
+
+<span class="s2">#---COPY DEPENDENCIES</span>
+<span class="s2">files:              []</span>
+<span class="s2">sources:            [&#39;@charmm/charmm36.ff&#39;]</span>
+
+<span class="s2">#---FORCE FIELD</span>
+<span class="s2">force field: charmm36 # note non-standard force fields must be copied via &quot;sources&quot;</span>
+<span class="s2">extra itps: &#39;lipid-tops/lipid*itp&#39;</span>
+<span class="s2">landscape metadata: @charmm/landscape.json # colloquial types for different molecules</span>
+
+<span class="s2">#---PROTEIN POSITION INSTRUCTIONS</span>
+<span class="s2">placement method: banana                 # several distinct methods to choose from (see other expts)</span>
+<span class="s2">group up: resid 161                      # banana method: this group points up *after* laying the banana flat</span>
+<span class="s2">group down: [&#39;resid 150 or resid 169&#39;]   # banana method: this group points down *after* laying the banana flat</span>
+<span class="s2">group origin: [&#39;resid 150 or resid 169&#39;] # reference/pivot point for the protein (set to origin)</span>
+
+<span class="s2">#---PROTEIN LATTICE DEFINITIONS</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:0.0,</span>
+<span class="s2">	}</span>
+
+<span class="s2">sol: SOL                       # !!! remove this to the landscape</span>
+<span class="s2">ionic strength: 0.150          # box is reionized after adding protein to ensure neutral</span>
+<span class="s2">protein water gap: 3           # distance in Angstroms between protein in water after addition</span>
+<span class="s2">reionize method: ions          # select &quot;ions&quot; to replace only ions and &quot;solvent&quot; to replace water too</span>
+<span class="s2">cation: NA                     # choose a new cation for adding back counterions</span>
+<span class="s2">anion: CL                      # choose a new anion for adding back counterions</span>
+
+<span class="s2">mdp specs:|{</span>
+<span class="s2">    &#39;group&#39;:&#39;aamd&#39;,</span>
+<span class="s2">    &#39;mdps&#39;:{</span>
+<span class="s2">         &#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;,{&#39;potential&#39;:&#39;verlet&#39;,&#39;emtol&#39;:10}],</span>
+<span class="s2">         &#39;input-md-npt-bilayer-eq-in.mdp&#39;:[&#39;npt-bilayer-protein-simple&#39;],</span>
+<span class="s2">         &#39;input-md-in.mdp&#39;:[&#39;npt-bilayer-protein&#39;],</span>
+<span class="s2">        },</span>
+<span class="s2">    }</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-bilayers-bilayer-aamd-expts-py">
+<h2>inputs/bilayers/bilayer_aamd_expts.py<a class="headerlink" href="#inputs-bilayers-bilayer-aamd-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;bilayer_control_aamd_test_small&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/bilayer.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters-aamd.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;aamd&#39;</span><span class="p">,</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;free&#39;</span><span class="p">],</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+    <span class="s1">&#39;@extras/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codes/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	you MUST run `make go bilayer_control_aamd_restrain clean` first to generate restraints</span>
+<span class="s2">	use this procedure to make a &quot;free&quot; bilayer</span>
+<span class="s2">	this method packs lipids in vacuum with restraints</span>
+<span class="s2">	requires restrains generated via a run named &quot;generate_lipidome_restraints&quot;</span>
+<span class="s2">	this small test was the first test after porting the cgmd method into &quot;new automacs&quot;</span>
+<span class="s2">	this method is largely deprecated by the bilayer-careful script used by bilayer_control_aamd_test</span>
+
+<span class="s2">step:               bilayer</span>
+
+<span class="s2">#---SHAPE AND COMPOSITION</span>
+<span class="s2">shape:              flat            # initial mesh shape flat</span>
+<span class="s2">aspect:             1.0             # XY proportion for flat bilayers</span>
+<span class="s2">binsize:            1.2             # grid spacing for initial lipid configuration</span>
+<span class="s2">monolayer offset:   1.5             # initial distance between leaflets </span>
+<span class="s2">monolayer top:      36              # number of lipids in the top leaflet</span>
+<span class="s2">monolayer bottom:   37              # number of lipids in the bottom leaflet (none for symmetric)</span>
+
+<span class="s2">lipid structures:   @structure-repo/bilayers-aamd/lipid-structures # folder for lipid structures</span>
+<span class="s2">landscape metadata: @charmm/landscape.json                         # colloquial types for different molecules</span>
+<span class="s2">	</span>
+<span class="s2">#---COMPOSITIONS (propotional -- no need to sum to unity)</span>
+<span class="s2">composition top:    {&#39;DOPC&#39;:1,&#39;DOPS&#39;:1,&#39;PI2P&#39;:1,&#39;CHL1&#39;:1}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:3,&#39;CHL1&#39;:1}</span>
+
+<span class="s2">#---SOLVATION</span>
+<span class="s2">cation:             NA              # residue name for the cation (must be found in the ff)</span>
+<span class="s2">anion:              CL              # residue name for the anion (must be found in the ff)</span>
+<span class="s2">ionic strength:     0.150           # molar ionic strength</span>
+<span class="s2">sol:                SOL             # residue name for water</span>
+<span class="s2">atom resolution:    cgmd            # either cgmd or aamd</span>
+<span class="s2">water buffer:       8               # water-other gap distance in Angstroms (avoid waters in bilayer!)</span>
+<span class="s2">solvent:            spc216          # water box (must be copied via files)</span>
+<span class="s2">thickness:          10              # thickness of the box at the solvate step</span>
+<span class="s2">                                    # ...be careful with this. you can get widely varying levels of water</span>
+
+<span class="s2">#---COPY DEPENDENCIES</span>
+<span class="s2">files:              []</span>
+<span class="s2">sources:            [&#39;@charmm/charmm36.ff&#39;,&#39;@charmm/auto_ff/charmm36_upright.ff&#39;]</span>
+
+<span class="s2">#---FORCE FIELD</span>
+<span class="s2">force field:           charmm36            # specify the name of the force field (minus &quot;.ff&quot; suffix)</span>
+<span class="s2">                                           # note non-standard force fields must be copied via &quot;sources&quot;</span>
+<span class="s2">force field upright:   charmm36_upright    # force field with &quot;upright&quot; vacuum pack restraints</span>
+
+<span class="s2">#---EQUILIBRATION</span>
+<span class="s2">equilibration: npt-bilayer-short,npt-bilayer</span>
+<span class="s2">mdp specs:|{</span>
+<span class="s2">	&#39;group&#39;:&#39;aamd&#39;,</span>
+<span class="s2">	&#39;mdps&#39;:{</span>
+<span class="s2">		&#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;,{&#39;potential&#39;:&#39;verlet&#39;,&#39;emtol&#39;:10}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack1-eq-in.mdp&#39;:[</span>
+<span class="s2">			&#39;vacuum-packing&#39;,{&#39;nsteps&#39;:10000,&#39;dt&#39;:0.001}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack2-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;,{&#39;ref_p&#39;:&#39;500.0 1.0&#39;}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack3-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;],</span>
+<span class="s2">		&#39;input-md-npt-bilayer-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,],</span>
+<span class="s2">		&#39;input-md-npt-bilayer-short-eq-in.mdp&#39;:[&#39;npt-bilayer&#39;,{&#39;dt&#39;:0.0002,&#39;nsteps&#39;:10000}],</span>
+<span class="s2">		&#39;input-md-in.mdp&#39;:[&#39;npt-bilayer&#39;],</span>
+<span class="s2">		},</span>
+<span class="s2">	}</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;bilayer_control_aamd_test&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/bilayer-careful.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters-aamd.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;aamd&#39;</span><span class="p">,</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;free&#39;</span><span class="p">],</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+    <span class="s1">&#39;@extras/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codes/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	you MUST run `make go bilayer_control_aamd_restrain clean` first to generate restraints</span>
+<span class="s2">	use this procedure to make a &quot;free&quot; bilayer</span>
+<span class="s2">	this method packs lipids in vacuum with restraints</span>
+<span class="s2">	requires restrains generated via a run named &quot;generate_lipidome_restraints&quot;</span>
+<span class="s2">	developed bilayer-careful.py here and added posre-com-only to everything (will be ignored if no posre)</span>
+
+<span class="s2">step:               bilayer</span>
+
+<span class="s2">#---SHAPE AND COMPOSITION</span>
+<span class="s2">shape:              flat            # initial mesh shape flat</span>
+<span class="s2">aspect:             1.0             # XY proportion for flat bilayers</span>
+<span class="s2">binsize:            1.2             # grid spacing for initial lipid configuration</span>
+<span class="s2">monolayer offset:   1.5             # initial distance between leaflets </span>
+<span class="s2">monolayer top:      125             # number of lipids in the top leaflet</span>
+<span class="s2">monolayer bottom:   129             # number of lipids in the bottom leaflet (none for symmetric)</span>
+
+<span class="s2">lipid structures:   @structure-repo/bilayers-aamd/lipid-structures # folder for lipid structures</span>
+<span class="s2">landscape metadata: @charmm/landscape.json                         # colloquial types for different molecules</span>
+
+<span class="s2">#---COMPOSITIONS (propotional -- no need to sum to unity)</span>
+<span class="s2">composition top:    {&#39;DOPE&#39;:50.0,&#39;DOPS&#39;:25.0,&#39;PI2P&#39;:25.0,&#39;CHL1&#39;:25.0}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:104.0,&#39;CHL1&#39;:25.0}</span>
+<span class="s2">ste</span>
+<span class="s2">#---SOLVATION</span>
+<span class="s2">cation:             NA              # residue name for the cation (must be found in the ff)</span>
+<span class="s2">anion:              CL              # residue name for the anion (must be found in the ff)</span>
+<span class="s2">ionic strength:     0.150           # molar ionic strength</span>
+<span class="s2">sol:                SOL             # residue name for water</span>
+<span class="s2">atom resolution:    cgmd            # either cgmd or aamd</span>
+<span class="s2">water buffer:       8               # water-other gap distance in Angstroms (avoid waters in bilayer!)</span>
+<span class="s2">solvent:            spc216          # water box (must be copied via files)</span>
+<span class="s2">thickness:          16              # thickness of the box at the solvate step</span>
+<span class="s2">                                    # ...be careful with this. you can get widely varying levels of water</span>
+
+<span class="s2">#---COPY DEPENDENCIES</span>
+<span class="s2">files:              []</span>
+<span class="s2">sources:|           [&#39;@charmm/charmm36.ff&#39;,&#39;@charmm/auto_ff/charmm36_upright.ff&#39;,</span>
+<span class="s2">	&#39;@charmm/auto_ff/charmm36_restrain.ff&#39;]</span>
+
+<span class="s2">#---FORCE FIELD (note non-standard force fields must be copied via &quot;sources&quot;)</span>
+<span class="s2">force field:           charmm36            # specify the name of the force field (minus &quot;.ff&quot; suffix)</span>
+<span class="s2">force field upright:   charmm36_upright    # force field with &quot;upright&quot; vacuum pack restraints</span>
+<span class="s2">force field restrain:  charmm36_restrain   # force field with all lipid atoms restrained for water relax</span>
+
+<span class="s2">#---EQUILIBRATION</span>
+<span class="s2">equilibrate_restrain: [&#39;bilayer-s1-restr&#39;,&#39;bilayer-s2-restr&#39;]</span>
+<span class="s2">equilibrate_free: [&#39;bilayer-s3-free&#39;,&#39;bilayer-s4-free&#39;,&#39;bilayer-s5-free&#39;,&#39;bilayer&#39;]</span>
+<span class="s2">equilibrate_restrain_final: &quot;md-bilayer-s2-restr&quot;</span>
+<span class="s2">mdp specs:|{</span>
+<span class="s2">	&#39;group&#39;:&#39;aamd&#39;,</span>
+<span class="s2">	&#39;mdps&#39;:{</span>
+<span class="s2">		&#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;,{&#39;potential&#39;:&#39;verlet&#39;,&#39;emtol&#39;:10}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack1-eq-in.mdp&#39;:[</span>
+<span class="s2">			&#39;vacuum-packing&#39;,{&#39;nsteps&#39;:10000,&#39;dt&#39;:0.001}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack2-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;,{&#39;ref_p&#39;:&#39;500.0 1.0&#39;}],</span>
+<span class="s2">		&#39;input-md-vacuum-pack3-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;],</span>
+<span class="s2">		&#39;input-md-bilayer-s1-restr-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.0001,&#39;nsteps&#39;:50000,&#39;compressibility&#39;:&#39;0.0 4.5e-5&#39;,</span>
+<span class="s2">				&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;tau_p&#39;:0.1}],</span>
+<span class="s2">		&#39;input-md-bilayer-s2-restr-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.0002,&#39;nsteps&#39;:50000,&#39;compressibility&#39;:&#39;0.0 4.5e-5&#39;,</span>
+<span class="s2">				&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;tau_p&#39;:0.5}],</span>
+<span class="s2">		&#39;input-md-bilayer-s3-free-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.0002,&#39;nsteps&#39;:50000,&#39;compressibility&#39;:&#39;0.0 4.5e-5&#39;,</span>
+<span class="s2">				&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;tau_p&#39;:0.5}],</span>
+<span class="s2">		&#39;input-md-bilayer-s4-free-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.001,&#39;nsteps&#39;:50000,&#39;compressibility&#39;:&#39;0.0 4.5e-5&#39;,</span>
+<span class="s2">				&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;tau_p&#39;:0.5}],</span>
+<span class="s2">		&#39;input-md-bilayer-s5-free-eq-in.mdp&#39;:[&#39;npt-bilayer-simple&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.002,&#39;nsteps&#39;:50000,&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;tau_p&#39;:0.5}],</span>
+<span class="s2">		&#39;input-md-bilayer-eq-in.mdp&#39;:[&#39;npt-bilayer&#39;,</span>
+<span class="s2">			{&#39;dt&#39;:0.002,&#39;nsteps&#39;:100000,&#39;restrain&#39;:&#39;posre-com-only&#39;}],</span>
+<span class="s2">		&#39;input-md-in.mdp&#39;:[&#39;npt-bilayer&#39;,{&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;nsteps&#39;:500000}],},}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;bilayer_control_aamd_restrain&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;lipidome&#39;</span><span class="p">],</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;@bilayers/parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+	<span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">from amx import *</span>
+<span class="s2">init()</span>
+<span class="s2">#---note that restraint_maker is in amx/topology_tools.py loaded with amx</span>
+<span class="s2">restraint_maker()</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	this method is designed to pre-make any lipid restraints you might want</span>
+<span class="s2">	its product can be used by </span>
+<span class="s2">		(1) the bilayer maker&#39;s vacuum packing</span>
+<span class="s2">		(2) the flat bilayer maker&#39;s leaflet-specific restraints</span>
+<span class="s2">	the &quot;wants&quot; dictionary specifies the outputs and describes their restraints</span>
+<span class="s2">	the deposit site holds the automatically generated force fields</span>
+<span class="s2">	this method completely avoids using the &quot;define posre&quot; flags in GROMACS</span>
+<span class="s2">	all restraints are explicit, but this means you should avoid &quot;define posre&quot; which will restrain water</span>
+<span class="s2">	note that this experiment was copied nearly verbatim from the lipidome_expts.py</span>
+<span class="s2">	the quick script restraint function has been generalized </span>
+<span class="s2">		and moved from the martini bundle to topology_tools.py</span>
+
+<span class="s2">force field: charmm                      # we always include the force field for the Landscape class</span>
+<span class="s2">base force field: @charmm/charmm36.ff    # source force field to modify</span>
+<span class="s2">deposit site: @charmm/auto_ff            # where to write new force fields (keys in wants)</span>
+
+<span class="s2">#---specify transformed force field copies</span>
+<span class="s2">wants:|{</span>
+<span class="s2">	&#39;charmm36_upright.ff&#39;:[</span>
+<span class="s2">		{&#39;restraints&#39;:{&#39;charmm_glycerol&#39;:{&#39;z&#39;:1000},&#39;charmm_tails&#39;:{&#39;z&#39;:1000}},</span>
+<span class="s2">		&#39;naming&#39;:&#39;same&#39;,&#39;which&#39;:&#39;lipids&#39;},</span>
+<span class="s2">		{&#39;restraints&#39;:{&#39;sterol_out&#39;:{&#39;z&#39;:1000},&#39;sterol_in&#39;:{&#39;z&#39;:1000}},</span>
+<span class="s2">		&#39;naming&#39;:&#39;same&#39;,&#39;which&#39;:&#39;sterols&#39;},],</span>
+<span class="s2">	&#39;charmm36_restrain.ff&#39;:[</span>
+<span class="s2">		{&#39;restraints&#39;:{&#39;charmm_glycerol&#39;:{&#39;x&#39;:500,&#39;y&#39;:500,&#39;z&#39;:500},&#39;charmm_tails&#39;:{&#39;x&#39;:500,&#39;y&#39;:500,&#39;z&#39;:500}},</span>
+<span class="s2">			&#39;naming&#39;:&#39;same&#39;,&#39;which&#39;:&#39;lipids&#39;},</span>
+<span class="s2">		{&#39;restraints&#39;:{&#39;sterol_out&#39;:{&#39;x&#39;:500,&#39;y&#39;:500,&#39;z&#39;:500},&#39;sterol_in&#39;:{&#39;x&#39;:500,&#39;y&#39;:500,&#39;z&#39;:500}},</span>
+<span class="s2">			&#39;naming&#39;:&#39;same&#39;,&#39;which&#39;:&#39;sterols&#39;},]}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-bilayers-testset-v0-expts-py">
+<h2>inputs/bilayers/testset_v0_expts.py<a class="headerlink" href="#inputs-bilayers-testset-v0-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;test-h0&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: bilayer</span>
+<span class="s2">monolayer top: 90</span>
+<span class="s2">composition top: {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;martinize&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">start structure: inputs/helix0.pdb</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;adhere&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">force field: martini-sources</span>
+<span class="s2">sources: [&#39;@martini/martini-sources.ff&#39;]</span>
+<span class="s2">placement method: banana</span>
+<span class="s2">group up: resid 19</span>
+<span class="s2">group down: resid 7</span>
+<span class="s2">group origin: resid 7</span>
+<span class="s2">bilayer structure: s01-bilayer/md.part0001.gro</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:1.0,</span>
+<span class="s2">	}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">}]},</span>
+
+<span class="s1">&#39;test_helix0_flat&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control_flat&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: bilayer</span>
+<span class="s2">monolayer top: 90</span>
+<span class="s2">composition top: {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;martinize&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">start structure: inputs/helix0.pdb</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;adhere&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">placement method: banana</span>
+<span class="s2">group up: resid 19</span>
+<span class="s2">group down: resid 7</span>
+<span class="s2">group origin: resid 7</span>
+<span class="s2">bilayer structure: s01-bilayer/md.part0001.gro</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:1.0,</span>
+<span class="s2">	}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">}]},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-bilayers-testset-v1-expts-py">
+<h2>inputs/bilayers/testset_v1_expts.py<a class="headerlink" href="#inputs-bilayers-testset-v1-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;banana_v1&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;martinize&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">    the quintessential banana simulation</span>
+<span class="s2">    !!! needs:</span>
+<span class="s2">        starting bilayer v813</span>
+<span class="s2">        incorporation into a test set that makes the starting bilayer</span>
+<span class="s2">        switch to multimeric protein class</span>
+<span class="s2">        ...</span>
+<span class="s2">start structure: @structure-repo/proteins/IRSp53_modeller_updated.pdb</span>
+<span class="s2">martinize path: @martini/bin/martinize.py</span>
+<span class="s2">dssp path: @martini/bin/dssp-2.0.4-linux-amd64</span>
+<span class="s2">step: protein</span>
+<span class="s2">martinize flags: -ed</span>
+<span class="s2">martinize ff: martini22</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;adhere&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">force field: martini_upright_alt</span>
+<span class="s2">sources: [&#39;@martini/auto_ff/martini_upright_alt.ff&#39;]</span>
+<span class="s2">placement method: banana</span>
+<span class="s2">group up: [&#39;resid 470&#39;]</span>
+<span class="s2">group down: [&#39;resid 110&#39;,&#39;resid 280&#39;]</span>
+<span class="s2">group origin: [&#39;resid 110&#39;,&#39;resid 280&#39;]</span>
+<span class="s2">bilayer structure: @structure-repo/bilayers-cgmd/v813.gro</span>
+<span class="s2">protein water gap: 3</span>
+<span class="s2">protein_lattice:|{&#39;banana_direction&#39;:&#39;x&#39;,&#39;nrows&#39;:1,&#39;ncols&#39;:1,&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">    &#39;space_scale&#39;:20,&#39;total_proteins&#39;:1,&#39;protein_shift_up&#39;:3.5}</span>
+<span class="s2">equilibration: short</span>
+<span class="s2">mdp specs:|{</span>
+<span class="s2">    &#39;group&#39;:&#39;cgmd&#39;,</span>
+<span class="s2">    &#39;mdps&#39;:{</span>
+<span class="s2">        &#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;],</span>
+<span class="s2">        &#39;input-md-short-eq-in.mdp&#39;:[{&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;pressure&#39;:&#39;npt-semiisotropic-weak&#39;,</span>
+<span class="s2">            &#39;nsteps&#39;:10000,&#39;groups&#39;:&#39;protein&#39;,&#39;temperature&#39;:&#39;protein&#39;,&#39;dt&#39;:0.005}],</span>
+<span class="s2">        &#39;input-md-in.mdp&#39;:[{&#39;restrain&#39;:&#39;posre-com-only&#39;,</span>
+<span class="s2">            &#39;nsteps&#39;:50000,&#39;groups&#39;:&#39;protein&#39;,&#39;temperature&#39;:&#39;protein&#39;}],</span>
+<span class="s2">        },</span>
+<span class="s2">    }</span>
+<span class="s2">two protein hack: True</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">}]}</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-bilayers-bilayer-cgmd-expts-py">
+<h2>inputs/bilayers/bilayer_cgmd_expts.py<a class="headerlink" href="#inputs-bilayers-bilayer-cgmd-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;bilayer_control_multiply&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control&#39;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;multiply&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: large</span>
+<span class="s2">requires: multiply</span>
+<span class="s2">equilibration: npt-bilayer-short,npt-bilayer</span>
+<span class="s2">minimize: True</span>
+<span class="s2">proceed: True</span>
+<span class="s2">genconf gap: 0.3</span>
+<span class="s2">nx: 2</span>
+<span class="s2">ny: 2</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">}]},</span>
+
+<span class="s1">&#39;bilayer_control_flat_multiply&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control_flat&#39;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;large&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;multiply&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: large</span>
+<span class="s2">requires: multiply</span>
+<span class="s2">equilibration: npt-bilayer-short,npt-bilayer</span>
+<span class="s2">minimize: True</span>
+<span class="s2">proceed: True</span>
+<span class="s2">genconf gap: 0.3</span>
+<span class="s2">nx: 2</span>
+<span class="s2">ny: 2</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">}]},</span>
+
+<span class="s1">&#39;bilayer_control_cgmd&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/bilayer.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;free&#39;</span><span class="p">],</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+    <span class="s1">&#39;@extras/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codes/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">    use this procedure to make a &quot;free&quot; bilayer</span>
+<span class="s2">    this method packs lipids in vacuum with restraints</span>
+<span class="s2">    requires restrains generated via a run named &quot;generate_lipidome_restraints&quot;</span>
+
+<span class="s2">step:               bilayer</span>
+
+<span class="s2">#---SHAPE AND COMPOSITION</span>
+<span class="s2">shape:              flat            # initial mesh shape flat</span>
+<span class="s2">aspect:             1.0             # XY proportion for flat bilayers</span>
+<span class="s2">binsize:            1.2             # grid spacing for initial lipid configuration</span>
+<span class="s2">monolayer offset:   1.5             # initial distance between leaflets </span>
+<span class="s2">monolayer top:      90              # number of lipids in the top leaflet</span>
+<span class="s2">monolayer bottom:   None            # number of lipids in the bottom leaflet (none for symmetric)</span>
+
+<span class="s2">lipid structures:   inputs/martini/library-lipidome-structs  # folder for lipid structures and yaml metadata</span>
+<span class="s2">landscape metadata: inputs/martini/auto_ff/landscape.json    # colloquial types for different molecules</span>
+
+<span class="s2">#---COMPOSITIONS (propotional -- no need to sum to unity)</span>
+<span class="s2">composition top:    {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0}</span>
+
+<span class="s2">#---SOLVATION</span>
+<span class="s2">cation:             NA+             # residue name for the cation (must be found in the ff)</span>
+<span class="s2">anion:              CL-             # residue name for the anion (must be found in the ff)</span>
+<span class="s2">ionic strength:     0.150           # molar ionic strength</span>
+<span class="s2">sol:                W               # residue name for water</span>
+<span class="s2">atom resolution:    cgmd            # either cgmd or aamd</span>
+<span class="s2">water buffer:       8               # water-other gap distance in Angstroms (avoid waters in bilayer!)</span>
+<span class="s2">solvent:            martini-water   # water box (must be copied via files)</span>
+<span class="s2">thickness:          14              # thickness of the box at the solvate step</span>
+
+<span class="s2">#---COPY DEPENDENCIES</span>
+<span class="s2">files:              [&#39;inputs/martini/library-general-structs/martini-water.gro&#39;]</span>
+<span class="s2">sources:            [&#39;inputs/martini/martini-sources.ff&#39;,&#39;inputs/martini/auto_ff/martini_upright.ff&#39;]</span>
+
+<span class="s2">#---FORCE FIELD</span>
+<span class="s2">force field:           martini-sources     # specify the name of the force field (minus &quot;.ff&quot; suffix)</span>
+<span class="s2">                                           # note non-standard force fields must be copied via &quot;sources&quot;</span>
+<span class="s2">force field upright:   martini_upright     # force field with &quot;upright&quot; vacuum pack restraints</span>
+
+<span class="s2">#---EQUILIBRATION</span>
+<span class="s2">equilibration:      npt-bilayer</span>
+<span class="s2">mdp specs:|{</span>
+<span class="s2">    &#39;group&#39;:&#39;cgmd&#39;,</span>
+<span class="s2">    &#39;mdps&#39;:{</span>
+<span class="s2">        &#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;],</span>
+<span class="s2">        &#39;input-md-vacuum-pack1-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;,{&#39;ref_p&#39;:&#39;500 1&#39;,&#39;nsteps&#39;:100000}],</span>
+<span class="s2">        &#39;input-md-vacuum-pack2-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;,{&#39;nsteps&#39;:100000}],</span>
+<span class="s2">        &#39;input-md-npt-bilayer-short-eq-in.mdp&#39;:[&#39;npt-bilayer&#39;,</span>
+<span class="s2">            {&#39;pressure&#39;:&#39;npt-semiisotropic-weak&#39;,&#39;dt&#39;:0.001,&#39;nsteps&#39;:200000}],</span>
+<span class="s2">        &#39;input-md-npt-bilayer-eq-in.mdp&#39;:[&#39;npt-bilayer&#39;,</span>
+<span class="s2">            {&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;pressure&#39;:&#39;npt-semiisotropic-weak&#39;,&#39;dt&#39;:0.01}],</span>
+<span class="s2">        &#39;input-md-in.mdp&#39;:[{&#39;pressure&#39;:&#39;npt-semiisotropic-weak&#39;}],</span>
+<span class="s2">        },</span>
+<span class="s2">    }</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;bilayer_control_flat&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/bilayer-flat.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;free&#39;</span><span class="p">,</span><span class="s1">&#39;flat&#39;</span><span class="p">],</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+    <span class="s1">&#39;@extras/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codes/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">    use this procedure to make a &quot;free&quot; bilayer</span>
+<span class="s2">    this method packs lipids in vacuum with restraints</span>
+<span class="s2">    requires restrains generated via a run named &quot;generate_lipidome_restraints&quot;</span>
+<span class="s2">    run the full test with multiply via: </span>
+<span class="s2">        make quick clear_lipidome_restraints &amp;&amp; make prep generate_lipidome_restraints &amp;&amp; make run &amp;&amp; </span><span class="se">\</span>
+<span class="s2">        make clean sure &amp;&amp; make prep bilayer_control_flat_multiply &amp;&amp; make metarun</span>
+
+<span class="s2">step:               bilayer</span>
+
+<span class="s2">#---SHAPE AND COMPOSITION</span>
+<span class="s2">shape:              flat            # initial mesh shape flat</span>
+<span class="s2">aspect:             1.0             # XY proportion for flat bilayers</span>
+<span class="s2">binsize:            1.2             # grid spacing for initial lipid configuration</span>
+<span class="s2">monolayer offset:   1.5             # initial distance between leaflets </span>
+<span class="s2">monolayer top:      90              # number of lipids in the top leaflet</span>
+<span class="s2">monolayer bottom:   None            # number of lipids in the bottom leaflet (none for symmetric)</span>
+
+<span class="s2">lipid structures:   inputs/martini/library-lipidome-structs/  # folder for lipid structures and yaml metadata</span>
+<span class="s2">landscape metadata: inputs/martini/auto_ff/landscape.json     # colloquial types for different molecules</span>
+
+<span class="s2">#---COMPOSITIONS (propotional -- no need to sum to unity)</span>
+<span class="s2">composition top:    {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0,&#39;DPPC&#39;:0.5}</span>
+
+<span class="s2">#---SOLVATION</span>
+<span class="s2">cation:             NA+             # residue name for the cation (must be found in the ff)</span>
+<span class="s2">anion:              CL-             # residue name for the anion (must be found in the ff)</span>
+<span class="s2">ionic strength:     0.150           # molar ionic strength</span>
+<span class="s2">sol:                W               # residue name for water</span>
+<span class="s2">atom resolution:    cgmd            # either cgmd or aamd</span>
+<span class="s2">water buffer:       8               # water-other gap distance in Angstroms (avoid waters in bilayer!)</span>
+<span class="s2">solvent:            martini-water   # water box (must be copied via files)</span>
+<span class="s2">thickness:          14              # thickness of the box at the solvate step</span>
+
+<span class="s2">#---COPY DEPENDENCIES</span>
+<span class="s2">files:    [&#39;inputs/martini/library-general-structs/martini-water.gro&#39;]</span>
+<span class="s2">sources:| [</span>
+<span class="s2">    &#39;inputs/martini/martini-sources.ff&#39;,</span>
+<span class="s2">    &#39;inputs/martini/auto_ff/martini_upright.ff&#39;,</span>
+<span class="s2">    &#39;inputs/martini/auto_ff/martini_upright_alt.ff&#39;]</span>
+
+<span class="s2">#---FORCE FIELD</span>
+<span class="s2">force field:           martini-sources      # specify the name of the force field (minus &quot;.ff&quot; suffix)</span>
+<span class="s2">                                            # note non-standard force fields must be copied via &quot;sources&quot;</span>
+<span class="s2">force field upright:   martini_upright      # force field with &quot;upright&quot; vacuum pack restraints</span>
+<span class="s2">force field flat:      martini_upright_alt  # force field with alternate lipids for remaining flat</span>
+
+<span class="s2">#---EQUILIBRATION</span>
+<span class="s2">equilibration:      npt-bilayer</span>
+<span class="s2">mdp specs:|{</span>
+<span class="s2">    &#39;group&#39;:&#39;cgmd&#39;,</span>
+<span class="s2">    &#39;mdps&#39;:{</span>
+<span class="s2">        &#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;],</span>
+<span class="s2">        &#39;input-md-vacuum-pack1-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;,{&#39;ref_p&#39;:&#39;500 1&#39;,&#39;nsteps&#39;:100000}],</span>
+<span class="s2">        &#39;input-md-vacuum-pack2-eq-in.mdp&#39;:[&#39;vacuum-packing&#39;,{&#39;nsteps&#39;:100000}],</span>
+<span class="s2">        &#39;input-md-npt-bilayer-short-eq-in.mdp&#39;:[&#39;npt-bilayer&#39;,</span>
+<span class="s2">            {&#39;pressure&#39;:&#39;npt-semiisotropic-weak&#39;,&#39;dt&#39;:0.001,&#39;nsteps&#39;:200000}],</span>
+<span class="s2">        &#39;input-md-npt-bilayer-eq-in.mdp&#39;:[&#39;npt-bilayer&#39;,</span>
+<span class="s2">            {&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;pressure&#39;:&#39;npt-semiisotropic-weak&#39;,&#39;dt&#39;:0.01}],</span>
+<span class="s2">        &#39;input-md-in.mdp&#39;:[{&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;pressure&#39;:&#39;npt-semiisotropic-weak&#39;,</span>
+<span class="s2">            &#39;nsteps&#39;:500000}],</span>
+<span class="s2">        },</span>
+<span class="s2">    }</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;bilayer_release_new_mdp&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/bilayer-release.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;bilayer&#39;</span><span class="p">],</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+    <span class="s1">&#39;@extras/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codes/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">step: release</span>
+<span class="s2">force field: martini-sources</span>
+<span class="s2">sources: [&#39;@martini/martini-sources.ff&#39;]</span>
+<span class="s2">bilayer structure: @structure-repo/bilayers-cgmd/stock-bilayer-v00.gro</span>
+
+<span class="s2">#---EQUILIBRATION</span>
+<span class="s2">equilibration: npt-bilayer-short,npt-bilayer</span>
+<span class="s2">mdp specs:|{</span>
+<span class="s2">    &#39;group&#39;:&#39;cgmd&#39;,</span>
+<span class="s2">    &#39;mdps&#39;:{</span>
+<span class="s2">        &#39;input-md-npt-bilayer-short-eq-in.mdp&#39;:[&#39;npt-bilayer&#39;,</span>
+<span class="s2">            {&#39;pressure&#39;:&#39;npt-semiisotropic-weak&#39;,&#39;dt&#39;:0.001,&#39;nsteps&#39;:10000}],</span>
+<span class="s2">        &#39;input-md-npt-bilayer-eq-in.mdp&#39;:[&#39;npt-bilayer&#39;,</span>
+<span class="s2">            {&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;pressure&#39;:&#39;npt-semiisotropic-weak&#39;,&#39;dt&#39;:0.01,&#39;nsteps&#39;:10000}],</span>
+<span class="s2">        &#39;input-md-in.mdp&#39;:[{&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;pressure&#39;:&#39;npt-semiisotropic-weak&#39;,</span>
+<span class="s2">            &#39;nsteps&#39;:100000}],</span>
+<span class="s2">        },</span>
+<span class="s2">    }</span>
+<span class="s2">    </span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;bilayer_release&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/bilayer-release.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;bilayer&#39;</span><span class="p">],</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+    <span class="s1">&#39;@extras/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codes/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: release</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-bilayers-bilayer-protein-cgmd-expts-py">
+<h2>inputs/bilayers/bilayer_protein_cgmd_expts.py<a class="headerlink" href="#inputs-bilayers-bilayer-protein-cgmd-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/bilayer-protein.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;protein-bilayer&#39;</span><span class="p">],</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+    <span class="s1">&#39;@extras/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;codes/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	requires a pre-equilibrated, flat bilayer</span>
+<span class="s2">    gets the protein details automatically from state.protein_prepared</span>
+<span class="s2">    bilayer structure and force field are coded below, however you can override them in a metarun</span>
+<span class="s2">    since you can override in a metarun, we have only one adhesion routine</span>
+
+<span class="s2">step: adhere</span>
+
+<span class="s2">bilayer structure: inputs/previous/bilayer.gro # starting bilayer structure</span>
+
+<span class="s2">landscape metadata: @martini/auto_ff/landscape.json # colloquial types for different molecules</span>
+
+<span class="s2">#---COPY DEPENDENCIES</span>
+<span class="s2">files:              []</span>
+<span class="s2">sources:            [&#39;@martini/auto_ff/martini_upright_alt.ff&#39;]</span>
+
+<span class="s2">#---FORCE FIELD</span>
+<span class="s2">force field:  martini_upright_alt # specify the name of the force field (minus &quot;.ff&quot; suffix)</span>
+<span class="s2">                                  # note non-standard force fields must be copied via &quot;sources&quot;</span>
+
+<span class="s2">#---PROTEIN POSITION INSTRUCTIONS</span>
+<span class="s2">placement method: banana                # several distinct methods to choose from (see other expts)</span>
+<span class="s2">group up: resid 258                     # banana method: this group points up *after* laying the banana flat</span>
+<span class="s2">group down: [&#39;resid 240&#39;,&#39;resid 652&#39;]   # banana method: this group points down *after* laying the banana flat</span>
+<span class="s2">group origin: [&#39;resid 240&#39;,&#39;resid 652&#39;] # reference/pivot point for the protein (set to origin)</span>
+
+<span class="s2">#---PROTEIN LATTICE DEFINITIONS</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:3.0,</span>
+<span class="s2">	}</span>
+
+<span class="s2">sol: W                         # !!! remove this to the landscape</span>
+<span class="s2">ionic strength: 0.150          # box is reionized after adding protein to ensure neutral</span>
+<span class="s2">protein water gap: 3           # distance in Angstroms between protein in water after addition</span>
+<span class="s2">reionize method: ions          # select &quot;ions&quot; to replace only ions and &quot;solvent&quot; to replace water too</span>
+<span class="s2">cation: NA+                    # choose a new cation for adding back counterions</span>
+<span class="s2">anion: CL-                     # choose a new anion for adding back counterions</span>
+
+<span class="s2">mdp specs:|{</span>
+<span class="s2">    &#39;group&#39;:&#39;cgmd&#39;,</span>
+<span class="s2">    &#39;mdps&#39;:{</span>
+<span class="s2">        &#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;],</span>
+<span class="s2">        &#39;input-md-in.mdp&#39;:[{&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;pressure&#39;:&#39;npt-semiisotropic-weak&#39;,</span>
+<span class="s2">            &#39;nsteps&#39;:500000,&#39;groups&#39;:&#39;protein&#39;,&#39;temperature&#39;:&#39;protein&#39;}],</span>
+<span class="s2">        },</span>
+<span class="s2">    }</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="submodules.html" title="Submodules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

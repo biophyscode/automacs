@@ -1,0 +1,193 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Configuration &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Configuration</a><ul>
+<li><a class="reference internal" href="#gromacs">GROMACS</a><ul>
+<li><a class="reference internal" href="#versions">Versions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#automacs">Automacs</a><ul>
+<li><a class="reference internal" href="#setup">Setup</a></li>
+<li><a class="reference internal" href="#config-file">Config file</a></li>
+<li><a class="reference internal" href="#paths">Paths</a></li>
+<li><a class="reference internal" href="#interfaces">Interfaces</a></li>
+<li><a class="reference internal" href="#bulky-inputs">Bulky inputs</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#live-docs">“Live” Docs</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/configuration.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
+<p>Automacs clearly divides experiment parameters from settings required to run the code. The scientific parameters are placed in <a class="reference internal" href="experiments.html#customize-experiments"><span class="std std-ref">experiment files</span></a> and are designed to be portable. Software locations, hardware settings, and the precise configuration of your copy of automacs are set in two places: one is specific to GROMACS, and the other configures automacs.</p>
+<div class="section" id="gromacs">
+<span id="gmx-config"></span><h2>GROMACS<a class="headerlink" href="#gromacs" title="Permalink to this headline">¶</a></h2>
+<p>Automacs needs to find GROMACS exeuctables at the terminal in order to run your simulations. If you install a single copy of GROMACS for all users, than the default configuration will suffice, but either way, automacs will look for a gromacs configuration file in one of two locations.</p>
+<p>Running <a class="reference internal" href="base.html#control.prep" title="control.prep"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">prep</span></code></a> for the first time causes automacs to check for the configuration. If it can’t find one, it throws an error and asks you to run the configure script. If you run <a class="reference internal" href="base.html#cli.gromacs_config" title="cli.gromacs_config"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">gromacs_config</span> <span class="pre">home</span></code></a>, it will write the example configuration file to a hidden file in your home directory at <code class="docutils literal"><span class="pre">~/.automacs.py</span></code>. You can override the global configuration with a local one, written to <code class="docutils literal"><span class="pre">./gromacs_config.py</span></code>, by running <a class="reference internal" href="base.html#cli.gromacs_config" title="cli.gromacs_config"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">gromacs_config</span> <span class="pre">local</span></code></a>, or by copying the file to the automacs root directory yourself. We recommend setting up a global configuration for a particular system, and using the local copies to customize particular simulations that might require more or less computing power.</p>
+<p>These configuration files consist of a single dictionary called <code class="docutils literal"><span class="pre">machine_configuration</span></code> with keys that should correspond to a portion of the hostname. Any key that uniquely matches the hostname provides the configuration for the simulation (otherwise the <code class="docutils literal"><span class="pre">LOCAL</span></code> key provides the default configuration). The following example includes an entry for a popular supercomputer in Texas called <code class="docutils literal"><span class="pre">stampede</span></code>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">machine_configuration</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="c1">#---the &quot;LOCAL&quot; machine is default, protected</span>
+  <span class="s1">&#39;LOCAL&#39;</span><span class="p">:</span><span class="nb">dict</span><span class="p">(</span>
+    <span class="n">gpu_flag</span> <span class="o">=</span> <span class="s1">&#39;auto&#39;</span><span class="p">,</span>
+    <span class="p">),</span>
+  <span class="s1">&#39;stampede&#39;</span><span class="p">:</span><span class="nb">dict</span><span class="p">(</span>
+    <span class="n">gmx_series</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="c1">#---refer to a string that contains the PBS header flags</span>
+    <span class="n">cluster_header</span> <span class="o">=</span> <span class="n">stampede_header</span><span class="p">,</span>
+    <span class="n">ppn</span> <span class="o">=</span> <span class="mi">16</span><span class="p">,</span>
+    <span class="n">walltime</span> <span class="o">=</span> <span class="s2">&quot;24:00&quot;</span><span class="p">,</span>
+    <span class="n">nnodes</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="c1">#---many systems use the &quot;_mpi&quot; suffix on the executables</span>
+    <span class="n">suffix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="c1">#---many systems will only run GROMACS binaries through mpi</span>
+    <span class="n">mdrun_command</span> <span class="o">=</span> <span class="s1">&#39;$(echo &quot;ibrun -n NPROCS -o 0 mdrun_mpi&quot;)&#39;</span><span class="p">,</span>
+    <span class="n">allocation</span> <span class="o">=</span> <span class="s1">&#39;ALLOCATION_CODE_HERE&#39;</span><span class="p">,</span>
+    <span class="n">submit_command</span> <span class="o">=</span> <span class="s1">&#39;sbatch&#39;</span><span class="p">,</span>
+    <span class="p">),</span>
+  <span class="p">}</span>
+</pre></div>
+</div>
+<p>Users can customize the number of processors per node (<code class="docutils literal"><span class="pre">ppn</span></code>), the number of nodes (<code class="docutils literal"><span class="pre">nnodes</span></code>), allocation codes, and even the batch submission command so that these jobs can run properly on many different machines. These parameters are packaged into a <code class="docutils literal"><span class="pre">cluster-continue.sh</span></code> file within each step directory when users run <a class="reference internal" href="base.html#cli.cluster" title="cli.cluster"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">cluster</span></code></a> on their supercomputing platform. The default configuration provided by <a class="reference internal" href="base.html#cli.gromacs_config" title="cli.gromacs_config"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">gromacs_config</span> <span class="pre">local</span></code></a> provides a few useful examples. Users can submit <code class="docutils literal"><span class="pre">cluster-continue.sh</span></code> directly to the queue to continue the jobs. The <code class="docutils literal"><span class="pre">extend</span></code> and <code class="docutils literal"><span class="pre">until</span></code> parameters in the machine configuration are used to set the number of additional or total picoseconds to run for, otherwise the jobs will consume all of the available walltime and gently stop just before it’s up.</p>
+<p>Since each cluster typically has its own <a class="reference external" href="http://www.adaptivecomputing.com/products/open-source/torque/">PBS header</a> format, users can place these in text files (e.g. <code class="docutils literal"><span class="pre">stampede_header</span></code> above). Automacs will automatically replaced any capitalized text in these headers with the value corresponding to keys in the <code class="docutils literal"><span class="pre">machine_configuration</span></code> dictionary. For example, the <code class="docutils literal"><span class="pre">nnodes</span> <span class="pre">=</span> <span class="pre">1</span></code> setting causes <code class="docutils literal"><span class="pre">NNODES</span></code> in the <code class="docutils literal"><span class="pre">stampede_header</span></code> to be replaced with the number <code class="docutils literal"><span class="pre">1</span></code>. This replacement strategy makes it easy to choose a specific configuration for new jobs, or to set the default configuration on a machine using <a class="reference internal" href="base.html#cli.gromacs_config" title="cli.gromacs_config"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">gromacs_config</span> <span class="pre">home</span></code></a> once without having to bother with it when you create new simulations.</p>
+<div class="section" id="versions">
+<h3>Versions<a class="headerlink" href="#versions" title="Permalink to this headline">¶</a></h3>
+<p>Many systems have multiple copies of GROMACS which can be loaded or unloaded using <a class="reference external" href="http://modules.sourceforge.net/">environment modules</a>. To load a certain module, you can add them to a string or list in the <code class="docutils literal"><span class="pre">module</span></code> key in the <code class="docutils literal"><span class="pre">machine_configuration</span></code>. You can also add <code class="docutils literal"><span class="pre">module</span></code> commands to the cluster header scripts described above.</p>
+</div>
+</div>
+<div class="section" id="automacs">
+<span id="code-config"></span><h2>Automacs<a class="headerlink" href="#automacs" title="Permalink to this headline">¶</a></h2>
+<p>Automacs can use a number of different extension modules which can be easily shared with other users by packaging them in <a class="reference external" href="https://git-scm.com/">git repositories</a>. Most users will opt to automatically clone several extensions at once using the <a class="reference internal" href="index.html#bootstrap"><span class="std std-ref">setup</span></a> procedure described below. Individual extensions can also be directly added to a copy of automacs using a simple command which manipulates the local <code class="docutils literal"><span class="pre">config.py</span></code> file. This file describes all of paths that automacs uses, so that you are free to store your codes wherever you like. Extensions must be added from git repositories using the <code class="xref any docutils literal"><span class="pre">make</span> <span class="pre">set</span></code> utility, which writes <code class="docutils literal"><span class="pre">config.py</span></code>.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>make <span class="nb">set</span> module ~/path/to/extension.git local/path/to/extension
+make <span class="nb">set</span> module <span class="nv">source</span><span class="o">=</span><span class="s2">&quot;https://github.com/username/extension&quot;</span> <span class="nv">spot</span><span class="o">=</span><span class="s2">&quot;inputs/path/to/extension&quot;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">spot</span></code> argument is unconstrained; you can store the codes anywhere within the root directory. We prefer to put minor extensions in the <code class="docutils literal"><span class="pre">inputs</span></code> folder, and major extensions directly in the root directory. The <code class="docutils literal"><span class="pre">config.py</span></code> file will change as you add modules and interface functions. A local copy of your config.py is rendered <a class="reference internal" href="config.html"><span class="doc">here</span></a>, as part of the <span class="xref std std-ref">live documentation</span> of this copy of automacs.</p>
+<div class="section" id="setup">
+<span id="bootstrap"></span><h3>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h3>
+<p>At the top of the documentation we recommend that users run the <a class="reference internal" href="base.html#cli.setup" title="cli.setup"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">setup</span></code></a> command. Running e.g. <code class="docutils literal"><span class="pre">make</span> <span class="pre">setup</span> <span class="pre">all</span></code> will pull all of the standard modules from their internet sources (typically <a class="reference external" href="https://github.com/biophyscode">github</a>, however private repositories are also allowed as long as you use ssh aliases).</p>
+<p>Cloning the <code class="docutils literal"><span class="pre">proteins</span></code> code repository (part of the <code class="docutils literal"><span class="pre">protein</span></code> and <code class="docutils literal"><span class="pre">all</span></code> collections) will give you access to the <code class="docutils literal"><span class="pre">protein</span></code> experiment listed under <a class="reference internal" href="base.html#control.prep" title="control.prep"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">prep</span></code></a> along with a few other experiments. We recommend using this as an example to get familiar with the automacs framework. Running <code class="docutils literal"><span class="pre">make</span> <span class="pre">go</span> <span class="pre">protein</span> <span class="pre">reset</span></code> after the setup will run a simulation of the <a class="reference external" href="http://www.rcsb.org/pdb/explore.do?structureId=1yrf">villin headpiece</a>. The starting structure is set in the <code class="docutils literal"><span class="pre">pdb_source</span></code> key in the protein experiment file. All of the experiment files can be viewed in this documentation by reading the experiments subsections of the <a class="reference internal" href="index.html#components"><span class="std std-ref">components</span></a> list.</p>
+</div>
+<div class="section" id="config-file">
+<span id="id1"></span><h3>Config file<a class="headerlink" href="#config-file" title="Permalink to this headline">¶</a></h3>
+<p>This script clones a copy of automacs, and generates an initial copy of <code class="docutils literal"><span class="pre">config.py</span></code> with the bare minimum settings. It then uses <code class="docutils literal"><span class="pre">make</span> <span class="pre">set</span></code> to add extension modules, and to point the code to two command-line interface modules found in <code class="docutils literal"><span class="pre">amx/cli.py</span></code> and <code class="docutils literal"><span class="pre">inputs/docs/docs.py</span></code> using <code class="docutils literal"><span class="pre">make</span> <span class="pre">set</span> <span class="pre">commands</span></code>. The latter is responsible for compiling this documentation and is written to take advantage of the <a class="reference internal" href="interface.html"><span class="doc">makefile interface</span></a>.</p>
+<p>Starting simulations often requires starting configurations such as a protein crystal structure or the initial configuration for a polymer or bilayer. These files tend to be large, and should not be packaged alongside code. You can always place them in their own extension module.</p>
+</div>
+<div class="section" id="paths">
+<span id="finding-experiments"></span><h3>Paths<a class="headerlink" href="#paths" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal"><span class="pre">config.py</span></code> file describes the rules for finding experiments. Since many extensions may provide many different standalone experiments and test sets, you may have a large list of experiments. Rather than requiring that each experiment has its own file, you can organize multiple experiments into one <span class="xref std std-doc">experiment file</span>. Automacs finds these files according to the <code class="docutils literal"><span class="pre">inputs</span></code> item in <code class="docutils literal"><span class="pre">config.py</span></code>. This can be a single string with a path to your experiments file, or a list of paths. Any path can contain wildcards. For the most flexibility, you can also set <code class="docutils literal"><span class="pre">inputs</span></code> to <code class="docutils literal"><span class="pre">'&#64;regex^.*?_expts\\.py$'</span></code>, where everything after <code class="docutils literal"><span class="pre">&#64;regex</span></code> is a regular expression for matching <em>any file</em> in the automacs subtree. In this example, we require all experiment files to be named e.g. <code class="docutils literal"><span class="pre">my_experiment_group_expts.py</span></code>.</p>
+</div>
+<div class="section" id="interfaces">
+<span id="running-commands"></span><h3>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h3>
+<p>Another item in the <code class="docutils literal"><span class="pre">config.py</span></code> dictionary is called <code class="docutils literal"><span class="pre">commands</span></code>. It provides explicit paths to python scripts containing command-line interface functions described in the <a class="reference internal" href="interface.html"><span class="doc">interface</span></a> section.</p>
+</div>
+<div class="section" id="bulky-inputs">
+<span id="simulation-source-material"></span><h3>Bulky inputs<a class="headerlink" href="#bulky-inputs" title="Permalink to this headline">¶</a></h3>
+<p>Starting simulations often requires starting configurations such as a protein crystal structure or the initial configuration for a polymer or bilayer. These files tend to be large, and should not be packaged alongside code. You can always place them in their own extension module.</p>
+</div>
+</div>
+<div class="section" id="live-docs">
+<h2>“Live” Docs<a class="headerlink" href="#live-docs" title="Permalink to this headline">¶</a></h2>
+<p>This documentation uses the modules list <code class="docutils literal"><span class="pre">config.py</span></code> to include the automatic documentation of any extension modules alongside this walkthrough. These are listed in the <a class="reference internal" href="index.html#components"><span class="std std-ref">components</span></a> section below. Some extensions may only include starting structures or raw data, in which case they will be blank. This scheme ensures that adding codes to your copy of automacs will make it easy to read the accompanying documentation. Each copy of the documentation also serves as a “live” snapshot of the available codes.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

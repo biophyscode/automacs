@@ -1,0 +1,274 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Concept &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Concept</a><ul>
+<li><a class="reference internal" href="#overloaded-python">“Overloaded Python”</a></li>
+<li><a class="reference internal" href="#procedures">Procedures</a><ul>
+<li><a class="reference internal" href="#procedure-scripts">Procedure scripts</a></li>
+<li><a class="reference internal" href="#functions">Functions</a></li>
+<li><a class="reference internal" href="#supervised-execution">Supervised execution</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/concept.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="concept">
+<h1>Concept<a class="headerlink" href="#concept" title="Permalink to this headline">¶</a></h1>
+<p>Automacs is a set of python codes which prepares molecular simulations using common tools orbiting the popular <a class="reference external" href="http://www.gromacs.org/">GROMACS</a> integrator. The purpose of this project is to ensure that simulations are prepared according to a standard method which also bundles simulation data with careful documentation. Automacs (hopefully) makes it possible to generate large simulation datasets with a minimum of description and so-called “manual” labor which invites mistakes and wastes time. Automacs codes are meant to be cloned once for each simulation rather than installed in a central location. This means that each simulation has a copy of the code used to create it. The codes are extremely modular, and users can share novel experiments using <a class="reference external" href="https://git-scm.com/">git</a> and the automacs <a class="reference internal" href="index.html#code-config"><span class="std std-ref">configuration</span></a>.</p>
+<div class="section" id="overloaded-python">
+<h2>“Overloaded Python”<a class="headerlink" href="#overloaded-python" title="Permalink to this headline">¶</a></h2>
+<p>High-level programming languages often rely on functions which can accept many different kinds of input while producing a consistent result that matches our intuition. This is called <a class="reference external" href="https://en.wikipedia.org/wiki/Function_overloading">overloading</a>. The automacs codes are overloaded in two ways. First, simulation data files and directories for different procedures are organized in a uniform way. These file-naming conventions are described in the <a class="reference internal" href="index.html#framework"><span class="std std-ref">framework</span></a>. Users who follow these rules can benefit from generic functions that apply to many different simulation types. For example, performing restarts or ensemble changes in GROMACS uses a single generic procedure, regardless of whether you are doing atomistic or coarse-grained simulations. Second, the procedure codes are organized to reflect the consistent naming conventions so that they can be used in as many situations as possible. The simulation-specific settings are separated from the generic, modular steps required to build a simulation so that users can simulate a variety of different systems without rewriting any code. In the next section, we will describe how this separation happens.</p>
+</div>
+<div class="section" id="procedures">
+<span id="concept-procedures"></span><h2>Procedures<a class="headerlink" href="#procedures" title="Permalink to this headline">¶</a></h2>
+<p>Automacs executes code in an extremely straightforward way: users first request an experiment, and then they run it. After you clone automacs, you can run a simulation with a single <a class="reference external" href="https://www.gnu.org/software/make/">make</a> command — the automacs interface consists only of <code class="docutils literal"><span class="pre">make</span></code> commands and a set of customizations written to simple text files which we will <a class="reference internal" href="index.html#finding-experiments"><span class="std std-ref">explain shortly</span></a>. In the following example, we choose to run the <code class="docutils literal"><span class="pre">protein</span></code> experiment.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>make go protein clean
+</pre></div>
+</div>
+<p>The <a class="reference internal" href="base.html#control.go" title="control.go"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">go</span></code></a> command does three things: it clears the data, prepares a new script, and then runs it. We always start by cleaning up the data from a previous run — all useful data should be archived in a completed copy of automacs. Passing the <code class="docutils literal"><span class="pre">clean</span></code> flag to <a class="reference internal" href="base.html#control.go" title="control.go"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">go</span></code></a> cleans up any old data by calling <a class="reference internal" href="base.html#control.clean" title="control.clean"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">clean</span> <span class="pre">sure</span></code></a> for you. The <a class="reference internal" href="base.html#control.prep" title="control.prep"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">prep</span></code></a> command lists all of the available experiments, which are detected according to instructions in the <a class="reference internal" href="index.html#finding-experiments"><span class="std std-ref">configuration</span></a>. When you <a class="reference internal" href="index.html#code-config"><span class="std std-ref">add extra modules</span></a> to automacs, they typically come with new experiments, which means that <a class="reference internal" href="base.html#control.prep" title="control.prep"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">prep</span></code></a> returns a long list.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>MENU
+│
+├──quick
+│  ├── 12.. clear_lipidome
+│  ├── 14.. generate_charmm_landscape
+│  ├── 15.. generate_lipidome_restraints
+│  ├── 16.. generate_lipidome_structures
+│  ├── 21.. table
+│  ├── 27.. vmd_cgmd_bilayer
+│  ├── 28.. vmd_original_for_reference
+│  └── 29.. vmd_protein
+├──metarun
+│  ├── 1... bilayer288
+│  ├── 4... bilayer_control_flat_multiply
+│  ├── 5... bilayer_control_multiply
+│  ├── 6... bilayer_protein_aamd_banana
+│  ├── 7... bilayer_protein_aamd_banana_ion_change
+│  ├── 13.. enth-martini-demo
+│  ├── 17.. lipidome
+│  ├── 22.. test-h0
+│  ├── 23.. test_helix0_flat
+│  ├── 24.. trialanine-demo
+│  ├── 25.. ultra
+│  └── 26.. ultra2
+└──run
+   ├── 2... bilayer_control
+   ├── 3... bilayer_control_flat
+   ├── 8... bilayer_protein_adhesion
+   ├── 9... bilayer_protein_adhesion_aamd
+   ├── 10.. bilayer_protein_topology_only
+   ├── 11.. bilayer_release
+   ├── 18.. martinize
+   ├── 19.. multiply
+   └── 20.. protein
+</pre></div>
+</div>
+<p>An experiment identifies the script you wish to run (we sometimes call them “procedures” or alternately “parent scripts”), and how the simulation should be customized. In the example above, we choose the <code class="docutils literal"><span class="pre">protein</span></code> experiment which serves as a demonstration of a simple protein-in-water simulation and requires very few extra codes. The <a class="reference internal" href="base.html#control.go" title="control.go"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">go</span></code></a> command above calls <a class="reference internal" href="base.html#control.prep" title="control.prep"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">prep</span> <span class="pre">protein</span></code></a>, which finds the right procedure script and copies it to <code class="docutils literal"><span class="pre">script.py</span></code> in the root folder. It also collects the customizations and writes them to an experiment file called <code class="docutils literal"><span class="pre">expt.json</span></code>, which will be discussed in the next section. The menu of experiments shown above indicates that <code class="docutils literal"><span class="pre">protein</span></code> is a “run”. This is the standard experiment style, however we can also construct a “metarun”, which is a sequence of standard procedures, or a “quick” script, which is a very short piece of code. These will be outlined in the <a class="reference internal" href="index.html#three-modes"><span class="std std-ref">experiments section</span></a>.</p>
+<p>New users who wish to see how automacs works can run e.g. <code class="docutils literal"><span class="pre">make</span> <span class="pre">clean</span> <span class="pre">&amp;&amp;</span> <span class="pre">make</span> <span class="pre">go</span> <span class="pre">protein</span></code> or <code class="docutils literal"><span class="pre">make</span> <span class="pre">go</span> <span class="pre">protein</span> <span class="pre">clean</span></code> (the latter does not ask for confirmation before deleting data). While this runs, you can take a look at <a class="reference internal" href="index.html#protein-script"><span class="std std-ref">script.py</span></a> to see what the experiment looks like. These scripts always call on the customizations found in individual experiments (like <code class="docutils literal"><span class="pre">protein</span></code>). These can be viewed in three places. The experiment file <code class="docutils literal"><span class="pre">amx/proteins/protein_expts.py</span></code> is the source which generates the <code class="docutils literal"><span class="pre">expt.json</span></code> with a few extra parameters. You can view this file from the terminal, but it is also <a class="reference internal" href="amx-proteins/experiments.html"><span class="doc">included in this documentation</span></a> along with the other <a class="reference internal" href="components.html"><span class="doc">components section</span></a>. You can also run <a class="reference internal" href="base.html#control.look" title="control.look"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">look</span></code></a> which starts a python terminal with the <code class="docutils literal"><span class="pre">state</span></code> variable, which you can read directly (it’s a dictionary, but you can use the dot operator like a class to look at e.g. <code class="docutils literal"><span class="pre">state.step</span></code>). Of these three options, the experiment file is the only place you should change the parameters. We have combined everything into one step using <a class="reference internal" href="base.html#control.go" title="control.go"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">go</span></code></a> to simplify things, however automacs has a fairly minimal interface, and users can run the automacs scripts with only an <code class="docutils literal"><span class="pre">expt.json</span></code> file and the associated python modules. Everything else is <a class="reference external" href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugar</a>.</p>
+<p>If you wanted to skip the sugar and run the codes directly, you can use <a class="reference internal" href="base.html#control.prep" title="control.prep"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">prep</span> <span class="pre">protein</span></code></a> to prepare the <code class="docutils literal"><span class="pre">expt.json</span></code> and <code class="docutils literal"><span class="pre">script.py</span></code> files and then simply run <code class="docutils literal"><span class="pre">python</span> <span class="pre">script.py</span></code>. If everything is in order, the simulation would run to completion. In this basic use-case, automacs has simply organized and executed some code for you. In practice, only the most mature codes run perfectly the first time. To make development easier, and to save a record of everything automacs does, we use <a class="reference internal" href="base.html#control.run" title="control.run"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">run</span></code></a> to supervise the exection of <code class="docutils literal"><span class="pre">script.py</span></code>. We will explain this in detail in the section <a class="reference internal" href="index.html#sec-supervised-execution"><span class="std std-ref">supervised execution</span></a> below.</p>
+<p>Using automacs is as simple as choosing an experiment, customizing it, and then running it with <a class="reference internal" href="base.html#control.go" title="control.go"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">go</span></code></a>. The best practice is to always <em>copy and rename</em> the <a class="reference internal" href="experiments.html"><span class="doc">experiments</span></a> to change them so that you don’t lose track of which experiments work, and which ones still need some fine tuning.</p>
+<div class="section" id="procedure-scripts">
+<h3>Procedure scripts<a class="headerlink" href="#procedure-scripts" title="Permalink to this headline">¶</a></h3>
+<p>Procedure scripts (sometimes we call these “parent scripts”) are standard python scripts which must only import a single package into the global namespace.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">amx</span> <span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<p>Using <code class="docutils literal"><span class="pre">import</span> <span class="pre">*</span></code> may be somewhat un-Pythonic, however it allows our scripts to read like an entry in a lab notebook for running a computational experiment, and it generally makes them much more concise. The automacs import scheme does a lot of bookkeeping work for you behind the scenes. It reads the experiment, imports required modules that are attached to your local copy of automacs, and also ensures that all of your codes (functions, classes, etc.) have access to a namespace variable called <code class="docutils literal"><span class="pre">state</span></code>. This dictionary variable (along with its partners <code class="docutils literal"><span class="pre">expt</span></code> and <code class="docutils literal"><span class="pre">settings</span></code> discussed <a class="reference internal" href="index.html#settings-blocks"><span class="std std-ref">later</span></a>), effectively solves the problem of passing information between functions. Any function can read or write to the state, which is carefully passed to new codes and written to disk when the simulation is completed.</p>
+<p id="protein-script">The most typical script is called <code class="docutils literal"><span class="pre">protein.py</span></code> and generates an atomistic protein-in-water simulation.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PROTEIN SIMULATION</span>
+<span class="sd">Atomistic protein in water.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">amx</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="n">init</span><span class="p">()</span>
+<span class="n">make_step</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
+<span class="n">write_mdp</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">pdb_source</span><span class="p">:</span> <span class="n">get_pdb</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">pdb_source</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span> <span class="n">get_start_structure</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">start_structure</span><span class="p">)</span>
+<span class="n">remove_hetero_atoms</span><span class="p">(</span>
+    <span class="n">structure</span><span class="o">=</span><span class="s1">&#39;start-structure.pdb&#39;</span><span class="p">,</span>
+    <span class="n">out</span><span class="o">=</span><span class="s1">&#39;start-structure-trim.pdb&#39;</span><span class="p">)</span>
+<span class="n">gmx</span><span class="p">(</span><span class="s1">&#39;pdb2gmx&#39;</span><span class="p">,</span>
+    <span class="n">base</span><span class="o">=</span><span class="s1">&#39;vacuum&#39;</span><span class="p">,</span>
+    <span class="n">structure</span><span class="o">=</span><span class="s1">&#39;start-structure-trim.pdb&#39;</span><span class="p">,</span>
+    <span class="n">gro</span><span class="o">=</span><span class="s1">&#39;vacuum-alone&#39;</span><span class="p">,</span>
+    <span class="n">water</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">water</span><span class="p">,</span>
+    <span class="n">ff</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">force_field</span><span class="p">,</span>
+    <span class="n">log</span><span class="o">=</span><span class="s1">&#39;pdb2gmx&#39;</span><span class="p">)</span>
+<span class="n">copy_file</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">,</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">extract_itp</span><span class="p">(</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">gmx</span><span class="p">(</span><span class="s1">&#39;editconf&#39;</span><span class="p">,</span>
+    <span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-alone&#39;</span><span class="p">,</span>
+    <span class="n">gro</span><span class="o">=</span><span class="s1">&#39;vacuum&#39;</span><span class="p">,</span>
+    <span class="n">c</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">d</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">settings</span><span class="o">.</span><span class="n">water_buffer</span><span class="p">,</span>
+    <span class="n">log</span><span class="o">=</span><span class="s1">&#39;editconf-vacuum-room&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;vacuum&#39;</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;steep&#39;</span><span class="p">)</span>
+<span class="n">solvate_protein</span><span class="p">(</span>
+    <span class="n">structure</span><span class="o">=</span><span class="s1">&#39;vacuum-minimized&#39;</span><span class="p">,</span>
+    <span class="n">top</span><span class="o">=</span><span class="s1">&#39;vacuum.top&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;solvate&#39;</span><span class="p">)</span>
+<span class="n">counterions</span><span class="p">(</span>
+    <span class="n">structure</span><span class="o">=</span><span class="s1">&#39;solvate-minimized&#39;</span><span class="p">,</span>
+    <span class="n">top</span><span class="o">=</span><span class="s1">&#39;solvate&#39;</span><span class="p">,</span>
+    <span class="n">ff_includes</span><span class="o">=</span><span class="s1">&#39;ions&#39;</span><span class="p">)</span>
+<span class="n">minimize</span><span class="p">(</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">write_structure_pdb</span><span class="p">(</span>
+    <span class="n">pdb</span><span class="o">=</span><span class="s1">&#39;start-structure.pdb&#39;</span><span class="p">,</span>
+    <span class="n">structure</span><span class="o">=</span><span class="s1">&#39;counterions&#39;</span><span class="p">)</span>
+<span class="n">write_top</span><span class="p">(</span><span class="s1">&#39;system.top&#39;</span><span class="p">)</span>
+<span class="n">equilibrate</span><span class="p">()</span>
+<span class="n">finished</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As long as your procedure script leads off with <code class="docutils literal"><span class="pre">from</span> <span class="pre">amx</span> <span class="pre">import</span> <span class="pre">*</span></code> or alternately <code class="docutils literal"><span class="pre">import</span> <span class="pre">amx</span></code>, then the import magic will import the core automacs functions (which also loads GROMACS), any extension modules you request, and distribute the <code class="docutils literal"><span class="pre">state</span></code> to all of them. The remainder of the script is just a sequence of functions that generate new configurations, run inputs, and all the assorted paraphernalia for a typical simulation.</p>
+</div>
+<div class="section" id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h3>
+<p>The individual functions in an automacs-style procedure typically perform a single, specific task that a user might otherwise perform at the terminal. Some functions can be used to copy files, write topologies, or execute the GROMACS integrator.</p>
+<p>One of the most useful functions is called <code class="xref any docutils literal"><span class="pre">minimize()</span></code>, which automates the process of performing energy minimization in GROMACS by taking a configuration file (and its topology), generating run inputs and executing the GROMACS integrator via <a class="reference external" href="http://manual.gromacs.org/programs/gmx-mdrun.html">mdrun</a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">minimize</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;steep&#39;</span><span class="p">,</span><span class="n">top</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  Energy minimization procedure.</span>
+
+<span class="sd">  Minimize a structure found at `name.gro` with topology</span>
+<span class="sd">  specified by the keyword argument `top` (otherwise `name.top`)</span>
+<span class="sd">  according to inputs found in input-&lt;method&gt;-in.mdp and ideally</span>
+<span class="sd">  prepared with :meth:`write_mdp &lt;amx.automacs.write_mdp&gt;`.</span>
+<span class="sd">  Writes output files to `em-&lt;name&gt;-&lt;method&gt;` and writes a</span>
+<span class="sd">  final structure to `&lt;name&gt;-minimized.gro`</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">gmx</span><span class="p">(</span><span class="s1">&#39;grompp&#39;</span><span class="p">,</span><span class="n">base</span><span class="o">=</span><span class="s1">&#39;em-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">method</span><span class="p">),</span>
+    <span class="n">top</span><span class="o">=</span><span class="n">name</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">top</span> <span class="k">else</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;^(.+)\.top$&#39;</span><span class="p">,</span><span class="sa">r</span><span class="s1">&#39;\1&#39;</span><span class="p">,</span><span class="n">top</span><span class="p">),</span>
+    <span class="n">structure</span><span class="o">=</span><span class="n">name</span><span class="p">,</span><span class="n">log</span><span class="o">=</span><span class="s1">&#39;grompp-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">method</span><span class="p">),</span>
+    <span class="n">mdp</span><span class="o">=</span><span class="s1">&#39;input-em-</span><span class="si">%s</span><span class="s1">-in&#39;</span><span class="o">%</span><span class="n">method</span><span class="p">,</span><span class="n">skip</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+  <span class="n">tpr</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">here</span><span class="o">+</span><span class="s1">&#39;em-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">.tpr&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">method</span><span class="p">)</span>
+  <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">tpr</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;cannot find </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">tpr</span><span class="p">)</span>
+  <span class="n">gmx</span><span class="p">(</span><span class="s1">&#39;mdrun&#39;</span><span class="p">,</span>
+    <span class="n">base</span><span class="o">=</span><span class="s1">&#39;em-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">method</span><span class="p">),</span>
+    <span class="n">log</span><span class="o">=</span><span class="s1">&#39;mdrun-</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">method</span><span class="p">))</span>
+  <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">here</span><span class="o">+</span><span class="s1">&#39;em-&#39;</span><span class="o">+</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">-</span><span class="si">%s</span><span class="s1">.gro&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">method</span><span class="p">),</span>
+    <span class="n">state</span><span class="o">.</span><span class="n">here</span><span class="o">+</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">-minimized.gro&#39;</span><span class="o">%</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The minimize function has straightforward inputs and outputs, but it also makes use of <code class="docutils literal"><span class="pre">state.here</span></code>, which holds the path to the current step (a folder) for this simulation. Note that most simulations only require a single step, whereas multi-step procedures might use a handful of steps. It also expects to find an <code class="docutils literal"><span class="pre">mdp</span></code> file with the appropriate name, and hence implicitly relies on another function called <a class="reference internal" href="base.html#automacs.write_mdp" title="automacs.write_mdp"><code class="xref any py py-func docutils literal"><span class="pre">write_mdp</span></code></a> to prepare these files. Most functions work this way, so that they can be easily used in many situations. Ideally, their docstrings, which are collected in the <a class="reference internal" href="genindex.html"><span class="std std-ref">documentation index</span></a> should explain the correct inputs and outputs.</p>
+</div>
+<div class="section" id="supervised-execution">
+<span id="sec-supervised-execution"></span><h3>Supervised execution<a class="headerlink" href="#supervised-execution" title="Permalink to this headline">¶</a></h3>
+<p>Robust simulation procedures can always be run with <code class="docutils literal"><span class="pre">python</span> <span class="pre">script.py</span></code> once they are prepared, however automacs includes a useful “supervision” feature that provides two advantages that are particularly useful for developing code.</p>
+<ol class="arabic simple">
+<li>The shared namespace called <code class="docutils literal"><span class="pre">state</span></code> is saved to a file called <code class="docutils literal"><span class="pre">state.json</span></code> when the job is complete. All functions that are imported by automacs are <a class="reference external" href="https://www.python.org/dev/peps/pep-0318/">decorated</a> with a function that logs its exeuction to the <code class="docutils literal"><span class="pre">state.history</span></code> variable.</li>
+<li>Errors are logged to special variables inside of the <code class="docutils literal"><span class="pre">state</span></code> so that user-developers can correct errors and <em>continue the experiment from the last successful step</em>. The code makes use of Python’s <a class="reference external" href="https://docs.python.org/2/library/ast.html">internal syntax parser</a> in order to find the earliest change in your code. This can be particularly useful when you are adding steps to a procedure which is still under development because it means that you don’t have to repeat the earlier steps. Even if the procedure script located at <code class="docutils literal"><span class="pre">script.py</span></code> doesn’t change, automacs still knows where to continue execution without repeating itself.</li>
+<li>In the event that users wish to “chain” together a sequence of multiple discrete simulation steps, automacs can look back to completed steps (with states saved to e.g. <code class="docutils literal"><span class="pre">state_1.json</span></code>) in order to access important details about the simulation, including its geometry and composition. Chaining multiple steps requires a “metarun” procedure and uses the alternate <a class="reference internal" href="base.html#control.metarun" title="control.metarun"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">metarun</span></code></a> command instead of <a class="reference internal" href="base.html#control.run" title="control.run"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">run</span></code></a>, but otherwise the execution is the same. The no-repetition feature described above in item two also works when chaining steps together as part of a <a class="reference internal" href="index.html#three-modes"><span class="std std-ref">&quot;metarun&quot;</span></a>.</li>
+</ol>
+<p>Since the second feature above (which we call “iterative reexecution”) is aimed at developers, it is hidden from the user and happens automatically when you repeat a failed simulation. That is, simulations will automatically continue from a failed state when you run <a class="reference internal" href="base.html#control.run" title="control.run"><code class="xref any py py-func docutils literal"><span class="pre">make</span> <span class="pre">run</span></code></a> after an error.</p>
+<p>The more important function of the shared namespace is that all parameters are automatically available to all imported functions via <code class="docutils literal"><span class="pre">state</span></code> dictionary. This saves users from writing interfaces between functions, and also provides a snapshot of your simulation in <code class="docutils literal"><span class="pre">state.json</span></code> when it is completed. This is explained further in the <a class="reference internal" href="index.html#settings-blocks"><span class="std std-ref">settings blocks</span></a> documentation below.</p>
+<p>The remainder of the documentation covers the GROMACS- and automacs-specific <a class="reference internal" href="configuration.html"><span class="doc">Configuration</span></a>, the <a class="reference internal" href="interface.html"><span class="doc">command-line interface</span></a>, and the general <a class="reference internal" href="framework.html"><span class="doc">Framework</span></a> for organizing the data. The last part of the documentation, titled <a class="reference internal" href="index.html#components"><span class="std std-ref">components</span></a> also provides a <span class="xref std std-ref">“live” snapshot of the documentation</span> for extension modules.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

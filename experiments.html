@@ -1,0 +1,126 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Customizing your experiments &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Customizing your experiments</a><ul>
+<li><a class="reference internal" href="#settings">Settings</a></li>
+<li><a class="reference internal" href="#extensions">Extensions</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/experiments.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="customizing-your-experiments">
+<span id="customize-experiments"></span><h1>Customizing your experiments<a class="headerlink" href="#customizing-your-experiments" title="Permalink to this headline">¶</a></h1>
+<p>Experiments are stored in special files consisting solely of a single Python dictionary literal.</p>
+<p>There are three kinds of experiments: (1) standard experiments (2) sequences of experiments called a “metarun”, and (3) quick scripts. These categories are outline when you run <code class="docutils literal"><span class="pre">make</span> <span class="pre">prep?</span></code> to list the available experiments. Each type has specific requirements outlined in the acme section, but all three types make use of a large block of text named <code class="docutils literal"><span class="pre">settings</span></code>.</p>
+<p>Two other key variables are important to the experiments: a <code class="docutils literal"><span class="pre">params</span></code> file which contains input specifications for gromacs and processed by <a class="reference internal" href="base.html#automacs.write_mdp" title="automacs.write_mdp"><code class="xref any py py-func docutils literal"><span class="pre">write_mdp()</span></code></a>, and the relative path to the procedure script.</p>
+<div class="section" id="settings">
+<h2>Settings<a class="headerlink" href="#settings" title="Permalink to this headline">¶</a></h2>
+<p>Settings are written in a custom format loosely based on the <a class="reference external" href="http://yaml.org/">YAML</a> format. In short, settings are specified by key-value pairs delimited by a colon. Python will try to evaluate the following text using its <code class="docutils literal"><span class="pre">eval</span></code> statement, otherwise the result is stored as a string. Multiline texts use a blasé colon-pipe <code class="docutils literal"><span class="pre">:|</span></code> operator which reads indented text. Any tab sequence is allowed, and the parser stops reading the text where the indentation ends.</p>
+<p>Automacs makes all of the settings available in the shared namespace by using either standard dictionary notation (<code class="docutils literal"><span class="pre">state['water_thickness']</span></code>) or a more concise attribute notation (<code class="docutils literal"><span class="pre">state.water_thickness</span></code>). For this reason, all settings keys have spaces replaced by the underscore character. The settings are not actually loaded into <code class="docutils literal"><span class="pre">state</span></code>, which checks <code class="docutils literal"><span class="pre">settings</span></code> for keys that cannot be found inside of it. The <code class="docutils literal"><span class="pre">state.q('key','default')</span></code> function works like the dictionary <code class="docutils literal"><span class="pre">get</span></code> function in python, allowing you to provide a default value of the key also cannot be found in the settings block.</p>
+<p>Many automacs functions refer to the settings to guide the construction of the simulation.</p>
+</div>
+<div class="section" id="extensions">
+<h2>Extensions<a class="headerlink" href="#extensions" title="Permalink to this headline">¶</a></h2>
+<p>Extensions can be specified using wildcards so you can import the entire <code class="docutils literal"><span class="pre">inputs/extras</span></code> package by including <code class="docutils literal"><span class="pre">inputs/extras/*.py</span></code> in the <code class="docutils literal"><span class="pre">extensions</span></code> list in an experiment. Extensions are automatically imported by automacs whenever it is imported. This saves users the trouble of managing the imports: <em>any function in any extension is elevated to the automacs namespace</em>. Users can still use standard, pythonic imports from these extensions (see an example in the acme section), however the experiment’s extensions list manages everything that goes into the namespace.</p>
+<p>The extensions list also overrides core automacs functionality, which means that you can easily tune or change these functions however you like, in new extensions. Your extensions can also make use of any third-party or entirely generic code modules (read: those codes not affiliated with automacs).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

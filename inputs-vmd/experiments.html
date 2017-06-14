@@ -1,0 +1,295 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Experiments &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modules" href="modules.html" />
+    <link rel="prev" title="Experiments" href="../inputs-polymers/experiments.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../inputs-polymers/experiments.html" title="Experiments"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Experiments</a><ul>
+<li><a class="reference internal" href="#inputs-vmd-view-expts-py">inputs/vmd/view_expts.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../inputs-polymers/experiments.html"
+                        title="previous chapter">Experiments</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="next chapter">Modules</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/inputs-vmd/experiments.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="experiments">
+<h1>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="inputs-vmd-view-expts-py">
+<h2>inputs/vmd/view_expts.py<a class="headerlink" href="#inputs-vmd-view-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;vmd_protein&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;view_routine()&quot;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[],</span><span class="s1">&#39;tags&#39;</span><span class="p">:[],</span><span class="s1">&#39;imports&#39;</span><span class="p">:[</span><span class="s1">&#39;@vmd&#39;</span><span class="p">],</span><span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">step: v01-look</span>
+<span class="s2">video name: video</span>
+<span class="s2">view mode: video</span>
+
+<span class="s2">#---video settings</span>
+<span class="s2">max frames: 300         # aim for this many frames in the unbroken trajectory</span>
+<span class="s2">video size: 30          # size in megabytes (requires ffmpeg 2-pass encoding)</span>
+<span class="s2">duration: 0.0           # desired duration (requires ffmpeg)</span>
+
+<span class="s2">#---resolution</span>
+<span class="s2">viewbox: (800,800)      # pixels in the VMD viewer (must match the resolution proportions)</span>
+<span class="s2">resolution: (2400,1800) # snapshot and video resolution</span>
+<span class="s2">which view: xview       # camera direction</span>
+<span class="s2">scale: scale by 1.75    # zoom factor (may require some tuning)</span>
+
+<span class="s2">#---recipes set the aesthetics of the rendering</span>
+<span class="s2">recipe collection: video aamd atomistic bilayer protein</span>
+
+<span class="s2">#---align the protein</span>
+<span class="s2">backbone align name: &quot;name CA&quot;</span>
+
+<span class="s2">#---custom selections (see lib_vmdmake for details)</span>
+<span class="s2">selections:| [{&#39;basic_residues&#39;:&#39;protein and (resname HIS or resname ARG or resname LYS)&#39;,</span>
+<span class="s2">  &#39;smooth&#39;:True,&#39;style&#39;:&#39;licorice&#39;,&#39;goodsell&#39;:True},</span>
+<span class="s2">  ][1:0]</span>
+<span class="s2">#---^^^ customizations turned off if the list is sliced over 1:0&quot;!</span>
+<span class="s2">#---note: do not use smooth on some items but not others (induces a non-physical asynchronicity)</span>
+<span class="s2">#---note: SEE lib_vmdmake.py and the vmdmake documentation for more details</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;vmd_cgmd_bilayer&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;view_routine()&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[],</span><span class="s1">&#39;tags&#39;</span><span class="p">:[],</span><span class="s1">&#39;imports&#39;</span><span class="p">:[</span><span class="s1">&#39;@vmd&#39;</span><span class="p">],</span><span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">step: v01-look</span>
+<span class="s2">video name: video</span>
+<span class="s2">view mode: video</span>
+
+<span class="s2">#---video settings</span>
+<span class="s2">max frames: 300         # aim for this many frames in the unbroken trajectory</span>
+<span class="s2">video size: 30          # size in megabytes (requires ffmpeg 2-pass encoding)</span>
+<span class="s2">duration: 0.0           # desired duration (requires ffmpeg)</span>
+
+<span class="s2">#---resolution</span>
+<span class="s2">viewbox: (800,800)      # pixels in the VMD viewer (must match the resolution proportions)</span>
+<span class="s2">resolution: (2400,1800) # snapshot and video resolution</span>
+<span class="s2">which view: xview       # camera direction</span>
+<span class="s2">scale: scale by 1.75    # zoom factor (may require some tuning)</span>
+
+<span class="s2">#---recipes set the aesthetics of the rendering</span>
+<span class="s2">recipe collection: video cgmd bilayer protein</span>
+
+<span class="s2">#---custom selections (see lib_vmdmake for details)</span>
+<span class="s2">selections:| [{&#39;basic_residues&#39;:&#39;protein and (resname HIS or resname ARG or resname LYS)&#39;,</span>
+<span class="s2">  &#39;smooth&#39;:True,&#39;style&#39;:&#39;licorice&#39;,&#39;goodsell&#39;:True},</span>
+<span class="s2">  ][1:0]</span>
+<span class="s2">#---^^^ customizations turned off if the list is sliced over 1:0&quot;!</span>
+<span class="s2">#---note: do not use smooth on some items but not others (induces a non-physical asynchronicity)</span>
+<span class="s2">#---note: SEE lib_vmdmake.py and the vmdmake documentation for more details</span>
+
+<span class="s2">#---COARSE-GRAIN VISUALS</span>
+<span class="s2">cg_bonds: @cg_bonds                 # martini code for drawing bonds (also highly useful for long atomistic bonds</span>
+<span class="s2">gmx_dump: @martini/bin/gmxdump      # using GMX 5 with cg_bonds.tcl requires a wrapper around `gmx dump`</span>
+<span class="s2">martini structure color: false      # martini proteins look best with structure colors (in place of cartoon)</span>
+<span class="s2">#itp: s02-protein/Protein_A.itp     # structure color requires an itp</span>
+<span class="s2">backbone color: [None,&#39;black&#39;][1]   # separate color for the BB beads in licorice</span>
+<span class="s2">cursor color: red                   # protein sidechain color</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;inspect_martini&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;view_routine()&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[],</span><span class="s1">&#39;tags&#39;</span><span class="p">:[],</span><span class="s1">&#39;imports&#39;</span><span class="p">:[</span><span class="s1">&#39;@vmd&#39;</span><span class="p">],</span><span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">USAGE NOTE:|</span>
+<span class="s2">	currently needs to work on snapshots</span>
+<span class="s2">	also we have to wait for state.json to be written, so maybe write it before production starts?</span>
+<span class="s2">step: v99-inspect</span>
+<span class="s2">view mode: live</span>
+<span class="s2">input gro: system.gro</span>
+<span class="s2">viewbox: (800,800)</span>
+<span class="s2">which view: xview</span>
+<span class="s2">cg_bonds: ~/libs/cg_bonds.tcl</span>
+<span class="s2">gmx_dump: @martini/bin/gmxdump</span>
+<span class="s2">itp: s02-adhere/Protein.itp</span>
+<span class="s2">backbone color: black</span>
+<span class="s2">martini structure color: true</span>
+<span class="s2">cursor color: red</span>
+<span class="s2">recipe collection: live cgmd bilayer protein backbone</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;dextran_dev_video&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;view_routine()&quot;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[],</span><span class="s1">&#39;tags&#39;</span><span class="p">:[],</span><span class="s1">&#39;imports&#39;</span><span class="p">:[</span><span class="s1">&#39;@vmd&#39;</span><span class="p">],</span><span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">step: v01-look</span>
+<span class="s2">video name: video</span>
+<span class="s2">view mode: video</span>
+
+<span class="s2">#---video settings</span>
+<span class="s2">max frames: 300         # aim for this many frames in the unbroken trajectory</span>
+<span class="s2">video size: 30          # size in megabytes (requires ffmpeg 2-pass encoding)</span>
+<span class="s2">duration: 0.0           # desired duration (requires ffmpeg)</span>
+
+<span class="s2">#---resolution</span>
+<span class="s2">viewbox: (800,800)      # pixels in the VMD viewer (must match the resolution proportions)</span>
+<span class="s2">resolution: (2400,1800) # snapshot and video resolution</span>
+<span class="s2">which view: xview       # camera direction</span>
+<span class="s2">scale: scale by 1.75    # zoom factor (may require some tuning)</span>
+
+<span class="s2">#---recipes set the aesthetics of the rendering</span>
+<span class="s2">recipe collection: video aamd atomistic bilayer protein</span>
+
+<span class="s2">#---align the protein</span>
+<span class="s2">backbone align name: &quot;resname AGLC&quot;</span>
+
+<span class="s2">#---custom selections (see lib_vmdmake for details)</span>
+<span class="s2">selections:| [{&#39;basic_residues&#39;:&#39;protein and (resname HIS or resname ARG or resname LYS)&#39;,</span>
+<span class="s2">  &#39;smooth&#39;:True,&#39;style&#39;:&#39;licorice&#39;,&#39;goodsell&#39;:True},</span>
+<span class="s2">  ][1:0]</span>
+<span class="s2">#---^^^ customizations turned off if the list is sliced over 1:0&quot;!</span>
+<span class="s2">#---note: do not use smooth on some items but not others (induces a non-physical asynchronicity)</span>
+<span class="s2">#---note: SEE lib_vmdmake.py and the vmdmake documentation for more details</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../inputs-polymers/experiments.html" title="Experiments"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

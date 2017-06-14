@@ -1,0 +1,305 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Experiments &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modules" href="modules.html" />
+    <link rel="prev" title="Scripts" href="scripts.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Experiments</a><ul>
+<li><a class="reference internal" href="#inputs-martini-protein-cgmd-expts-py">inputs/martini/protein_cgmd_expts.py</a></li>
+<li><a class="reference internal" href="#inputs-martini-lipidome-lipidome-expts-py">inputs/martini/lipidome/lipidome_expts.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="scripts.html"
+                        title="previous chapter">Scripts</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="next chapter">Modules</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/inputs-martini/experiments.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="experiments">
+<h1>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="inputs-martini-protein-cgmd-expts-py">
+<h2>inputs/martini/protein_cgmd_expts.py<a class="headerlink" href="#inputs-martini-protein-cgmd-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;martinize&#39;</span><span class="p">:{</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;protein&#39;</span><span class="p">],</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/protein.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span><span class="s1">&#39;@martini/martini.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">start structure: inputs/exo70-monomer-body.pdb</span>
+<span class="s2">martinize path: @martini/bin/martinize.py</span>
+<span class="s2">dssp path: @martini/bin/dssp-2.0.4-linux-amd64</span>
+
+<span class="s2">step: protein</span>
+<span class="s2">martinize flags: -ed</span>
+<span class="s2">martinize ff: martini22</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-martini-lipidome-lipidome-expts-py">
+<h2>inputs/martini/lipidome/lipidome_expts.py<a class="headerlink" href="#inputs-martini-lipidome-lipidome-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;lipidome&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;clear_lipidome&#39;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;generate_lipidome_structures&#39;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;generate_lipidome_restraints&#39;</span><span class="p">}</span>
+<span class="p">]},</span>
+
+<span class="s1">&#39;clear_lipidome&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">from amx import *</span>
+<span class="s2">import os,shutil,glob</span>
+<span class="s2">for fn in (glob.glob(settings.auto_ff+os.sep+&#39;*&#39;)+</span>
+<span class="s2">	glob.glob(settings.structure_drop)):</span>
+<span class="s2">	if os.path.isdir(fn): shutil.rmtree(fn)</span>
+<span class="s2">	else: os.remove(fn)</span>
+<span class="s2">if not os.path.isdir(settings.auto_ff): os.mkdir(settings.auto_ff)</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">auto ff: inputs/martini/auto_ff</span>
+<span class="s2">structure drop: inputs/martini/library-lipidome-structs</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="p">},</span>
+
+<span class="s1">&#39;generate_lipidome_structures&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;lipidome&#39;</span><span class="p">],</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;@bilayers/parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+	<span class="s1">&#39;structlib.py&#39;</span><span class="p">,</span>
+	<span class="s1">&#39;topology_maker.py&#39;</span><span class="p">,</span>
+	<span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">from amx import *</span>
+<span class="s2">init()</span>
+<span class="s2">martini_lipidome()</span>
+<span class="s2">write_martini_landscape()</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	clear the &quot;deposit_at&quot; directory above</span>
+<span class="s2">	run &quot;make clean sure &amp;&amp; make prep generate_lipidome_structures &amp;&amp; make run&quot;</span>
+<span class="s2">	this regenerates &quot;crude&quot; starting structures in the deposit at directory</span>
+<span class="s2">	!!! need to update the landscape.yaml file</span>
+<span class="s2">	!!! need to clear and regenerate the library whenever you want to add new lipids</span>
+<span class="s2">	note that the `molecules` setting below controls the available lipids</span>
+
+<span class="s2">#---source ITP with all MARTINI lipids</span>
+<span class="s2">itp_source: inputs/martini/martini-sources.ff/martini_v2.0_lipids_all_201506.itp</span>
+<span class="s2">molecules: &quot;DOPC DOPS DOPE POP2 POP3 POPI POPC DPPC&quot;.split()</span>
+
+<span class="s2">equilibration: []</span>
+<span class="s2">mdp specs:| {&#39;group&#39;:&#39;cgmd&#39;,&#39;mdps&#39;:{</span>
+<span class="s2">	&#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;],</span>
+<span class="s2">	&#39;input-md-in.mdp&#39;:[&#39;invisible&#39;],</span>
+<span class="s2">	}}</span>
+
+<span class="s2">force_field: martini_cv2</span>
+<span class="s2">force_field_defs: martini-v2.2.itp</span>
+<span class="s2">sources: [&#39;inputs/martini/martini-sources.ff&#39;]</span>
+
+<span class="s2">#---path to deposit gro and itp folders from root</span>
+<span class="s2">deposit at:    inputs/martini/library-lipidome-structs</span>
+<span class="s2">landscape at:  inputs/martini/auto_ff/landscape.json</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;generate_lipidome_restraints&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">,</span><span class="s1">&#39;lipidome&#39;</span><span class="p">],</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;@bilayers/parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span>
+	<span class="s1">&#39;structlib.py&#39;</span><span class="p">,</span>
+	<span class="s1">&#39;topology_maker.py&#39;</span><span class="p">,</span>
+	<span class="s1">&#39;@extras/geometry_tools/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">from amx import *</span>
+<span class="s2">init()</span>
+<span class="s2">topology_maker_martini_restraints()</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTES:|</span>
+<span class="s2">	this method is designed to pre-make any lipid restraints you might want</span>
+<span class="s2">	its product can be used by </span>
+<span class="s2">		(1) the bilayer maker&#39;s vacuum packing</span>
+<span class="s2">		(2) the flat bilayer maker&#39;s leaflet-specific restraints</span>
+<span class="s2">	the &quot;wants&quot; dictionary specifies the outputs and describes their restraints</span>
+<span class="s2">	the deposit site holds the automatically generated force fields</span>
+<span class="s2">	this method completely avoids using the &quot;define posre&quot; flags in GROMACS</span>
+<span class="s2">	all restraints are explicit, but this means you should avoid &quot;define posre&quot; which will restrain water</span>
+<span class="s2">	!!! note: missing DPP2 and CHL1</span>
+
+<span class="s2">base force field: inputs/martini/martini-sources.ff  # source force field to modify</span>
+<span class="s2">deposit site: inputs/martini/auto_ff                 # where to write new force fields (keys in wants)</span>
+
+<span class="s2">#---specify transformed force field copies</span>
+<span class="s2">wants:|{</span>
+<span class="s2">	&#39;martini_upright.ff&#39;:{</span>
+<span class="s2">		&#39;restraints&#39;:{&#39;martini_glycerol&#39;:{&#39;z&#39;:100},&#39;martini_tails&#39;:{&#39;z&#39;:100}},</span>
+<span class="s2">		&#39;naming&#39;:&#39;same&#39;,&#39;which&#39;:&#39;lipids&#39;</span>
+<span class="s2">		},</span>
+<span class="s2">	&#39;martini_upright_alt.ff&#39;:{</span>
+<span class="s2">		&#39;restraints&#39;:{&#39;martini_glycerol&#39;:{&#39;z&#39;:1000}},</span>
+<span class="s2">		&#39;naming&#39;:&#39;alternate&#39;,&#39;which&#39;:&#39;lipids&#39;</span>
+<span class="s2">		},</span>
+<span class="s2">	&#39;martini_prison.ff&#39;:{</span>
+<span class="s2">		&#39;restraints&#39;:{&#39;martini_glycerol&#39;:{&#39;z&#39;:1000},&#39;martini_tails&#39;:{&#39;z&#39;:1000}},</span>
+<span class="s2">		&#39;naming&#39;:&#39;alternate_restrain_both&#39;,&#39;which&#39;:&#39;lipids&#39;</span>
+<span class="s2">		},</span>
+<span class="s2">	}</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

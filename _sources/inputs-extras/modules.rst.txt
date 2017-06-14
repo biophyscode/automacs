@@ -1,0 +1,11 @@
+Modules
+=======
+
+multiply
+--------
+
+.. automodule:: multiply
+	:members:
+	:undoc-members:
+	:show-inheritance:
+

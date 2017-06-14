@@ -1,0 +1,456 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Experiments &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modules" href="modules.html" />
+    <link rel="prev" title="Scripts" href="scripts.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Experiments</a><ul>
+<li><a class="reference internal" href="#inputs-extras-extras-expts-py">inputs/extras/extras_expts.py</a></li>
+<li><a class="reference internal" href="#inputs-extras-test-fast-expts-py">inputs/extras/test_fast_expts.py</a></li>
+<li><a class="reference internal" href="#inputs-extras-structures-expts-py">inputs/extras/structures_expts.py</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="scripts.html"
+                        title="previous chapter">Scripts</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="next chapter">Modules</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/inputs-extras/experiments.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="experiments">
+<h1>Experiments<a class="headerlink" href="#experiments" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="inputs-extras-extras-expts-py">
+<h2>inputs/extras/extras_expts.py<a class="headerlink" href="#inputs-extras-extras-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;multiply&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[],</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/multiply.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span><span class="s1">&#39;*.py&#39;</span><span class="p">,</span><span class="s1">&#39;../bilayers/codes/*.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: large</span>
+<span class="s2">requires: multiply</span>
+<span class="s2">equilibration: npt-bilayer</span>
+<span class="s2">proceed: True</span>
+<span class="s2">genconf gap: 0.3</span>
+<span class="s2">nx: 10</span>
+<span class="s2">ny: 10</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="p">},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-extras-test-fast-expts-py">
+<h2>inputs/extras/test_fast_expts.py<a class="headerlink" href="#inputs-extras-test-fast-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;table&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">import amx,shutil</span>
+<span class="s2">shutil.copyfile(amx.settings.ready,amx.settings.store)</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">,</span>
+<span class="p">},</span>
+
+<span class="s1">&#39;ultra&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: bilayer</span>
+<span class="s2">monolayer top: 90</span>
+<span class="s2">composition top: {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;table&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">ready: s01-bilayer/md.part0001.gro</span>
+<span class="s2">store: inputs/bilayer-cgmd-small.gro</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;martinize&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">start structure: inputs/helix0.pdb</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;adhere&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">force field: martini_upright_alt</span>
+<span class="s2">sources: [&#39;@martini/auto_ff/martini_upright_alt.ff&#39;]</span>
+<span class="s2">placement method: banana</span>
+<span class="s2">group up: resid 19</span>
+<span class="s2">group down: resid 7</span>
+<span class="s2">group origin: resid 7</span>
+<span class="s2">bilayer structure: inputs/bilayer-cgmd-small-flat.gro</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:1.0,</span>
+<span class="s2">	}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">]},</span>
+
+<span class="s1">&#39;bilayer288&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: bilayer</span>
+<span class="s2">monolayer top: 144</span>
+<span class="s2">composition top: {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0}</span>
+<span class="s2">thickness: 18</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;table&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">ready: s01-bilayer/md.part0001.gro</span>
+<span class="s2">store: inputs/structure-repo/bilayers-cgmd/bilayer-cgmd-288.gro</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">]},</span>
+
+<span class="s1">&#39;enth-martini-demo&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;martinize&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">start structure: inputs/structure-repo/proteins/1H0A-prepped.pdb</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;adhere&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">force field: martini_upright_alt</span>
+<span class="s2">sources: [&#39;@martini/auto_ff/martini_upright_alt.ff&#39;]</span>
+<span class="s2">placement method: globular_up_down</span>
+<span class="s2">group up: all</span>
+<span class="s2">group down: [&#39;resid 1-22&#39;,&#39;resid 68-72&#39;]</span>
+<span class="s2">group origin: [&#39;resid 1-22&#39;,&#39;resid 68-72&#39;]</span>
+<span class="s2">bilayer structure: inputs/structure-repo/bilayers-cgmd/bilayer-cgmd-288.gro</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:1.0,</span>
+<span class="s2">	}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">]},</span>
+
+<span class="s1">&#39;ultra2&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;metarun&#39;</span><span class="p">:[</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: bilayer</span>
+<span class="s2">monolayer top: 90</span>
+<span class="s2">composition top: {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;table&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">ready: s01-bilayer/md.part0001.gro</span>
+<span class="s2">store: inputs/bilayer-cgmd-small.gro</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_control_flat&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">step: bilayer</span>
+<span class="s2">monolayer top: 90</span>
+<span class="s2">composition top: {&#39;DOPC&#39;:0.64,&#39;DOPS&#39;:0.16,&#39;POP2&#39;:0.2}</span>
+<span class="s2">composition bottom: {&#39;POPC&#39;:1.0}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;quick&#39;</span><span class="p">:</span><span class="s1">&#39;table&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">ready: s01-bilayer/md.part0001.gro</span>
+<span class="s2">store: inputs/bilayer-cgmd-small-flat.gro</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;martinize&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">start structure: inputs/helix0.pdb</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;adhere&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">force field: martini-sources</span>
+<span class="s2">sources: [&#39;@martini/martini-sources.ff&#39;]</span>
+<span class="s2">placement method: banana</span>
+<span class="s2">group up: resid 19</span>
+<span class="s2">group down: resid 7</span>
+<span class="s2">group origin: resid 7</span>
+<span class="s2">bilayer structure: inputs/bilayer-cgmd-small.gro</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:1.0,</span>
+<span class="s2">	}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;protein&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;martinize&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">start structure: inputs/helix0.pdb</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">{</span><span class="s1">&#39;step&#39;</span><span class="p">:</span><span class="s1">&#39;adhere&#39;</span><span class="p">,</span><span class="s1">&#39;do&#39;</span><span class="p">:</span><span class="s1">&#39;bilayer_protein_adhesion&#39;</span><span class="p">,</span><span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">force field: martini_upright_alt</span>
+<span class="s2">sources: [&#39;@martini/auto_ff/martini_upright_alt.ff&#39;]</span>
+<span class="s2">placement method: banana</span>
+<span class="s2">group up: resid 19</span>
+<span class="s2">group down: resid 7</span>
+<span class="s2">group origin: resid 7</span>
+<span class="s2">bilayer structure: inputs/bilayer-cgmd-small-flat.gro</span>
+<span class="s2">protein_lattice:|{</span>
+<span class="s2">	&#39;nrows&#39;:1,&#39;ncols&#39;:1,</span>
+<span class="s2">	&#39;lattice_type&#39;:&#39;square&#39;,</span>
+<span class="s2">	&#39;space_scale&#39;:20,</span>
+<span class="s2">	&#39;total_proteins&#39;:1,</span>
+<span class="s2">	&#39;protein_shift_up&#39;:1.0,</span>
+<span class="s2">	}</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+<span class="p">]},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="inputs-extras-structures-expts-py">
+<h2>inputs/extras/structures_expts.py<a class="headerlink" href="#inputs-extras-structures-expts-py" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+
+<span class="s1">&#39;helixer&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">],</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/coiled_coil_linker_dev.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;@bilayers/parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span><span class="s1">&#39;geometry_tools/*.py&#39;</span><span class="p">,</span><span class="s1">&#39;@bilayers/codes/bilayer.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTE:|</span>
+<span class="s2">	this creates a coiled-coil structure (the &quot;helixer&quot; name is clumsy)</span>
+
+<span class="s2">step: helix</span>
+<span class="s2">sequence:|</span>
+<span class="s2">	TIPFAPLSQSKTSHGVSLSIVMEGDYRDSQYTTSYPIDKRHGGSFSADTRQAVTGSESHT</span>
+<span class="s2">	LKDPETNPLVLNREFTIQEDDKDPIQLKVTPLKDNKSRYYIGSFEPRCLALLFVEYTIAC</span>
+<span class="s2">	PILLLQSRAGDVEVRRPEGIESGALLHHRMLSIMMVLQLDEPKLFSLPEKDYIKTFGDDS</span>
+<span class="s2">	LISEVRLKQVAELAEILIGKNQYYETIQSFLQYVASEKRKLKVLKMERFAVGSMIASNIF</span>
+<span class="s2">	EPLSQKKRLEVASLYYIKSFLCYIKNPYDELRRKADLHTIESAMKSAILSVQDVSGHDRT</span>
+<span class="s2">	GDKFKKQDINNNEAPLSLVKFLQRMFEEDGYPNKEVESLERALKSNILKYQCSKFAYPTG</span>
+<span class="s2">	TKDLVNADDKHKEEDQQDEKHADREQSTDLLEKTFVAHMVVESELLRSELFSQPKQRREN</span>
+<span class="s2">	RSSGHELRKLPGKVAQSLQAVSFMDEHSIQTYVEIISLTKNNMAILNPLNENFDTKLSES</span>
+<span class="s2">	SIATKLELRIEKILMAAGTIISPKNASDARVPGEQGKIIVLDAEDDSISELFYYKQTVNF</span>
+<span class="s2">	SSDYRKLRKSIHTWETQSQFRQEQSLINRELVVVLITYIRALGFAKLQENDQDIRNSDME</span>
+<span class="s2">	VLYDPTKLQVWVPTKKEWIHLKSQMEIVISITNEKTERRAQPQLVKEHLRPQQ</span>
+<span class="s2">secondary structure: &#39;&#39;.join([&#39;H&#39; for i in range(1,90+1)])</span>
+<span class="s2">sequence slice: &quot;1-90&quot;</span>
+
+<span class="s2">#---assume an ideal coiled coil</span>
+<span class="s2">oligomer specs:{&#39;n_coils&#39;:2,&#39;anti&#39;:True,&#39;residue_shift&#39;:0}</span>
+
+<span class="s2">residue_library: @martini/library-residues</span>
+<span class="s2">sources: [&#39;@martini/martini-sources.ff&#39;]</span>
+<span class="s2">files: [&#39;@martini/library-general-structs/martini-water.gro&#39;]</span>
+<span class="s2">force field: martini-sources</span>
+<span class="s2">review 3d: false</span>
+<span class="s2">backwards script: @martini/bin/backward/backward.py</span>
+<span class="s2">solvent: martini-water</span>
+<span class="s2">martinize script: @martini/bin/martinize.py</span>
+<span class="s2">atomistic force field: charmm27</span>
+<span class="s2">ionic_strength: 0.150</span>
+<span class="s2">water: tip3p</span>
+<span class="s2">sol: W</span>
+<span class="s2">cation: NA+</span>
+<span class="s2">anion: CL-</span>
+<span class="s2">equilibration: short</span>
+<span class="s2">water edges: [2,2,5]</span>
+
+<span class="s2">mdp specs:|{</span>
+<span class="s2">    &#39;group&#39;:&#39;cgmd&#39;,</span>
+<span class="s2">    &#39;mdps&#39;:{</span>
+<span class="s2">        &#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;],</span>
+<span class="s2">        &#39;input-md-short-eq-in.mdp&#39;:[{&#39;nsteps&#39;:1000000,&#39;groups&#39;:&#39;protein-water&#39;,</span>
+<span class="s2">        	&#39;temperature&#39;:&#39;protein-water&#39;,&#39;dt&#39;:0.001}],</span>
+<span class="s2">        &#39;input-md-in.mdp&#39;:[{&#39;nsteps&#39;:10000000,&#39;groups&#39;:&#39;protein-water&#39;,</span>
+<span class="s2">        	&#39;temperature&#39;:&#39;protein-water&#39;,&#39;restrain&#39;:&#39;posre-com-only&#39;,&#39;pressure&#39;:&#39;standard-isotropic&#39;}],</span>
+<span class="s2">        },</span>
+<span class="s2">    }</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="s1">&#39;coiled_coil_only&#39;</span><span class="p">:{</span>
+<span class="c1">#####</span>
+<span class="c1">####</span>
+<span class="c1">###</span>
+<span class="c1">##</span>
+<span class="c1">#</span>
+<span class="s1">&#39;tags&#39;</span><span class="p">:[</span><span class="s1">&#39;cgmd&#39;</span><span class="p">],</span>
+<span class="s1">&#39;script&#39;</span><span class="p">:</span><span class="s1">&#39;scripts/coiled_coil_only.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;params&#39;</span><span class="p">:</span><span class="s1">&#39;@bilayers/parameters.py&#39;</span><span class="p">,</span>
+<span class="s1">&#39;extensions&#39;</span><span class="p">:[</span><span class="s1">&#39;geometry_tools/*.py&#39;</span><span class="p">,</span><span class="s1">&#39;@bilayers/codes/bilayer.py&#39;</span><span class="p">],</span>
+<span class="s1">&#39;settings&#39;</span><span class="p">:</span><span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">USAGE NOTE:|</span>
+<span class="s2">	forked from &quot;helixer&quot; to create the helix without solvent</span>
+<span class="s2">	meant to precede a flat-bilayer routine</span>
+
+<span class="s2">step: helix</span>
+<span class="s2">sequence:|</span>
+<span class="s2">	TIPFAPLSQSKTSHGVSLSIVMEGDYRDSQYTTSYPIDKRHGGSFSADTRQAVTGSESHT</span>
+<span class="s2">	LKDPETNPLVLNREFTIQEDDKDPIQLKVTPLKDNKSRYYIGSFEPRCLALLFVEYTIAC</span>
+<span class="s2">	PILLLQSRAGDVEVRRPEGIESGALLHHRMLSIMMVLQLDEPKLFSLPEKDYIKTFGDDS</span>
+<span class="s2">	LISEVRLKQVAELAEILIGKNQYYETIQSFLQYVASEKRKLKVLKMERFAVGSMIASNIF</span>
+<span class="s2">	EPLSQKKRLEVASLYYIKSFLCYIKNPYDELRRKADLHTIESAMKSAILSVQDVSGHDRT</span>
+<span class="s2">	GDKFKKQDINNNEAPLSLVKFLQRMFEEDGYPNKEVESLERALKSNILKYQCSKFAYPTG</span>
+<span class="s2">	TKDLVNADDKHKEEDQQDEKHADREQSTDLLEKTFVAHMVVESELLRSELFSQPKQRREN</span>
+<span class="s2">	RSSGHELRKLPGKVAQSLQAVSFMDEHSIQTYVEIISLTKNNMAILNPLNENFDTKLSES</span>
+<span class="s2">	SIATKLELRIEKILMAAGTIISPKNASDARVPGEQGKIIVLDAEDDSISELFYYKQTVNF</span>
+<span class="s2">	SSDYRKLRKSIHTWETQSQFRQEQSLINRELVVVLITYIRALGFAKLQENDQDIRNSDME</span>
+<span class="s2">	VLYDPTKLQVWVPTKKEWIHLKSQMEIVISITNEKTERRAQPQLVKEHLRPQQ</span>
+<span class="s2">secondary structure: &#39;&#39;.join([&#39;H&#39; for i in range(1,90+1)])</span>
+<span class="s2">sequence slice: &quot;1-90&quot;</span>
+
+<span class="s2">#---assume an ideal coiled coil</span>
+<span class="s2">oligomer specs:{&#39;n_coils&#39;:2,&#39;anti&#39;:True,&#39;residue_shift&#39;:0}</span>
+
+<span class="s2">residue_library: @martini/library-residues</span>
+<span class="s2">sources: [&#39;@martini/martini-sources.ff&#39;]</span>
+<span class="s2">files: [&#39;@martini/library-general-structs/martini-water.gro&#39;]</span>
+<span class="s2">force field: martini-sources</span>
+<span class="s2">review 3d: false</span>
+<span class="s2">backwards script: @martini/bin/backward/backward.py</span>
+<span class="s2">martinize script: @martini/bin/martinize.py</span>
+<span class="s2">atomistic force field: charmm27</span>
+
+<span class="s2">mdp specs:|{</span>
+<span class="s2">    &#39;group&#39;:&#39;cgmd&#39;,</span>
+<span class="s2">    &#39;mdps&#39;:{</span>
+<span class="s2">        &#39;input-em-steep-in.mdp&#39;:[&#39;minimize&#39;],</span>
+<span class="s2">        },</span>
+<span class="s2">    }</span>
+
+<span class="s2">&quot;&quot;&quot;</span><span class="p">},</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Modules"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="scripts.html" title="Scripts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>

@@ -1,0 +1,419 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Modules &#8212; AUTOMACS Documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Experiments" href="experiments.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/logo.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Modules</a><ul>
+<li><a class="reference internal" href="#module-acme_supplement">acme_supplement</a></li>
+<li><a class="reference internal" href="#examples-omnicalc-interface">examples_omnicalc_interface</a></li>
+<li><a class="reference internal" href="#module-batch_original">batch_original</a></li>
+<li><a class="reference internal" href="#module-batch">batch</a></li>
+<li><a class="reference internal" href="#module-quickview">quickview</a></li>
+<li><a class="reference internal" href="#module-makeface_supplement">makeface_supplement</a></li>
+<li><a class="reference internal" href="#module-commons">commons</a></li>
+<li><a class="reference internal" href="#module-vmdmake">vmdmake</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="experiments.html"
+                        title="previous chapter">Experiments</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/inputs-vmd/modules.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="modules">
+<h1>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-acme_supplement">
+<span id="acme-supplement"></span><h2>acme_supplement<a class="headerlink" href="#module-acme_supplement" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="acme_supplement.DotDict">
+<em class="property">class </em><code class="descclassname">acme_supplement.</code><code class="descname">DotDict</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#acme_supplement.DotDict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">dict</span></code></p>
+<p>Use dots to access dictionary items.</p>
+<p class="rubric">Methods</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="acme_supplement.SafeDictHook">
+<em class="property">class </em><code class="descclassname">acme_supplement.</code><code class="descname">SafeDictHook</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#acme_supplement.SafeDictHook" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">dict</span></code></p>
+<p>Hook for json.loads object_pairs_hook to catch repeated keys.</p>
+<p class="rubric">Methods</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="acme_supplement.check_repeated_keys">
+<code class="descclassname">acme_supplement.</code><code class="descname">check_repeated_keys</code><span class="sig-paren">(</span><em>text</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#acme_supplement.check_repeated_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Confirm that dict literals pass through non-redundant json checker.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="acme_supplement.checker">
+<code class="descclassname">acme_supplement.</code><code class="descname">checker</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#acme_supplement.checker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check a file for evaluation from the command line.
+! Less generic name.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="acme_supplement.jsonify">
+<code class="descclassname">acme_supplement.</code><code class="descname">jsonify</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#acme_supplement.jsonify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert python to JSON by replacing single quotes with double quotes and stripping trailing commas
+Note that this checker might be oversensitive if additional JSON errors with the nested dictionary
+Used before SafeDictHook to check for redundant keys. We use a placeholder in block text because JSON cannot 
+process it and the point of this function is to use SafeDictHook to prevent redundant keys.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="acme_supplement.yamlb">
+<code class="descclassname">acme_supplement.</code><code class="descname">yamlb</code><span class="sig-paren">(</span><em>text</em>, <em>style=None</em>, <em>ignore_json=False</em><span class="sig-paren">)</span><a class="headerlink" href="#acme_supplement.yamlb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic YAML parser.
+Development note: missing colons are hard to troubleshoot. Predict them?
+Development note: doesn’t prevent errors with multiple keys in a dictionary!</p>
+</dd></dl>
+
+</div>
+<div class="section" id="examples-omnicalc-interface">
+<h2>examples_omnicalc_interface<a class="headerlink" href="#examples-omnicalc-interface" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-batch_original">
+<span id="batch-original"></span><h2>batch_original<a class="headerlink" href="#module-batch_original" title="Permalink to this headline">¶</a></h2>
+<p>Combined automacs (classic, original) and omnicalc execution for making standard videos.
+See <cite>runner.py</cite> for the updated, acme-inflected version.
+Or see the examples for some alternate ways of using VMDWrap.</p>
+<dl class="function">
+<dt id="batch_original.remove_box_jumps_DEPRECATED">
+<code class="descclassname">batch_original.</code><code class="descname">remove_box_jumps_DEPRECATED</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#batch_original.remove_box_jumps_DEPRECATED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the trajectory to reassemble broken molecules.
+Requires items frm state.last_mdrun_output.
+Note that this is customized for vmdmake but it could be generalized and added to automacs.py.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="batch_original.view_routine_original">
+<code class="descclassname">batch_original.</code><code class="descname">view_routine_original</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#batch_original.view_routine_original" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function which interprets incoming video requests for VMDWrap and then executes them.
+Note that this function prepares a local viewer script for each video so users can tune/rerender.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-batch">
+<span id="batch"></span><h2>batch<a class="headerlink" href="#module-batch" title="Permalink to this headline">¶</a></h2>
+<p>Automatic execution of VMDWrap for the acme-inflected automacs.
+Note that alternate runner scripts can be used to interface with other systems like automacs classic, omnicalc
+Or better yet you can just write your own VMDWrap-flavored scripts (see examples for examples)</p>
+<dl class="function">
+<dt id="batch.create_unbroken_trajectory">
+<code class="descclassname">batch.</code><code class="descname">create_unbroken_trajectory</code><span class="sig-paren">(</span><em>vmdstate</em><span class="sig-paren">)</span><a class="headerlink" href="#batch.create_unbroken_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the last frame from the state and make an unbroken trajectory.
+Note that the typ</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="batch.prepare_viewer_scripts">
+<code class="descclassname">batch.</code><code class="descname">prepare_viewer_scripts</code><span class="sig-paren">(</span><em>vmdstate</em><span class="sig-paren">)</span><a class="headerlink" href="#batch.prepare_viewer_scripts" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>key variables</dt>
+<dd>show_trajectory : necessary for loading a video</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="batch.render_video">
+<code class="descclassname">batch.</code><code class="descname">render_video</code><span class="sig-paren">(</span><em>vmdstate</em><span class="sig-paren">)</span><a class="headerlink" href="#batch.render_video" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="batch.run_vmd">
+<code class="descclassname">batch.</code><code class="descname">run_vmd</code><span class="sig-paren">(</span><em>vmdstate</em><span class="sig-paren">)</span><a class="headerlink" href="#batch.run_vmd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="batch.view_routine">
+<code class="descclassname">batch.</code><code class="descname">view_routine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#batch.view_routine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Manage incoming video requests.
+This function performs the four steps required to make images with VMD.
+It is designed to rerender videos without rerendering snapshots if desired.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-quickview">
+<span id="quickview"></span><h2>quickview<a class="headerlink" href="#module-quickview" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="quickview.martiniview">
+<code class="descclassname">quickview.</code><code class="descname">martiniview</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#quickview.martiniview" title="Permalink to this definition">¶</a></dt>
+<dd><p>Quickly view a martini structure.
+!Needs more fine-tuning.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-makeface_supplement">
+<span id="makeface-supplement"></span><h2>makeface_supplement<a class="headerlink" href="#module-makeface_supplement" title="Permalink to this headline">¶</a></h2>
+<p>execpython-B$0$&#64;</p>
+<dl class="function">
+<dt id="makeface_supplement.abspath">
+<code class="descclassname">makeface_supplement.</code><code class="descname">abspath</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface_supplement.abspath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the right path.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface_supplement.fab">
+<code class="descclassname">makeface_supplement.</code><code class="descname">fab</code><span class="sig-paren">(</span><em>text</em>, <em>*flags</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface_supplement.fab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Colorize the text.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface_supplement.fab_deprecated">
+<code class="descclassname">makeface_supplement.</code><code class="descname">fab_deprecated</code><span class="sig-paren">(</span><em>text</em>, <em>*flags</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface_supplement.fab_deprecated" title="Permalink to this definition">¶</a></dt>
+<dd><p>On the chopping block.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface_supplement.import_local">
+<code class="descclassname">makeface_supplement.</code><code class="descname">import_local</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface_supplement.import_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a local script manually.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface_supplement.import_remote">
+<code class="descclassname">makeface_supplement.</code><code class="descname">import_remote</code><span class="sig-paren">(</span><em>script</em>, <em>is_script=False</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface_supplement.import_remote" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import a script as a module, directly, iff it is not in the path.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface_supplement.makeface">
+<code class="descclassname">makeface_supplement.</code><code class="descname">makeface</code><span class="sig-paren">(</span><em>*arglist</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface_supplement.makeface" title="Permalink to this definition">¶</a></dt>
+<dd><p>### M2P “Makefile to python”
+### Ryan Bradley’s ultra-hackish way of making CLI’s for python</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface_supplement.str_or_list">
+<code class="descclassname">makeface_supplement.</code><code class="descname">str_or_list</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface_supplement.str_or_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turn a string or a list into a list.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface_supplement.strip_builtins">
+<code class="descclassname">makeface_supplement.</code><code class="descname">strip_builtins</code><span class="sig-paren">(</span><em>obj</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface_supplement.strip_builtins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove builtins from a hash in place.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="makeface_supplement.tracebacker">
+<code class="descclassname">makeface_supplement.</code><code class="descname">tracebacker</code><span class="sig-paren">(</span><em>e</em><span class="sig-paren">)</span><a class="headerlink" href="#makeface_supplement.tracebacker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-commons">
+<span id="commons"></span><h2>commons<a class="headerlink" href="#module-commons" title="Permalink to this headline">¶</a></h2>
+<p>This module contains important constants used by VMDMake.</p>
+</div>
+<div class="section" id="module-vmdmake">
+<span id="vmdmake"></span><h2>vmdmake<a class="headerlink" href="#module-vmdmake" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="vmdmake.VMDWrap">
+<em class="property">class </em><code class="descclassname">vmdmake.</code><code class="descname">VMDWrap</code><span class="sig-paren">(</span><em>name=’vmd’</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap" title="Permalink to this definition">¶</a></dt>
+<dd><p class="rubric">Methods</p>
+<dl class="method">
+<dt id="vmdmake.VMDWrap.command">
+<code class="descname">command</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a raw command to the script if necessary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vmdmake.VMDWrap.do">
+<code class="descname">do</code><span class="sig-paren">(</span><em>*names</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.do" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use a set of prescribed code blocks defined in commons.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmdmake.VMDWrap.i">
+<code class="descname">i</code><em class="property"> = ‘black’</em><a class="headerlink" href="#vmdmake.VMDWrap.i" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="vmdmake.VMDWrap.ii">
+<code class="descname">ii</code><em class="property"> = 16</em><a class="headerlink" href="#vmdmake.VMDWrap.ii" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vmdmake.VMDWrap.martini_secondary_structure">
+<code class="descname">martini_secondary_structure</code><span class="sig-paren">(</span><em>itp</em>, <em>style=’all’</em>, <em>name=’protein_subject’</em>, <em>back_color=None</em>, <em>mers=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.martini_secondary_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Color a MARTINI protein by secondary structure.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vmdmake.VMDWrap.recipe">
+<code class="descname">recipe</code><span class="sig-paren">(</span><em>recipe</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.recipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add from a set of predefined selections.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vmdmake.VMDWrap.render">
+<code class="descname">render</code><span class="sig-paren">(</span><em>name=’video’</em>, <em>rate=1.0</em>, <em>codec=None</em>, <em>size=50.0</em>, <em>duration=0.0</em>, <em>webm=False</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.render" title="Permalink to this definition">¶</a></dt>
+<dd><p>Render a video from snapshots.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vmdmake.VMDWrap.select">
+<code class="descname">select</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new selection with string substitutions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vmdmake.VMDWrap.set_color_cursor">
+<code class="descname">set_color_cursor</code><span class="sig-paren">(</span><em>color</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.set_color_cursor" title="Permalink to this definition">¶</a></dt>
+<dd><p>The $color_cursor variable in tcl is set to black (16) by the standard package but can be changed
+to use coloring by a particular ColorID, on the fly.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vmdmake.VMDWrap.show">
+<code class="descname">show</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.show" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run VMD.
+The pipe option will feed commands directly to VMD for systems with a wonky setup.
+!option to remove everything when done (clean)?
+!dispdev text option (text)?</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vmdmake.VMDWrap.trajectory">
+<code class="descname">trajectory</code><span class="sig-paren">(</span><em>target</em>, <em>first=0</em>, <em>last=-1</em>, <em>step=1</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.trajectory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a trajectory.
+Most functions are handled in the commons.py, however it makes more sense to do this manually.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vmdmake.VMDWrap.video">
+<code class="descname">video</code><span class="sig-paren">(</span><em>traces=None</em>, <em>snapshot=False</em>, <em>pause=False</em>, <em>cwd=”</em>, <em>dn=None</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.video" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare to render a video by writing an add-on script.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="vmdmake.VMDWrap.vmd_colors">
+<code class="descname">vmd_colors</code><em class="property"> = {‘blue’: 0, ‘gray’: 2, ‘purple’: 11, ‘mauve’: 13, ‘white’: 8, ‘yellow’: 4, ‘black’: 16, ‘pink’: 9, ‘green’: 7, ‘iceblue’: 15, ‘orange’: 3, ‘cyan’: 10, ‘tan’: 5, ‘ochre’: 14, ‘silver’: 6, ‘red’: 1, ‘lime’: 12}</em><a class="headerlink" href="#vmdmake.VMDWrap.vmd_colors" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="vmdmake.VMDWrap.write">
+<code class="descname">write</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the script.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="vmdmake.VMDWrap.yamlparse">
+<code class="descname">yamlparse</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.VMDWrap.yamlparse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try yamlparse (comes from yamlb in acme) first otherwise treat it like python.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="vmdmake.nospaces">
+<code class="descclassname">vmdmake.</code><code class="descname">nospaces</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="headerlink" href="#vmdmake.nospaces" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="experiments.html" title="Experiments"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">AMX docs</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    </div>
+  </body>
+</html>
