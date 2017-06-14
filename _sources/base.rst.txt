@@ -8,7 +8,7 @@ AMX Module
 .. consider auto-generating this file
 
 The basecode comes with the standard automacs distribution, and is included here so it makes it into the master index.
-This documentation section is included only so that the functions are loaded into the index.
+This documentation section is included only so that the functions are loaded into the index. This documentation is included for clarity and should not replace the walkthrough.
 
 .. automodule:: automacs
   :members:

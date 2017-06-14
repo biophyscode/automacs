@@ -107,32 +107,11 @@
 <span id="docs"></span><h2>docs<a class="headerlink" href="#module-docs" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="docs.docs">
-<code class="descclassname">docs.</code><code class="descname">docs</code><span class="sig-paren">(</span><em>refresh=False</em>, <em>clean=False</em><span class="sig-paren">)</span><a class="headerlink" href="#docs.docs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">docs.</code><code class="descname">docs</code><span class="sig-paren">(</span><em>refresh=False</em>, <em>clean=False</em>, <em>publish=False</em><span class="sig-paren">)</span><a class="headerlink" href="#docs.docs" title="Permalink to this definition">¶</a></dt>
 <dd><p>The current documentation method identifies three components of extensions:
 1. Submodules: scripts containing functions used by automacs procedures, in the root directory of the extension. These are the core of the extension, and hold functions which are typically exposed to the “global” [note that nothing is global] automacs namespace.
 2. Codes: sub-submodules in the extension’s root directory that might be imported by the submodules. These are more generic, and don’t necessarily have to use the wordspace (hence making them easy to poach for other applications, and less tied to the automacs ecosystem by variables like the <code class="docutils literal"><span class="pre">state</span></code>).
 3. Experiments: experiment specificatiojns</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="docs.publish_docs">
-<code class="descclassname">docs.</code><code class="descname">publish_docs</code><span class="sig-paren">(</span><em>to=”</em><span class="sig-paren">)</span><a class="headerlink" href="#docs.publish_docs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prepare documentation for push to github pages. Administrator usage only.
-WARNING! Make sure you compile the docs manually before you run this!</p>
-<p>This function will clean then make the docs, and set up the repo to track the github repo.
-We used a similar procedure to update the docs, and eventually replaced it with the current
-set of commands to handle the newer versions of git.    
-The first commit to the repo was created as follows (saved here for posterity):</p>
-<blockquote>
-<div>git init .
-git commit -m ‘initial commit’ –allow-empty
-git branch gh-pages
-git checkout gh-pages
-touch .nojekyll
-git add .
-git commit -am ‘added files’
-git remote add origin &lt;destination&gt;
-git push -u origin gh-pages</div></blockquote>
 </dd></dl>
 
 </div>
