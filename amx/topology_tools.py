@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
-import re,os,glob,json,shutil
+import sys,re,os,glob,json,shutil
+import numpy as np
+
+str_types = [str,unicode] if sys.version_info<(3,0) else [str]
 
 class GMXForceField:
 	"""
@@ -80,11 +83,7 @@ class GMXTopology:
 
 		self.molecules = {}
 		self.itp_source = itp
-
-		#self.ifdefs = []
-		#self.ifdefs.extend(kwargs.get('ifdefs',[]))
 		self.defs = kwargs.get('defs',{})
-		
 
 		if self.itp_source:
 			with open(self.itp_source) as fp: self.itp_raw = fp.read()
@@ -273,4 +272,59 @@ class GMXTopology:
 			#---loop over directions to apply the forces
 			for k,v in forces.items(): 
 				self.molecules[mol]['position_restraints'][atoms.index(atom_name)][k] = v
+
+	#---DEVELOPING MORE CAREFUL BOND PARSINGS
 		
+	def get_bonds_by_regex(self,molname,patterns,include_resname=False):
+		"""
+		Collect all possible hydrogen bonds by residue name and atom.
+		"""
+
+		mol = GMXTopologyMolecule(self.molecules[molname])
+		bonds = mol.get_bonds()
+		names = mol.get_atom_spec_by_bond(*bonds)
+		if type(patterns) in str_types: patterns = []
+		if not len(patterns) in [1,2]: raise Exception('patterns must be length 1 or 2: %s'%patterns) 
+		matching_bonds = np.array([ii for ii,i in enumerate(names) 
+			if sum([np.any([(1 if re.match(regex,n) else 0) 
+				for regex in patterns]) for n in i])==len(patterns)])
+		#---! this function returns only a list of name pairs for hydrogen bond donors
+		if len(matching_bonds)==0: return []
+		bond_pairs_by_name = [tuple(j) 
+			for j in mol.get_atom_spec_by_bond(*np.array(bonds)[matching_bonds],key='atom')]
+		if include_resname:
+			bond_pairs_by_resname = [tuple(j) 
+				for j in mol.get_atom_spec_by_bond(*np.array(bonds)[matching_bonds],key='resname')]
+			return zip(bond_pairs_by_resname,bond_pairs_by_name)
+		return bond_pairs_by_name
+
+class GMXTopologyMolecule:
+
+	"""
+	PROTOYPING a molecule class. Wraps ITP molecules in some helpful functions.
+	"""
+
+	def __init__(self,molecule): self.mol = molecule
+
+	def get_atom(self,atom):
+		"""
+		HACK. Get an atom from a molecule by index number.
+		"""
+		matches = [ii for ii,i in enumerate(self.mol['atoms']) if i['id']==str(atom)]
+		if len(matches)>1: raise Exception('found too many atoms with id %s in this molecule'%atom)
+		elif len(matches)==0: raise Exception('no atom with id %s in this molecule'%atom)
+		else: return matches[0]
+
+	def get_bonds(self):
+		"""
+		Return indices for the bond list.
+		"""
+		return [[self.get_atom(atom=bond[l]) for l in 'ij'] for bond in self.mol['bonds']]
+
+	def get_atom_spec_by_bond(self,*args,**kwargs):
+		"""Return atom names."""
+		key = kwargs.pop('key','atom')
+		if kwargs: raise Exception('unprocessed kwargs %s'%kwargs)
+		#---filter all bonds for those involving an atom with a name starting with the letter "H"
+		names = np.array([[self.mol['atoms'][i][key],self.mol['atoms'][j][key]] for i,j in args])
+		return names
