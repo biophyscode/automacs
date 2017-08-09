@@ -61,6 +61,40 @@ eval $cmdexec
 echo "[STATUS] done continuation stage"
 """
 
+def interpret_walltimes(walltime):
+	"""
+	Turn walltime into a number of hours so we can gently stop gromacs.
+	Torque uses dd:hh:mm:ss (or, more precisely "[[DD:]HH:]MM:SS")
+		while SLURM uses dd-hh:mm:ss or just time in minutes.
+	To disambiguate we interpret any walltime string or integer and return it in the most specific formats.
+	"""
+	regex_times = [
+		'^(?P<days>\d{1,2}):(?P<hours>\d{1,2}):(?P<minutes>\d{1,2}):(?P<seconds>\d{1,2})$',
+		'^(?P<hours>\d{1,2}):(?P<minutes>\d{1,2}):(?P<seconds>\d{1,2})$',
+		'^(?P<minutes>\d{1,2}):(?P<seconds>\d{1,2})$',]
+	times = dict([(k,None) for k in 'days hours minutes seconds'.split()])
+	#---integers mean hours
+	if type(walltime) in [int,float]:
+		times['hours'] = float(walltime)
+		for key in 'days minutes seconds'.split(): times[key] = 0.0
+		maxhours = ('%f'%walltime).rstrip('0').rstrip('.')
+	else:
+		#---try several regexes
+		for regex in regex_times:
+			print('try regex')
+			if re.match(regex,walltime):
+				extract = re.match(regex,walltime).groupdict()
+				times.update(**dict([(k,float(v)) for k,v in extract.items()]))
+				times.update(**dict([(k,0.0) for k in times if k not in extract]))
+				maxhours = times['days']*24.0+times['hours']+times['minutes']/60.+times['seconds']/60.**2
+				break
+	if any([v==None for v in times.values()]):
+		print(times)
+		raise Exception('times list is incomplete, hence we cannot interpret the walltime: %s'%times)
+	#---formulate an unambiguous walltime string
+	walltime_strict = '%(days)02d:%(hours)02d:%(minutes)02d:%(seconds)02d'%times
+	return {'walltime':walltime_strict,'maxhours':maxhours}
+
 def write_continue_script_master(script='script-continue.sh',
 	machine_configuration=None,here=None,hostname=None,override=False,**kwargs):
 	"""
@@ -71,16 +105,16 @@ def write_continue_script_master(script='script-continue.sh',
 	import makeface
 	get_gmx_paths = makeface.import_remote('amx/calls')['get_gmx_paths']
 	gmxpaths = get_gmx_paths(hostname=hostname,override=override)
+	if not machine_configuration: machine_configuration = get_machine_config()
 	#---CONTINUATION DEFAULTS HERE
 	settings = {
-		'maxhours':24,
-		'extend':1000000,
+		'maxhours':interpret_walltimes(c)['maxhours'],
+		'extend':machine_configuration.get('extend',1000000),
 		'start_part':1,
-		'tpbconv':gmxpaths['tpbconv'],#state['gmxpaths']['tpbconv'],
-		'mdrun':gmxpaths['mdrun'],#state['gmxpaths']['mdrun'],
-		'grompp':gmxpaths['grompp'],#state['gmxpaths']['grompp'],
+		'tpbconv':gmxpaths['tpbconv'],
+		'mdrun':gmxpaths['mdrun'],
+		'grompp':gmxpaths['grompp'],
 		'maxwarn':0}
-	if not machine_configuration: machine_configuration = get_machine_config()
 	settings_keys = list(settings.keys())
 	#---cluster may use an alternate mdrun
 	if 'mdrun_command' in machine_configuration: settings['mdrun'] = machine_configuration['mdrun_command']

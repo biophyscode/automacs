@@ -16,6 +16,7 @@ __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
 
 from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
 from calls import get_machine_config
+from continue_script import interpret_walltimes
 
 def get_amx():
 	"""
@@ -301,7 +302,7 @@ def write_continue_script(hostname=None,overwrite=False):
 	import continue_script
 	here = globals()['state']['here'] if 'state' in globals() else None
 	script_fn = continue_script.write_continue_script_master(
-		machine_configuration=machine_configuration,here=here)
+		machine_configuration	=machine_configuration,here=here)
 	return script_fn
 
 def cluster(hostname=None,overwrite=True):
@@ -319,8 +320,9 @@ def cluster(hostname=None,overwrite=True):
 	get_gmx_paths = import_remote('amx/calls.py')['get_gmx_paths']
 	machine_configuration = get_machine_config(hostname=hostname)
 	if not 'cluster_header' in machine_configuration: 
-		print('[STATUS] no cluster information')
-		return
+		raise Exception('no cluster information. add this machine to `machine_configuration` in '
+			'either `./gromacs_config.py` or `~/.automacs.py` and '
+			'make sure that it includes `cluster_header`')
 	head = machine_configuration['cluster_header']
 	for key,val in machine_configuration.items(): head = re.sub(key.upper(),str(val),head)
 	with open('cluster-header.sh','w') as fp: fp.write(head)
@@ -339,9 +341,7 @@ def cluster(hostname=None,overwrite=True):
 		else: script_continue_fn = amx.state.here+amx.state.continuation_script
 		#---code from base.functions.write_continue_script to rewrite the continue script
 		with open(script_continue_fn,'r') as fp: lines = fp.readlines()
-		tl = [float(j) if j else 0.0 for j in re.match('^([0-9]+)\:?([0-9]+)?\:?([0-9]+)?',
-			str(machine_configuration.get('walltime','24:00:00'))).groups()]
-		maxhours = tl[0]+float(tl[1])/60+float(tl[2])/60/60
+		maxhours = interpret_walltimes(machine_configuration.get('walltime',24))['maxhours']
 		settings = {'maxhours':maxhours,
 			'tpbconv':gmxpaths['tpbconv'],
 			'mdrun':gmxpaths['mdrun']}
