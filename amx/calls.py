@@ -284,6 +284,9 @@ def modules_load(machine_config):
 		#---always unload gromacs to ensure correct version
 		incoming['module']('unload','gromacs')
 		print('[STATUS] module load %s'%mod)
+		#---running `make cluster <hostname>` on a different machine will cause 
+		#---...an "Unable to locate a modulefile" error but this is not a problem. it might still be useful
+		#---...to prepare the submission script locally in case automacs is misbehaving on clusters
 		incoming['module']('load',mod)
 	
 def get_gmx_paths(override=False,gmx_series=False,hostname=None):
@@ -301,6 +304,7 @@ def get_gmx_paths(override=False,gmx_series=False,hostname=None):
 
 	machine_config = get_machine_config(hostname=hostname)
 	#---check the config for a "modules" keyword in case we need to laod it
+	print('[STATUS] loading modules to prepare gromacs paths')
 	if 'modules' in machine_config: modules_load(machine_config)
 	#---basic check for gromacs version series
 	suffix = '' if 'suffix' not in machine_config else machine_config['suffix']

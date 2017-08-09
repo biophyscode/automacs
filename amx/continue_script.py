@@ -81,7 +81,6 @@ def interpret_walltimes(walltime):
 	else:
 		#---try several regexes
 		for regex in regex_times:
-			print('try regex')
 			if re.match(regex,walltime):
 				extract = re.match(regex,walltime).groupdict()
 				times.update(**dict([(k,float(v)) for k,v in extract.items()]))
@@ -89,26 +88,27 @@ def interpret_walltimes(walltime):
 				maxhours = times['days']*24.0+times['hours']+times['minutes']/60.+times['seconds']/60.**2
 				break
 	if any([v==None for v in times.values()]):
-		print(times)
 		raise Exception('times list is incomplete, hence we cannot interpret the walltime: %s'%times)
 	#---formulate an unambiguous walltime string
 	walltime_strict = '%(days)02d:%(hours)02d:%(minutes)02d:%(seconds)02d'%times
 	return {'walltime':walltime_strict,'maxhours':maxhours}
 
 def write_continue_script_master(script='script-continue.sh',
-	machine_configuration=None,here=None,hostname=None,override=False,**kwargs):
+	machine_configuration=None,here=None,hostname=None,override=False,gmxpaths=None,**kwargs):
 	"""
 	Uses a template in amx/procedures to write a bash continuation script.
 	"""
 	this_script = str(continue_script)
 	#---remote import to avoid large packages
 	import makeface
-	get_gmx_paths = makeface.import_remote('amx/calls')['get_gmx_paths']
-	gmxpaths = get_gmx_paths(hostname=hostname,override=override)
+	#---we pass gmxpaths through so we do not need to load modules twice
+	if not gmxpaths:
+		get_gmx_paths = makeface.import_remote('amx/calls')['get_gmx_paths']
+		gmxpaths = get_gmx_paths(hostname=hostname,override=override)
 	if not machine_configuration: machine_configuration = get_machine_config()
 	#---CONTINUATION DEFAULTS HERE
 	settings = {
-		'maxhours':interpret_walltimes(c)['maxhours'],
+		'maxhours':interpret_walltimes(machine_configuration.get('walltime',24))['maxhours'],
 		'extend':machine_configuration.get('extend',1000000),
 		'start_part':1,
 		'tpbconv':gmxpaths['tpbconv'],

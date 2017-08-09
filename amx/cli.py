@@ -11,12 +11,13 @@ module.
 import os,sys,subprocess,re,time,glob,shutil,json
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
-	'setup','notebook','upload','download','cluster','qsub','gitcheck','gitpull','rewrite_config',
+	'setup','notebook','upload','download','cluster','submit','gitcheck','gitpull','rewrite_config',
 	'codecheck','collect_parameters','write_continue_script','show_kickstarters','hardstart']
 
 from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
 from calls import get_machine_config
 from continue_script import interpret_walltimes
+from makeface import fab
 
 def get_amx():
 	"""
@@ -223,7 +224,7 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 			"\n[ERROR] missing: %s"%str([fn for fn in restart_fns if not os.path.isfile(fn)])
 		raise Exception(error)
 	#---get defaults list
-	default_fns,default_dirs = ['makefile','config.py','state.json'],['amx','runner']
+	default_fns,default_dirs = ['makefile','config.py','state.json','gromacs_config.py'],['amx','runner']
 	default_fns += [os.path.join(root,fn) for dn in default_dirs for root,dirnames,fns 
 		in os.walk(dn) for fn in fns]
 	default_fns = [fn for fn in default_fns if not re.match('.+\.pyc$',fn) and not re.search('/\.git/',fn)]
@@ -292,7 +293,7 @@ def download(sure=False):
 		print("[NOTE] find the data on the remote machine via \"find ./ -name serial-%s\""%serialno)
 		sys.exit(1)
 
-def write_continue_script(hostname=None,overwrite=False):
+def write_continue_script(hostname=None,overwrite=False,gmxpaths=None):
 	"""
 	Write the continue script if it does not yet exist.
 	Note that this script wraps the same function in amx.continue_script for the CLI.
@@ -302,7 +303,7 @@ def write_continue_script(hostname=None,overwrite=False):
 	import continue_script
 	here = globals()['state']['here'] if 'state' in globals() else None
 	script_fn = continue_script.write_continue_script_master(
-		machine_configuration	=machine_configuration,here=here)
+		machine_configuration=machine_configuration,here=here,gmxpaths=gmxpaths)
 	return script_fn
 
 def cluster(hostname=None,overwrite=True):
@@ -318,6 +319,11 @@ def cluster(hostname=None,overwrite=True):
 	sys.path.insert(0,'runner')
 	from makeface import import_remote
 	get_gmx_paths = import_remote('amx/calls.py')['get_gmx_paths']
+	if hostname: 
+		#---warn the user that specifying hostname from the commandline might show warnings, however
+		#---...it is still very useful to prepare the cluster scripts before uploading to clusters
+		print(fab('[WARNING]','white_black')+' running `make cluster <hostname>` might throw errors '
+			'on modules which are not locally available')
 	machine_configuration = get_machine_config(hostname=hostname)
 	if not 'cluster_header' in machine_configuration: 
 		raise Exception('no cluster information. add this machine to `machine_configuration` in '
@@ -337,14 +343,18 @@ def cluster(hostname=None,overwrite=True):
 	if last_step:
 		#---this script requires a continue script to be available. overwrites by default
 		if not 'continuation_script' in amx.state or overwrite: 
-			script_continue_fn = write_continue_script(hostname=hostname,overwrite=True)
+			script_continue_fn = write_continue_script(hostname=hostname,overwrite=True,gmxpaths=gmxpaths)
 		else: script_continue_fn = amx.state.here+amx.state.continuation_script
 		#---code from base.functions.write_continue_script to rewrite the continue script
 		with open(script_continue_fn,'r') as fp: lines = fp.readlines()
 		maxhours = interpret_walltimes(machine_configuration.get('walltime',24))['maxhours']
+		#---make a jobname from the directory name, which should be a unique identifier for the job
+		try: jobname = os.path.basename(os.getcwd())
+		except: jobname = 'gmxjob'
 		settings = {'maxhours':maxhours,
 			'tpbconv':gmxpaths['tpbconv'],
-			'mdrun':gmxpaths['mdrun']}
+			'mdrun':gmxpaths['mdrun'],
+			'jobname':jobname}
 		if 'nprocs' in machine_configuration: settings['nprocs'] = machine_configuration['nprocs']
 		else: settings['nprocs'] = machine_configuration['ppn']*machine_configuration['nnodes']
 		#---! how should we parse multiple modules from the machine_configuration?
@@ -369,6 +379,7 @@ def cluster(hostname=None,overwrite=True):
 		continue_script = re.sub('#!/bin/bash\n','',continue_script)
 		cluster_continue = os.path.join(last_step,'cluster-continue.sh')
 		print('[STATUS] writing %s'%cluster_continue)
+		print('[NOTE] you should submit that script from %s or try `make submit`'%last_step)
 		#---the header gets settings substitutions
 		for key,val in settings.items(): head = re.sub(key.upper(),str(val),head,re.M)
 		with open(cluster_continue,'w') as fp: fp.write(head+continue_script)
@@ -383,7 +394,7 @@ def cluster(hostname=None,overwrite=True):
 			fp.write('python script-%s.py &> log-%s\n'%(name,name))
 		print('[STATUS] wrote cluster-%s.sh'%name)
 
-def qsub():
+def submit():
 	"""
 	Submits the job to the queue. This saves you from changing into the latest step directory.
 	"""
@@ -392,7 +403,8 @@ def qsub():
 	if not os.path.isfile(here+'cluster-continue.sh'):
 		raise Exception('[ERROR] cannot find "cluster-continue.sh" in the last step directory (%s). '
 			%here+'try running `make cluster` to generate it.')
-	cmd = 'qsub cluster-continue.sh'
+	machine_config = get_machine_config()
+	cmd = '%s cluster-continue.sh'%machine_config.get('submit_command','qsub')
 	print('[STATUS] running "%s"'%cmd)
 	subprocess.check_call(cmd,cwd=here,shell=True)
 
