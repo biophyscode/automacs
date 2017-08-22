@@ -224,7 +224,8 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 			"\n[ERROR] missing: %s"%str([fn for fn in restart_fns if not os.path.isfile(fn)])
 		raise Exception(error)
 	#---get defaults list
-	default_fns,default_dirs = ['makefile','config.py','state.json','gromacs_config.py'],['amx','runner']
+	default_fns,default_dirs = ['makefile','config.py','state.json'],['amx','runner']
+	if os.path.isfile('gromacs_config.py'): default_fns += ['gromacs_config.py']
 	default_fns += [os.path.join(root,fn) for dn in default_dirs for root,dirnames,fns 
 		in os.walk(dn) for fn in fns]
 	default_fns = [fn for fn in default_fns if not re.match('.+\.pyc$',fn) and not re.search('/\.git/',fn)]
