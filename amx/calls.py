@@ -287,7 +287,8 @@ def modules_load(machine_config):
 		except:
                         raise Exception('try editing your python module file (and module function) to reflect'+
                                         "the folowing:\n(output, error) = subprocess.Popen(['/usr/bin/modulecmd', "+
-                                        "'python'] +\n\targs, stdout=subprocess.PIPE).communicate()")
+                                        "'python'] +\n\targs, stdout=subprocess.PIPE).communicate()\n"+
+                                        'or simply run using the factory environment')
 		print('[STATUS] module load %s'%mod)
 		#---running `make cluster <hostname>` on a different machine will cause 
 		#---...an "Unable to locate a modulefile" error but this is not a problem. it might still be useful
