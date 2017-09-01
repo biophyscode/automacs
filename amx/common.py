@@ -28,6 +28,14 @@ _shared_extensions = ['dotplace','unique']
 #---! move this to GMXStructure
 dotplace = lambda n: re.compile(r'(\d)0+$').sub(r'\1',"%8.3f"%float(n)).ljust(8)
 
+#---! may not want to have this conversion here but it is *common*
+aacodemap_3to1 = {'CYS': 'C', 'ASP': 'D', 'SER': 'S', 'GLN': 'Q', 'LYS': 'K',
+                  'ILE': 'I', 'PRO': 'P', 'THR': 'T', 'PHE': 'F', 'ASN': 'N', 
+                  'GLY': 'G', 'HIS': 'H', 'LEU': 'L', 'ARG': 'R', 'TRP': 'W', 'TER':'*',
+                  'ALA': 'A', 'VAL':'V', 'GLU': 'E', 'TYR': 'Y', 'MET': 'M','XAA':'X'}
+aacodemap_1to3 = dict([(val,key) for key,val in aacodemap_3to1.items()])
+
+
 def unique(items):
 	"""..."""
 	try: (element,) = items
@@ -68,9 +76,42 @@ def get_pdb(code):
 	if sys.version_info<(3,0): from urllib2 import urlopen
 	else: from urllib.request import urlopen
 	response = urlopen('http://www.rcsb.org/pdb/files/'+code+'.pdb')
+        if response: print('[NOTE] fetched %s'%code)
+	else: raise Exception('[ERROR] failed to fetch pdb %s'%code)
 	pdbfile = response.read()
 	with open(state.here+'start-structure.pdb','w') as fp: fp.write(pdbfile.decode())
-	#---! we should log that the PDB was successfully got
+
+def get_pdb_sequence():
+	"""
+        Get the sequence info if it is a properly constructed PDB file
+	"""
+	with open(state.here+'start-structure.pdb','r') as fp: pdb=fp.read()
+        pdblines=pdb.split('\n')
+	#return the one letter code sequence and a dictionary of missing residues
+	#---! note this may fail for pdbs from NMR data
+	regex_seqres = '^SEQRES\s+[0-9]+\s+([A-Z])\s+[0-9]+\s+(.+)'
+	regex_remark = '^REMARK\s465\s{3}\d?\s{1,2}([A-Z]{3})\s([A-Z])\s+(\d+)'
+        regex_dbref = '^DBREF\s{2}(\w{4})\s([A-Z])\s+(\d+)\s+(\d+)\s+UNP\s+\w{6}\s+(\w+)\s+(\d+)\s+(\d+)'
+        seqinfo={}
+        #use 2-step regex to avoid errors from no matchs
+	seqresli = [li for li,l in enumerate(pdblines) if re.match(regex_seqres,l)]
+	seqraw = [re.findall(regex_seqres,pdblines[li])[0] for li in seqresli]
+	missingli = [li for li,l in enumerate(pdblines) if re.match(regex_remark,l)]
+	missing_res = [re.findall(regex_remark,pdblines[li])[0] for li in missingli]
+	dbrefli = [li for li,l in enumerate(pdblines) if re.match(regex_dbref,l)]
+	dbref = [re.findall(regex_dbref,pdblines[li])[0] for li in dbrefli]
+        chains=list(set([elt[0] for elt in seqraw]))
+        for chain in chains:
+		sequence = ''.join([''.join([aacodemap_3to1[j] for j in i[1].split()]) 
+				    for i in seqraw if i[0] == chain])
+                seqinfo[chain]={'missing':{}};seqinfo[chain]['sequence']=sequence
+                for res in missing_res: seqinfo[chain]['missing'][res[2]]=res[0]
+                for ref in dbref:
+                        if ref[1]==chain:
+                                seqinfo[chain]['dbinfo']={'cryst_start':ref[2],'cryst_end':ref[3],
+                                                          'uniprot_start':ref[5],'uniprot_end':ref[6],}
+        return seqinfo
+
 
 def get_last(name,cwd=None):
 	"""
