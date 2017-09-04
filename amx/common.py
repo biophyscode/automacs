@@ -110,7 +110,7 @@ def get_pdb_sequence():
 							for i in seqraw if i[0] == chain])
 		seqinfo[chain]={'missing':{}};seqinfo[chain]['sequence']=sequence
 		#make note of any missing residues based on REMARK 465
-		for res in missing_res: seqinfo[chain]['missing'][res[2]]=res[0]
+		for res in missing_res: seqinfo[chain]['missing'][int(res[2])]=res[0]
 		#record residue numbering info from DBREF remark
 		for ref in dbref:
 			if ref[1]==chain:
