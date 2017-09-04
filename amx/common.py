@@ -83,34 +83,59 @@ def get_pdb(code):
 
 def get_pdb_sequence():
 	"""
-        Get the sequence info if it is a properly constructed PDB file
+	Get the sequence info if it is a properly constructed PDB file
 	"""
 	with open(state.here+'start-structure.pdb','r') as fp: pdb=fp.read()
-        pdblines=pdb.split('\n')
+	pdblines=pdb.split('\n')
 	#return the one letter code sequence and a dictionary of missing residues
 	#---! note this may fail for pdbs from NMR data
 	regex_seqres = '^SEQRES\s+[0-9]+\s+([A-Z])\s+[0-9]+\s+(.+)'
 	regex_remark = '^REMARK\s465\s{3}\d?\s{1,2}([A-Z]{3})\s([A-Z])\s+(\d+)'
-        regex_dbref = '^DBREF\s{2}(\w{4})\s([A-Z])\s+(\d+)\s+(\d+)\s+UNP\s+\w{6}\s+(\w+)\s+(\d+)\s+(\d+)'
-        seqinfo={}
-        #use 2-step regex to avoid errors from no matchs
+	regex_dbref = '^DBREF\s{2}(\w{4})\s([A-Z])\s+(\d+)\s+(\d+)\s+UNP\s+\w{6}\s+(\w+)\s+(\d+)\s+(\d+)'
+	regex_seqadv = '^SEQADV\s(\w{4})\s([A-Z]{3})\s([A-Z])\s+(\d+)\s+UNP\s+\w{6}\s+(\w{3}\s*\d+\s*)?(\w+)'
+	seqinfo={}
+	#use 2-step regex to avoid errors from no matchs
 	seqresli = [li for li,l in enumerate(pdblines) if re.match(regex_seqres,l)]
 	seqraw = [re.findall(regex_seqres,pdblines[li])[0] for li in seqresli]
 	missingli = [li for li,l in enumerate(pdblines) if re.match(regex_remark,l)]
 	missing_res = [re.findall(regex_remark,pdblines[li])[0] for li in missingli]
 	dbrefli = [li for li,l in enumerate(pdblines) if re.match(regex_dbref,l)]
 	dbref = [re.findall(regex_dbref,pdblines[li])[0] for li in dbrefli]
-        chains=list(set([elt[0] for elt in seqraw]))
-        for chain in chains:
+	seqadvli = [li for li,l in enumerate(pdblines) if re.match(regex_seqadv,l)]
+	seqadv = [re.findall(regex_seqadv,pdblines[li])[0] for li in seqadvli]
+	chains=list(set([elt[0] for elt in seqraw]))
+	for chain in chains:
+		#generate a sequence for each chain from SEQRES remark
 		sequence = ''.join([''.join([aacodemap_3to1[j] for j in i[1].split()]) 
-				    for i in seqraw if i[0] == chain])
-                seqinfo[chain]={'missing':{}};seqinfo[chain]['sequence']=sequence
-                for res in missing_res: seqinfo[chain]['missing'][res[2]]=res[0]
-                for ref in dbref:
-                        if ref[1]==chain:
-                                seqinfo[chain]['dbinfo']={'cryst_start':ref[2],'cryst_end':ref[3],
-                                                          'uniprot_start':ref[5],'uniprot_end':ref[6],}
-        return seqinfo
+							for i in seqraw if i[0] == chain])
+		seqinfo[chain]={'missing':{}};seqinfo[chain]['sequence']=sequence
+		#make note of any missing residues based on REMARK 465
+		for res in missing_res: seqinfo[chain]['missing'][res[2]]=res[0]
+		#record residue numbering info from DBREF remark
+		for ref in dbref:
+			if ref[1]==chain:
+				seqinfo[chain]['indexinfo']={'cryst_start':ref[2],'cryst_end':ref[3],
+											 'uniprot_start':ref[5],'uniprot_end':ref[6],}
+		#record mutations or cloning artifacts based on SEQADV remark
+		for conflict in seqadv:
+			if any(['EXPRESSION' or 'CLONING' in conflict]) and conflict[2]==chain:
+				#these residues will need to be removed to get the numbering right
+				if 'artifact' in seqinfo[chain]:
+					seqinfo[chain]['artifact'][conflict[3]]=conflict[1]
+				else:
+					seqinfo[chain]['artifact']={}
+					seqinfo[chain]['artifact'][conflict[3]]=conflict[1]
+			if 'ENGINEERED' in conflict and conflict[2]==chain:
+				#these residues may need to be mutated to have the 'correct' protein sequence
+				#it is left to the user to ensure that the correct sequence is used for any modeling
+				if 'mutated' in seqinfo[chain]:
+					seqinfo[chain]['mutated'][conflict[3]]={'cryst':{conflict[3]:conflict[1]},
+															'uniprot':{conflict[5]:conflict[4]}}
+				else:
+					seqinfo[chain]['mutated']={}
+					seqinfo[chain]['mutated'][conflict[3]]={'cryst':{conflict[3]:conflict[1]},
+															'uniprot':{conflict[5]:conflict[4]}}
+	return seqinfo
 
 
 def get_last(name,cwd=None):
