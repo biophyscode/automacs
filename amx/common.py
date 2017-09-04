@@ -114,27 +114,28 @@ def get_pdb_sequence():
 		#record residue numbering info from DBREF remark
 		for ref in dbref:
 			if ref[1]==chain:
-				seqinfo[chain]['indexinfo']={'cryst_start':ref[2],'cryst_end':ref[3],
-											 'uniprot_start':ref[5],'uniprot_end':ref[6],}
+				seqinfo[chain]['indexinfo']={'cryst_start':int(ref[2]),'cryst_end':int(ref[3]),
+											 'uniprot_start':int(ref[5]),'uniprot_end':int(ref[6]),}
 		#record mutations or cloning artifacts based on SEQADV remark
 		for conflict in seqadv:
-			if any(['EXPRESSION' or 'CLONING' in conflict]) and conflict[2]==chain:
+			if conflict[2]==chain and 'EXPRESSION' in conflict or 'CLONING' in conflict:
 				#these residues will need to be removed to get the numbering right
 				if 'artifact' in seqinfo[chain]:
-					seqinfo[chain]['artifact'][conflict[3]]=conflict[1]
+					seqinfo[chain]['artifact'][int(conflict[3])]=conflict[1]
 				else:
 					seqinfo[chain]['artifact']={}
-					seqinfo[chain]['artifact'][conflict[3]]=conflict[1]
+					seqinfo[chain]['artifact'][int(conflict[3])]=conflict[1]
 			if 'ENGINEERED' in conflict and conflict[2]==chain:
 				#these residues may need to be mutated to have the 'correct' protein sequence
 				#it is left to the user to ensure that the correct sequence is used for any modeling
+				uniprot_res,uniprot_idx=conflict[4].split()
 				if 'mutated' in seqinfo[chain]:
-					seqinfo[chain]['mutated'][conflict[3]]={'cryst':{conflict[3]:conflict[1]},
-															'uniprot':{conflict[5]:conflict[4]}}
+					seqinfo[chain]['mutated'][int(conflict[3])]={'cryst':{int(conflict[3]):conflict[1]},
+																 'uniprot':{int(uniprot_idx):uniprot_res}}
 				else:
 					seqinfo[chain]['mutated']={}
-					seqinfo[chain]['mutated'][conflict[3]]={'cryst':{conflict[3]:conflict[1]},
-															'uniprot':{conflict[5]:conflict[4]}}
+					seqinfo[chain]['mutated'][int(conflict[3])]={'cryst':{int(conflict[3]):conflict[1]},
+																 'uniprot':{int(uniprot_idx):uniprot_res}}
 	return seqinfo
 
 
