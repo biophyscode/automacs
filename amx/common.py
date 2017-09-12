@@ -107,6 +107,7 @@ def get_last_sources():
 	"""
 	Get the sources retrieved from the previous step (this gets the originals).
 	"""
+	if not state.before: raise Exception('cannot find a previous step in state.before')
 	sources = state.before[-1]['settings']['sources']
 	for dn in sources:
 		if not os.path.isdir(dn): raise Exception('source %s is not a directory'%dn)
