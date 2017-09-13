@@ -262,10 +262,8 @@ def run(procname=None,over='expt.json',script='script.py',PYTHON_DEBUG=None,look
 	executor = str(executor_script)
 	config = read_config()
 	executor = re.sub('PATH_TO_RUNNER',config['acme'],executor_script)
-	executor = re.sub('codeprep\(\)','codeprep(script_fn="%s")'%script,executor,flags=re.M)
-	executor = re.sub('finished\(state\)','finished(state,script_fn="%s")'%script,executor,flags=re.M)
-	executor = re.sub('stopper\(this_state,e,','stopper(this_state,e,script_fn="%s",'%
-		script,executor,flags=re.M)
+	#---we define script_fn which is used throughout the script
+	executor = re.sub('#---define script_fn here','script_fn = "%s"'%script,executor)
 	with open('exec.py','w') as fp: fp.write(executor)
 	#---only custom set traces happen here (no automatic debugging)
 	try: subprocess.check_call('PYTHON_DEBUG=no python -uB exec.py',shell=True)
