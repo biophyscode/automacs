@@ -127,8 +127,11 @@ def preplist(silent=False,verbose=False):
 	for key in sorted(inputlib.keys()):
 		val = inputlib[key]
 		lead = ''
-		if 'tags' in val and 'cgmd' in val['tags']: lead += fab('cgmd','cyan_black')+' '
-		if 'tags' in val and 'aamd' in val['tags']: lead += fab('aamd','red_black')+' '
+		if 'tags' in val:
+			if 'cgmd' in val['tags']: lead += fab('cgmd','cyan_black')+' '
+			if 'aamd' in val['tags']: lead += fab('aamd','red_black')+' '
+			tags_test = [re.match('^tested_(.+)$',i).group(1) for i in val['tags'] if re.match('^tested_',i)]
+			for tag in tags_test: lead += fab('+%s'%tag,'mag_gray')+' '
 		if 'metarun' in val: 
 			if verbose:
 				heading = dottoc('',fab(key,'mag_gray')+' '+fab(str(counter+1),'white_black'),'',lead=lead)
@@ -270,16 +273,11 @@ def run(procname=None,over='expt.json',script='script.py',PYTHON_DEBUG=None,look
 	except KeyboardInterrupt: 
 		print('[STATUS] received INT and exiting')
 		sys.exit(1)
-		#---! previously returned False to the metarun but this doesn't allow the code to throw an error
-		#return False
-	#---PROPER TRACEBACK HERE???
 	except Exception as e:
 		from makeface import tracebacker
 		tracebacker(e)
 		print('[STATUS] acme run failed during `make run`')
 		sys.exit(1)
-		#---! previously returned False to the metarun but this doesn't allow the code to throw an error
-		#return False
 	print('[STATUS] acme run lasted %.1f minutes'%((time.time()-start_time)/60.0))
 	return True
 
@@ -310,7 +308,11 @@ def metarun():
 			print('[ERROR] `make run` returned an error state')
 			sys.exit(1)
 		#---save the state for posterity, later lookups (no save if quick script doesn't save a state.json)
-		elif os.path.isfile('state.json'): shutil.copyfile('state.json','state_%d.json'%num)
+		#---note that this feature is centralized in the finished function in states.py so both run and metarun
+		#---...or anything executed by executor.py will save the state so later steps can look up state.before
+		#---...and to prevent redundancy we only save here if the file is mussing and success
+		elif os.path.isfile('state.json') and not os.path.isfile('state_%d.json'%num): 
+			shutil.copyfile('state.json','state_%d.json'%num)
 
 def cleanup(sure=False):
 	"""
