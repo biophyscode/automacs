@@ -5,7 +5,7 @@ KICKSTART SCRIPTS
 """
 
 kickstarters = {'all':"""
-make set module source="http://github.com/biophyscode/amx-proteins.git" spot="amx/proteins"
+make set module source="http://github.com/biophyscode/amx-proteins.git" spot="inputs/proteins"
 make set module source="$up/amx-extras.git" spot="inputs/extras"
 make set module source="$up/amx-docs.git" spot="inputs/docs"
 make set commands inputs/docs/docs.py
