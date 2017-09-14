@@ -46,7 +46,7 @@ class GMXTopology:
 		'bonds':{'records':'i j funct length force'},
 		'constraints':{'records':'i j funct length'},
 		'angles':{'records':'i j k funct angle force'},
-		'dihedrals':{'records':'i j k l funct angle force'},
+		'dihedrals':{'records':'i j k l funct angle force multiplicity'},
 		'position_restraints':{'records':'ai  funct  fcx    fcy    fcz'},
 		'exclusions':{'records':'i j'},
 		'virtual_sites3':{'records':'site n0 n1 n2 funct a b'},
