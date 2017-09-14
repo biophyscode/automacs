@@ -110,6 +110,12 @@ def quick(procname,**kwargs):
 def preplist(silent=False,verbose=False):
 	"""
 	Identify all available experiments and print them for the user.
+
+	Note the following tagging conventions. 
+		1. support means that this run/quick is called by a metarun 
+			and hence should never be called by the user
+		2. once means you only need to run it once because it manipulates inputs
+			and conversely you probably have to expunge it manually to start over
 	"""
 	#---both preplist and prep are the initial user-commands so we check for install here
 	is_installed()
@@ -128,8 +134,15 @@ def preplist(silent=False,verbose=False):
 		val = inputlib[key]
 		lead = ''
 		if 'tags' in val:
+			#---special tags for the simulation scale
 			if 'cgmd' in val['tags']: lead += fab('cgmd','cyan_black')+' '
 			if 'aamd' in val['tags']: lead += fab('aamd','red_black')+' '
+			if 'aamd_cgmd' in val['tags'] or 'cgmd_aamd' in val['tags']: 
+				lead += fab('  md','white_black')+' '
+			#---tags prefixed with "tag_" are emphasized
+			tags_tag = [re.match('^tag_(.+)$',i).group(1) for i in val['tags'] if re.match('^tag_',i)]
+			for tag in tags_tag: lead += fab('%s'%tag,'cyan_black')+' '
+			#---passing test sets are marked in magenta/gray
 			tags_test = [re.match('^tested_(.+)$',i).group(1) for i in val['tags'] if re.match('^tested_',i)]
 			for tag in tags_test: lead += fab('+%s'%tag,'mag_gray')+' '
 		if 'metarun' in val: 
@@ -148,7 +161,7 @@ def preplist(silent=False,verbose=False):
 		expt_order.append(key)
 		counter += 1
 	if not silent: 
-		for key in ['metarun','quick','run']: asciitree({key:toc[key]})
+		for key in ['quick','run','metarun']: asciitree({key:toc[key]})
 	return {'order':expt_order,'details':toc_clean}
 
 def prep_json():
@@ -381,6 +394,7 @@ def go(procname,clean=False,back=False):
 	which_runtype = [k for k in runtypes if _keysets(k,*read_inputs()[procname].keys())]
 	if len(which_runtype)>1: 
 		raise Exception('found %s in multiple run categories. something has gone very wrong'%procname)
+	elif len(which_runtype)==0: raise Exception('something has gone wrong. no keysets match.')
 	runtype = which_runtype[0]
 	if back and runtype=='quick': 
 		raise Exception('cannot run `make go %s` with back because it is a quick script'%procname)
