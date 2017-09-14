@@ -7,7 +7,7 @@ Functions which save the ``state`` on completion or error, along with a function
 logs every function call.
 """
 
-import json,re,shutil
+import json,re,shutil,os
 from loadstate import expt,settings
 from makeface import fab
 
