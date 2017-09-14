@@ -489,8 +489,7 @@ def get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 		else: state.last_frame = last_written_gro
 	#---make the last frame from the cpt file
 	else:
-		print('DEV!!!!!!1')
-		import ipdb;ipdb.set_trace()
+		raise Exception('the following needs tested')
 		cpt = source + get_last_gmx_call('mdrun')['flags']['-cpo']
 		if not os.path.isfile(cpt): 
 			msg = 'failed to find final gro *and* a cpt (%s).'%cpt
@@ -502,12 +501,13 @@ def get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 		if dest:
 			dest_dn = os.path.join(os.path.abspath(dest),'')
 			if not os.path.isdir(dest_dn): raise Exception('cannot find folder %s'%dest)
-			out = os.path.join(dest_dn,out)
+			out = os.path.join(dest_dn,'trajectory_on_the_fly')
 			log = os.path.join(os.path.abspath(dest),'log-trjconv-last-frame')
-		else: log = 'trjconv-last-frame'
+		else: 
+			log = 'trjconv-last-frame'
 		gmx('trjconv',cpt=get_last_gmx_call('mdrun')['flags']['-cpo'],
-			tpr=get_last_gmx_call('mdrun')['flags']['-tpr'],
-			out=out,custom_gmxcall=custom_gmxcall,log=log,inpipe='0\n')
+			tpr=get_last_gmx_call('mdrun')['flags']['-s'],
+			out=out,custom=custom_gmxcall,log=log,inpipe='0\n')
 		state.last_frame = state.here+out
 	#---get tpr, top, etc, if requested
 	#---! point to other functions
