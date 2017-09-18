@@ -53,7 +53,9 @@ class GMXTopology:
 		'pairs':{'records':'ai aj funct c0 c1 c2 c3'},
 		'cmap':{'records':'ai aj ak al am funct'},
 		'settles':{'records':'OW funct doh dhh'},}
-	_entry_order = "moleculetype atoms bonds angles dihedrals constraints position_restraints".split()
+	#---! NOTE THAT THIS IS A CRITICAL LYNCHPIN. IF IT IS NOT ON HERE IT IS NOT WRITTEN
+	_entry_order = ("moleculetype atoms bonds angles dihedrals constraints virtual_sites3 exclusions "+
+		"position_restraints").split()
 	#---specify the ITP format for a molecule type
 	_entry_defns_original = dict([(name,{'lines':details.get('lines','many'),'regex':
 		'^\s*%s$'%(''.join(["(?P<"+kw+">.*?)\s"+('+' if dd<len(details['records'].split())-1 else '*') 
