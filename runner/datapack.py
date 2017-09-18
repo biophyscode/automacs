@@ -27,6 +27,14 @@ from controlspec import controlspec,controlmsg
 __all__ = ['DotDict','yamlb']
 _not_all = ['DotDict','yamlb']
 
+#---explicit error message for dictionary failures
+msg_no_key = 'this DotDict "%s" cannot find a key you have requested: "%s". '+\
+	'this typically happens for one of the following reasons. (1) you forgot to include a key in the '+\
+	'settings block of your experiment. (2) the settings block for your experiment (or a run it uses) '+\
+	'has a syntax error or repeated keys. if this happens, scroll up to see a warning '+\
+	'("settings was broken") to troubleshoot the error. (3) in rare cases a control flow problem in an '+\
+	'automacs library may not correctly put the right data into the state.'
+
 class DotDict(dict):
 	"""
 	Use dots to access dictionary items.
@@ -59,7 +67,11 @@ class DotDict(dict):
 		#---failed attributes are looked up with the query function if available
 		#---note that the q function can be permissive and return None on key failures
 		elif 'q' in self: return self.q(key)
-		else: raise KeyError('cannot find key %s'%str(key))
+		else: 
+			#---it would be nice to get the name of the variable for self but this is very difficult
+			#---...and the user should be able to do a traceback with the ample error messages
+			#---we addded the verbose message because we were not scrolling up to note JSON errors
+			raise Exception(msg_no_key%(id(self),key))
 
 def jsonify(text): 
 	"""
