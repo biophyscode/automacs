@@ -203,20 +203,20 @@ def get_path_to_module(code,tail=True):
 	parts = re.match('^@(.+)',code).group(1).split(os.sep)
 	name,tail_path = parts[0],os.sep.join(parts[1:]) if len(parts)>1 else ''
 	if not tail and tail_path: raise Exception(
-		'module path %s has a tail but the calling function forbids it'%code)
+		'[ERROR] module path %s has a tail but the calling function forbids it'%code)
 	#---load the configuration
 	config = read_config()
 	#---get basenames from the modules
 	basenames = dict([(os.path.basename(i[1]),i[1]) for i in config['modules']])
 	#---make sure there are no redundant basenames: this is a design constraint!
 	if len(basenames.keys())>len(set(basenames.keys())):
-		raise Exception('detected repeated directory names in the modules list in the config')
+		raise Exception('[ERROR] detected repeated directory names in the modules list in the config')
 	#---the special "@name" syntax may be followed by a path, but we look for the module first
 	if name not in basenames.keys():
 		#---check links here. these are an alternative path lookup
 		#---! improved documentation
 		if name in config.get('links',[]): lookup = config['links'][name]
-		else: raise Exception('cannot find %s in the list of base module names or links in the config: %s'%(
+		else: raise Exception('[ERROR] cannot find %s in the list of base module names or links in the config: %s'%(
 			name,basenames.keys()))
 	else: lookup = basenames[name]
 	if tail_path: return os.path.join(lookup,tail_path)
