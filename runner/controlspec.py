@@ -28,6 +28,7 @@ controlmsg = {
 
 controlspec = {
 	'keysets':{
+		'comment':{('comment'):'comment'},
 		'run':{('script','extensions','params','tags','settings','cwd'):'std'},
 		'metarun':{('metarun','cwd'):True,('metarun','cwd','tags'):True},
 		'metarun_steps':{
