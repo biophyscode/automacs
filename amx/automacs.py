@@ -489,7 +489,7 @@ def get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 		else: state.last_frame = last_written_gro
 	#---make the last frame from the cpt file
 	else:
-		raise Exception('the following needs tested')
+		#raise Exception('the following needs tested')
 		cpt = source + get_last_gmx_call('mdrun')['flags']['-cpo']
 		if not os.path.isfile(cpt): 
 			msg = 'failed to find final gro *and* a cpt (%s).'%cpt
@@ -519,9 +519,10 @@ def get_trajectory(dest=None):
 	Requires items from the history_gmx.
 	Note that this is customized for vmdmake but it could be generalized and added to automacs.py.
 	"""
-	last_tpr = get_last_gmx_call('mdrun')['flags']['-s']
-	last_xtc = get_last_gmx_call('mdrun')['flags']['-x']
-	last_cpt = get_last_gmx_call('mdrun')['flags']['-cpo']
+	last_call = get_last_gmx_call('mdrun')
+	last_tpr = last_call['flags']['-s']
+	last_xtc = last_call['flags']['-x']
+	last_cpt = last_call['flags']['-cpo']
 	last_partno = int(re.match('^md\.part([0-9]{4})',os.path.basename(last_xtc)).group(1))
 	if dest:
 		dest_dn = os.path.join(os.path.abspath(dest),'')
