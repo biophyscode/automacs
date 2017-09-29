@@ -131,12 +131,14 @@ def preplist(silent=False,verbose=False):
 		(fab(str(counter).rjust(4),'white_black')+' ' if counter else '')+
 		lead+key+(fab(' (%s)'%at,'gray') if at else '')+trail)
 	for key in sorted(inputlib.keys()):
+		#---ignore comments
+		if re.match('comment_',key): continue
 		val = inputlib[key]
 		lead = ''
 		if 'tags' in val:
 			#---special tags for the simulation scale
 			if 'cgmd' in val['tags']: lead += fab('cgmd','cyan_black')+' '
-			if 'aamd' in val['tags']: lead += fab('aamd','red_black')+' '
+			if 'aamd' in val['tags']: lead += fab('aamd','green_black')+' '
 			if 'aamd_cgmd' in val['tags'] or 'cgmd_aamd' in val['tags']: 
 				lead += fab('  md','white_black')+' '
 			#---tags prefixed with "tag_" are emphasized
@@ -145,6 +147,10 @@ def preplist(silent=False,verbose=False):
 			#---passing test sets are marked in magenta/gray
 			tags_test = [re.match('^tested_(.+)$',i).group(1) for i in val['tags'] if re.match('^tested_',i)]
 			for tag in tags_test: lead += fab('+%s'%tag,'mag_gray')+' '
+			#---minor notes get white on black text
+			tags_notes = [re.match('^note_(.+)$',i).group(1) for i in val['tags'] if re.match('^note_',i)]
+			for tag in tags_notes: lead += fab('%s'%tag,'white_black')+' '
+			if 'dev' in val['tags']: lead += fab('DEV','red_black')+' '
 		if 'metarun' in val: 
 			if verbose:
 				heading = dottoc('',fab(key,'mag_gray')+' '+fab(str(counter+1),'white_black'),'',lead=lead)
