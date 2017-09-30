@@ -460,7 +460,6 @@ def get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 	"""
 
 	#___! changed BASENAME TO GRO IN ARGUMENTS./ probably need to fix "out" below
-
 	#---default source is state.here
 	if not source: 
 		#---DEFAULT behavior: if previous states are available we use them as the source
@@ -491,7 +490,7 @@ def get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 	else:
 		#raise Exception('the following needs tested')
 		cpt = source + get_last_gmx_call('mdrun')['flags']['-cpo']
-		if not os.path.isfile(cpt): 
+		if not os.path.isfile(cpt):
 			msg = 'failed to find final gro *and* a cpt (%s).'%cpt
 			msg += 'this might have occured if your simulation ran for less than 15 minutes'
 			'and hence failed to write a cpt file for us to record the final frame'
