@@ -9,7 +9,8 @@ def make_step(name):
 		#---TRANSMIT DATA FROM ONE STATE TO THE NEXT
 		#---get step information from the last state
 		prev_state = state.before[-1]
-		state.stepno = prev_state['stepno'] + 1
+		if state.stepno: state.stepno += 1
+		else: state.stepno = prev_state['stepno'] + 1
 		state.steps = list(prev_state['steps'])
 	else:
 		if 'stepno' not in state: state.stepno = 1
