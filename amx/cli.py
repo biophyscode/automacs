@@ -335,7 +335,7 @@ def cluster(hostname=None,overwrite=True):
 	with open('cluster-header.sh','w') as fp: fp.write(head)
 	print('[STATUS] wrote cluster-header.sh')
 	#---get the most recent step (possibly duplicate code from base)
-	last_step = amx.state.here
+	last_step = amx.state.here if 'here' in amx.state else False
 	#---gmxpaths can be saved to the state or retrieved automatically
 	try: gmxpaths = get_gmx_paths(hostname=hostname,override=True if hostname else False)
 	except: gmxpaths = amx.state.gmxpaths

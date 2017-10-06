@@ -69,16 +69,20 @@ def jsonify(text):
 	cannot process it and the point of this function is to use SafeDictHook to prevent redundant keys.
 	"""
 	#---remove comments because they might screw up the JSON
-	text = re.sub(r'([\"]{3}.*?[\"]{3})','"REMOVED_BLOCK_COMMENT"',text,flags=re.M+re.DOTALL)
+	re_block_comments = re.compile(r'([\"]{3}.*?[\"]{3})',flags=re.M+re.DOTALL)
+	text = re_block_comments.sub('"REMOVED_BLOCK_COMMENT"',text)
 	#---note that this fails if you use hashes inside of dictionary values
-	text = re.sub(r'(#.*?)\n','',text,flags=re.M+re.DOTALL)
+	re_comments = re.compile(r'(#.*?)\n',flags=re.M+re.DOTALL)
+	text = re_comments.sub('',text)
 	#---strip trailing commas because they violate JSON rules
 	text = re.sub(r",[ \t\r\n]*([}\]])",r"\1",text.replace("'","\""))
 	#---fix the case on all booleans
 	text = re.sub("True","true",text)
 	text = re.sub("False","false",text)
 	text = re.sub("None","null",text)
-	text = re.sub('\n\s*\n','\n',text,re.M)
+	#---remove whitespace
+	re_whitespace = re.compile('\n\s*\n',flags=re.M)
+	text = re_whitespace.sub('\n',text)
 	#---! rpb is worried that this is a hack
 	return text
 
@@ -102,6 +106,14 @@ def check_repeated_keys(text,verbose=False):
 	text_json = jsonify(text)
 	try: _ = json.loads(text_json,object_pairs_hook=SafeDictHook)
 	except Exception as e: 
+		#---if we get a type error we are probably on python < 2.7
+		#---...where json lacks the hook so we just give a warning and pass
+		if type(e)==TypeError:
+			print('[WARNING] JSON encountered a type error which suggests an old version '
+				'(possibly python 2.6) so we will pass. beware repeated keys or downstream '
+				'dictionary errors')
+			return True
+		#---! debug with: print('[ERROR] here is the JSON exception %s'%e)
 		print('[ERROR] found repeated keys (or JSON encoding error). '+extra_msg)
 		if verbose: 
 			text_with_linenos = '\n'.join(['[DEBUG]%s|%s'%(str(ll).rjust(4),l) 
@@ -139,7 +151,8 @@ def yamlb(text,style=None,ignore_json=False):
 	else: regex_block = regex_block_standard
 	regex_line = r"^\s*(.*?)\s*(?:\s*:\s*)\s*(.+)$"
 	#---strip comments first 
-	text = re.sub("\s*#.*?$",'',text,flags=re.M)
+	re_comments = re.compile("\s*#.*?$",flags=re.M)
+	text = re_comments.sub('',text) 
 	while True:
 		blockoff = re.search(regex_block,text,re.M+re.DOTALL)
 		if not blockoff: break
