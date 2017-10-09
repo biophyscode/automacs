@@ -19,7 +19,7 @@ make set module source="$up/amx-polymers.git" spot="inputs/polymers"
 """,
 'proteins':"""
 make set module source="$up/amx-proteins.git" spot="amx/proteins"
-make set module source="https://github.com/ejjordan/amx-homology" spot="amx/homology"
+make set module source="http://github.com/ejjordan/amx-homology" spot="amx/homology"
 make set module source="$up/amx-extras.git" spot="inputs/extras"
 make set module source="$up/amx-docs.git" spot="inputs/docs"
 make set commands inputs/docs/docs.py
