@@ -162,7 +162,7 @@ def connect(source,spot):
 		if not source: print('[NOTE] modules are: %s'%str(mods))
 		else:
 			#---clone the module
-			source = source.replace('http','https')
+			source = source.replace('http:','https:')
 			cmd = 'git clone %s %s'%(source,spot)
 			print('[NOTE] cloning via: "%s"'%cmd)
 			subprocess.check_call('git clone %s %s'%(source,spot),shell=True)
