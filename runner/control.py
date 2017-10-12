@@ -122,9 +122,9 @@ def preplist(silent=False,verbose=False):
 	from makeface import fab
 	from datapack import asciitree
 	inputlib,spots = read_inputs(procname=None,return_paths=True)
-	toc,counter = {'run':[],'metarun':{} if verbose else [],'quick':[]},0
+	toc,counter = {'run':[],'metarun':[],'quick':[]},0
 	#---the toc has fancy formatting for the terminal, so we make a clean version
-	toc_clean = {'run':[],'metarun':{} if verbose else [],'quick':[]}
+	toc_clean = {'run':[],'metarun':[],'quick':[]}
 	expt_order = []
 	#---! the following notes the cwd but not the _expts.py file for a particular experiment
 	dottoc = lambda counter,key,at,lead='',trail='' : (
@@ -135,7 +135,7 @@ def preplist(silent=False,verbose=False):
 		if re.match('comment_',key): continue
 		val = inputlib[key]
 		lead = ''
-		if 'tags' in val:
+		if 'tags' in val and verbose:
 			#---special tags for the simulation scale
 			if 'cgmd' in val['tags']: lead += fab('cgmd','cyan_black')+' '
 			if 'aamd' in val['tags']: lead += fab('aamd','green_black')+' '
@@ -152,11 +152,7 @@ def preplist(silent=False,verbose=False):
 			for tag in tags_notes: lead += fab('%s'%tag,'white_black')+' '
 			if 'dev' in val['tags']: lead += fab('DEV','red_black')+' '
 		if 'metarun' in val: 
-			if verbose:
-				heading = dottoc('',fab(key,'mag_gray')+' '+fab(str(counter+1),'white_black'),'',lead=lead)
-				toc['metarun'][heading] = {
-					'at':spots[key],'steps':[i.get('do',i.get('quick','?')) for i in val['metarun']]}
-			else: toc['metarun'].append(dottoc(str(counter+1),key,spots[key],lead=lead))
+			toc['metarun'].append(dottoc(str(counter+1),key,spots[key],lead=lead))
 		elif 'quick' in val: toc['quick'].append(dottoc(counter+1,key,spots[key],lead=lead))
 		#---only three types here
 		else: toc['run'].append(dottoc(counter+1,key,spots[key],lead=lead))
