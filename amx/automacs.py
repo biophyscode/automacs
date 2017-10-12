@@ -488,7 +488,6 @@ def get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 		else: state.last_frame = last_written_gro
 	#---make the last frame from the cpt file
 	else:
-		#raise Exception('the following needs tested')
 		cpt = source + get_last_gmx_call('mdrun')['flags']['-cpo']
 		if not os.path.isfile(cpt):
 			msg = 'failed to find final gro *and* a cpt (%s).'%cpt
