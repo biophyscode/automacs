@@ -171,11 +171,9 @@ def setup(name=''):
 	kickstarters = mod['kickstarters']
 	if not name: 
 		raise Exception('you must specify a setup script: %s'%(', '.join(kickstarters.keys())))
-	#---! hard-coding the source for now, but it would be good to put this in config.py
-	upstream_source = "http://github.com/bradleyrp"
 	if name not in kickstarters: raise Exception('cannot find kickstarter script: %s'%name)
 	with open('kickstart.sh','w') as fp:
-		fp.write("#!/bin/bash\n\nset -e\n\nup=%s\n\n"%upstream_source+kickstarters[name])
+		fp.write("#!/bin/bash\n\nset -e\n\n"+kickstarters[name])
 	subprocess.check_call('bash kickstart.sh',shell=True)
 	os.remove('kickstart.sh')
 	print('[WARNING] new users must run `make gromacs_config (local|home)` '+

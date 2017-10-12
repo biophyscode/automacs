@@ -110,6 +110,12 @@ def quick(procname,**kwargs):
 def preplist(silent=False,verbose=False):
 	"""
 	Identify all available experiments and print them for the user.
+
+	Note the following tagging conventions. 
+		1. support means that this run/quick is called by a metarun 
+			and hence should never be called by the user
+		2. once means you only need to run it once because it manipulates inputs
+			and conversely you probably have to expunge it manually to start over
 	"""
 	#---both preplist and prep are the initial user-commands so we check for install here
 	is_installed()
@@ -125,10 +131,26 @@ def preplist(silent=False,verbose=False):
 		(fab(str(counter).rjust(4),'white_black')+' ' if counter else '')+
 		lead+key+(fab(' (%s)'%at,'gray') if at else '')+trail)
 	for key in sorted(inputlib.keys()):
+		#---ignore comments
+		if re.match('comment_',key): continue
 		val = inputlib[key]
 		lead = ''
-		if 'tags' in val and 'cgmd' in val['tags']: lead += fab('cgmd','cyan_black')+' '
-		if 'tags' in val and 'aamd' in val['tags']: lead += fab('aamd','red_black')+' '
+		if 'tags' in val:
+			#---special tags for the simulation scale
+			if 'cgmd' in val['tags']: lead += fab('cgmd','cyan_black')+' '
+			if 'aamd' in val['tags']: lead += fab('aamd','green_black')+' '
+			if 'aamd_cgmd' in val['tags'] or 'cgmd_aamd' in val['tags']: 
+				lead += fab('  md','white_black')+' '
+			#---tags prefixed with "tag_" are emphasized
+			tags_tag = [re.match('^tag_(.+)$',i).group(1) for i in val['tags'] if re.match('^tag_',i)]
+			for tag in tags_tag: lead += fab('%s'%tag,'cyan_black')+' '
+			#---passing test sets are marked in magenta/gray
+			tags_test = [re.match('^tested_(.+)$',i).group(1) for i in val['tags'] if re.match('^tested_',i)]
+			for tag in tags_test: lead += fab('+%s'%tag,'mag_gray')+' '
+			#---minor notes get white on black text
+			tags_notes = [re.match('^note_(.+)$',i).group(1) for i in val['tags'] if re.match('^note_',i)]
+			for tag in tags_notes: lead += fab('%s'%tag,'white_black')+' '
+			if 'dev' in val['tags']: lead += fab('DEV','red_black')+' '
 		if 'metarun' in val: 
 			if verbose:
 				heading = dottoc('',fab(key,'mag_gray')+' '+fab(str(counter+1),'white_black'),'',lead=lead)
@@ -145,7 +167,7 @@ def preplist(silent=False,verbose=False):
 		expt_order.append(key)
 		counter += 1
 	if not silent: 
-		for key in ['metarun','quick','run']: asciitree({key:toc[key]})
+		for key in ['quick','run','metarun']: asciitree({key:toc[key]})
 	return {'order':expt_order,'details':toc_clean}
 
 def prep_json():
@@ -270,16 +292,11 @@ def run(procname=None,over='expt.json',script='script.py',PYTHON_DEBUG=None,look
 	except KeyboardInterrupt: 
 		print('[STATUS] received INT and exiting')
 		sys.exit(1)
-		#---! previously returned False to the metarun but this doesn't allow the code to throw an error
-		#return False
-	#---PROPER TRACEBACK HERE???
 	except Exception as e:
 		from makeface import tracebacker
 		tracebacker(e)
 		print('[STATUS] acme run failed during `make run`')
 		sys.exit(1)
-		#---! previously returned False to the metarun but this doesn't allow the code to throw an error
-		#return False
 	print('[STATUS] acme run lasted %.1f minutes'%((time.time()-start_time)/60.0))
 	return True
 
@@ -310,7 +327,11 @@ def metarun():
 			print('[ERROR] `make run` returned an error state')
 			sys.exit(1)
 		#---save the state for posterity, later lookups (no save if quick script doesn't save a state.json)
-		elif os.path.isfile('state.json'): shutil.copyfile('state.json','state_%d.json'%num)
+		#---note that this feature is centralized in the finished function in states.py so both run and metarun
+		#---...or anything executed by executor.py will save the state so later steps can look up state.before
+		#---...and to prevent redundancy we only save here if the file is mussing and success
+		elif os.path.isfile('state.json') and not os.path.isfile('state_%d.json'%num): 
+			shutil.copyfile('state.json','state_%d.json'%num)
 
 def cleanup(sure=False):
 	"""
@@ -379,6 +400,7 @@ def go(procname,clean=False,back=False):
 	which_runtype = [k for k in runtypes if _keysets(k,*read_inputs()[procname].keys())]
 	if len(which_runtype)>1: 
 		raise Exception('found %s in multiple run categories. something has gone very wrong'%procname)
+	elif len(which_runtype)==0: raise Exception('something has gone wrong. no keysets match.')
 	runtype = which_runtype[0]
 	if back and runtype=='quick': 
 		raise Exception('cannot run `make go %s` with back because it is a quick script'%procname)

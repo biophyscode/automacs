@@ -7,7 +7,7 @@ Functions which save the ``state`` on completion or error, along with a function
 logs every function call.
 """
 
-import json,re
+import json,re,shutil,os
 from loadstate import expt,settings
 from makeface import fab
 
@@ -41,6 +41,11 @@ def finished(state,script_fn='script.py'):
 	with open(script_fn) as fp: state.script_code = fp.read()
 	state.status = 'completed'
 	statesave(state)
+	#---after saving the state we attempt to back up the state.json file for posterity
+	#---...this is essential for state.before which is populated with previous states by the init function
+	#---saving state_N.json here will supercede the same call at the end of the metarun function
+	if not os.path.isfile('state_%d.json'%state.stepno):
+		shutil.copyfile('state.json','state_%d.json'%state.stepno)
 
 def stopper(state,exc,show_trace=True,last_lineno=None,script_fn='script.py'):
 	"""

@@ -46,14 +46,16 @@ class GMXTopology:
 		'bonds':{'records':'i j funct length force'},
 		'constraints':{'records':'i j funct length'},
 		'angles':{'records':'i j k funct angle force'},
-		'dihedrals':{'records':'i j k l funct angle force'},
+		'dihedrals':{'records':'i j k l funct angle force multiplicity'},
 		'position_restraints':{'records':'ai  funct  fcx    fcy    fcz'},
 		'exclusions':{'records':'i j'},
 		'virtual_sites3':{'records':'site n0 n1 n2 funct a b'},
 		'pairs':{'records':'ai aj funct c0 c1 c2 c3'},
 		'cmap':{'records':'ai aj ak al am funct'},
 		'settles':{'records':'OW funct doh dhh'},}
-	_entry_order = "moleculetype atoms bonds angles dihedrals constraints position_restraints".split()
+	#---! NOTE THAT THIS IS A CRITICAL LYNCHPIN. IF IT IS NOT ON HERE IT IS NOT WRITTEN
+	_entry_order = ("moleculetype atoms bonds angles dihedrals constraints virtual_sites3 exclusions "+
+		"position_restraints").split()
 	#---specify the ITP format for a molecule type
 	_entry_defns_original = dict([(name,{'lines':details.get('lines','many'),'regex':
 		'^\s*%s$'%(''.join(["(?P<"+kw+">.*?)\s"+('+' if dd<len(details['records'].split())-1 else '*') 
