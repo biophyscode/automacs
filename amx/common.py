@@ -423,7 +423,6 @@ def trim_waters(structure='solvate-dense',gro='solvate',gap=3,boxvecs=None,metho
 			#---previous method used clumsy/slow cdist (removed)
 			#---use scipy KDTree to find atom names inside the gap
 			#---note that order matters: we wish to find waters too close to not_waters
-			#---! YOU FUCKING ASSHOLE THE not was swapped with the ... FUCK YOU ASSHOLE
 			close_dists,neighbors = scipy.spatial.KDTree(points[not_water_inds]).query(points[water_inds],
 				distance_upper_bound=gap/10.0)
 			#---use the distances to find the residue indices for waters that are too close 
