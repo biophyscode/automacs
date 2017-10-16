@@ -15,6 +15,7 @@ from copy import deepcopy
 #---command formulations
 #---note gromacs has a tricky syntax for booleans so 
 #---...we use TRUE and FALSE which map to -flag and -noflag
+#---! more explicit documentation for this format
 gmx_call_templates = """
 pdb2gmx -f STRUCTURE -ff FF -water WATER -o GRO.gro -p system.top -i BASE-posre.itp -missing TRUE -ignh TRUE
 editconf -f STRUCTURE.gro -o GRO.gro
@@ -31,35 +32,28 @@ genconf -f STRUCTURE.gro -nbox NBOX -o GRO.gro
 ###---STATE VARIABLES
 
 def register(func):
-
 	"""
 	Collect utility functions in the state.
-	[Typically this would be a decorator, but the import scheme makes that unworkable.]
+	Note that typically this would be a decorator, but the import scheme makes that unworkable.
 	"""
-
 	fname = func.__name__
 	if '_funcs' not in state: state._funcs = []
-	#if fname in state: raise Exception('state already had function %s'%fname)
 	state._funcs.append(fname)
 	state[fname] = func
 
 def q(key,val=None):
-
 	"""
-	Check either settings or the state for a variable name.
+	Check either settings or the state for a variable name with this alias for a dictionary "get".
 	This takes the place of (indiscriminately) loading all settings into the state.
 	"""
-
 	return state.get(key,settings.get(key,val))
 
 def component(name,count=None,top=False):
-
 	"""
-	component(name,count=None)
 	Add or modify the composition of the system and return the count if none is provided.
 	Originally designed for protein_atomistic.py.
+	.. note: attributes, topology
 	"""
-	
 	#---start a composition list if absent
 	if 'composition' not in state: 
 		state.composition = []
@@ -77,13 +71,10 @@ def component(name,count=None,top=False):
 	return state.composition[names.index(name)][1]
 
 def include(name,ff=False):
-
 	"""
-	include(name)
 	Add an ITP file to the itp (non-ff includes) list but avoid redundancies 
 	which cause errors in GROMACS.
 	"""
-
 	which = 'ff_includes' if ff else 'itp'
 	if 'itp' not in state: state[which] = []
 	if name not in state[which]: state[which].append(name)
@@ -122,26 +113,9 @@ def init():
 
 ###---COMMAND INTERPRETATIONS
 
-def commands_interpret_deprecated(block):
-
-	"""
-	Interpret a block of command templates for GROMACS.
-	"""
-
-	commands = {}
-	for line in block.split('\n'):
-		if not re.match('^\s*$',line):
-			utility = re.findall('^([gmx\s+]?\w+)',line).pop() 
-			flags_string = re.findall('^[gmx\s+]?\w+\s*(.+)',line).pop() 
-			flags = flags_string.split()
-			try: specs = dict([flags[2*i:2*i+2] for i in range(int(len(flags)/2))])
-			except:
-				import ipdb;ipdb.set_trace()
-			commands[utility] = specs
-	return commands
-
 def commands_interpret(templates):
 	"""
+	Interpret a block of command templates for GROMACS.
 	"""
 	gmxcalls = {}
 	for raw in [i for i in templates.splitlines() if not re.match('^\s*$',i)]:
@@ -178,7 +152,9 @@ def commands_interpret(templates):
 
 ###---INPUT PARAMETERS
 
-def delve(o,*k): return delve(o[k[0]],*k[1:]) if len(k)>1 else o[k[0]]
+def delve(o,*k): 
+	"""Read a nested dictionary like a tree."""
+	return delve(o[k[0]],*k[1:]) if len(k)>1 else o[k[0]]
 
 def write_mdp(param_file=None,rootdir='./',outdir='',extras=None):
 
