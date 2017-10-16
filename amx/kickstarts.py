@@ -51,5 +51,6 @@ make set module source="%(github)s%(martini)s/amx-martini.git" spot="inputs/mart
 make set module source="%(github)s%(charmm)s/amx-charmm.git" spot="inputs/charmm"
 make set module source="%(github)s%(structures)s/amx-structures.git" spot="inputs/structure-repo"
 make set module source="%(github)s%(polymers)s/amx-polymers.git" spot="inputs/polymers"
+make set module source="%(github)s%(homology)s/amx-homology" spot="inputs/homology"
 """%git_addresses,
 }
