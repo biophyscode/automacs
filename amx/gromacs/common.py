@@ -11,18 +11,17 @@ Generic extensions used by: proteins, bilayers
 import os,sys,re,glob,shutil,subprocess,json
 import numpy as np
 
-str_types = [str,unicode] if sys.version_info<(3,0) else [str]
-
-from automacs import component,include
-from calls import gmx,get_machine_config,move_file,get_last_gmx_call,get_gmx_share
+from calls import gmx,gmx_get_share
+from generic import component,include
 from force_field_tools import Landscape
+from utils import str_types
 
 #---hide some functions from logging because they are verbose
 _not_reported = ['write_gro','dotplace','unique']
 #---extensions shared throughout the codes
 _shared_extensions = ['dotplace','unique']
 
-#---! soon to move to GMXStructure
+#---write a float in a format favorable to GRO to ensure the dot is always in the right place
 dotplace = lambda n: re.compile(r'(\d)0+$').sub(r'\1',"%8.3f"%float(n)).ljust(8)
 
 def unique(items):
@@ -281,7 +280,6 @@ def write_gro(**kwargs):
 	"""
 	Write a GRO file with new coordinates.
 	"""
-	dotplace = lambda n: re.compile(r'(\d)0+$').sub(r'\1',"%8.3f"%float(n)).ljust(8)	
 	input_file = kwargs.get('input_file',None)
 	output_file = kwargs.get('output_file',None)
 	if input_file:
@@ -313,7 +311,7 @@ def gro_combinator(*args,**kwargs):
 		#---use the box vectors from the first structure
 		if not box: fp.write(collection[0][-1])		
 		else: fp.write(' %.3f %.3f %.3f\n'%tuple(box))
-	#---! added this because resnrs were fucuuuucckckckded
+	#---! added this because resnrs were scrambled
 	gmx('editconf',structure=out,gro=out+'-renumber',log='editconf-combo-%s'%out,resnr=1)
 	move_file(out+'-renumber.gro',out+'.gro')
 	os.remove(state.here+'log-editconf-combo-%s'%out)
@@ -551,7 +549,7 @@ def solvate(structure,gro,edges=None,center=False):
 	#---if no solvent argument we go and fetch it
 	solvent = state.q('solvent','spc216')
 	if solvent=='spc216' and not os.path.isfile(state.here+'spc216.gro'):
-		share_dn = get_gmx_share()
+		share_dn = gmx_get_share()
 		shutil.copyfile(os.path.join(share_dn,'spc216.gro'),state.here+'spc216.gro')
 	#---! solvent must be centered. for some reason spc216 is not in the box entirely.
 	if solvent=='spc216':

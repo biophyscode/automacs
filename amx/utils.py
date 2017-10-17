@@ -4,6 +4,10 @@ import sys,subprocess
 
 _not_reported = ['status']
 
+#---you can use six.string_types or a try to locate basestring (but this fails on python 3 before 3.5)
+#---...however the simplest solution is to check if the type is in a list that depends on the system version
+str_types = [str,unicode] if sys.version_info<(3,0) else [str]
+
 def status(string,i=0,looplen=None,bar_character=None,width=25,tag='',start=None):
 	"""
 	Show a status bar and counter for a fixed-length operation.
@@ -42,11 +46,9 @@ def status(string,i=0,looplen=None,bar_character=None,width=25,tag='',start=None
 		else: sys.stdout.write('\n')
 
 def bash(command,log=None,cwd=None,inpipe=None):
-
 	"""
 	Run a bash command
 	"""
-	
 	if not cwd: cwd = './'
 	if log == None: 
 		if inpipe: raise Exception('under development')

@@ -7,7 +7,16 @@ in a manner that allows intelligent imports, flexible and modular experiments, a
 
 Note: this is a highly overloaded python environment. See the ACME documentation for more details.
 Note: this docstring is not caught by sphinx.
+Note: import instructions for amx are below.
 """
+
+import os
+_import_instruct = {
+	'special_import_targets':[('top',['automacs.py','cli.py','utils.py']),
+		('gromacs',['gromacs%s%s'%(os.path.sep,i) for i in 
+		'generic.py','common.py','calls.py','commands.py','mdp.py',
+		'topology_tools.py','structure_tools.py'])],
+	'import_rules':[('top','gromacs')]}
 
 #---import the runner and auto-import this module (if not sphinx)
 import os,sys,shutil

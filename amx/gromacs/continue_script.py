@@ -103,7 +103,7 @@ def write_continue_script_master(script='script-continue.sh',
 	import makeface
 	#---we pass gmxpaths through so we do not need to load modules twice
 	if not gmxpaths:
-		get_gmx_paths = makeface.import_remote('amx/calls')['get_gmx_paths']
+		get_gmx_paths = makeface.import_remote('amx/gromacs/calls')['gmx_get_paths']
 		gmxpaths = get_gmx_paths(hostname=hostname,override=override)
 	if not machine_configuration: machine_configuration = get_machine_config()
 	#---CONTINUATION DEFAULTS HERE

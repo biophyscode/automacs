@@ -23,6 +23,7 @@ except (KeyboardInterrupt,Exception) as e:
 	if 'state' in globals() or ('amx' in globals() and hasattr(globals()['amx'],'state')): 
 		if 'state' in globals(): this_state = state
 		else: this_state = amx.state
+		from makeface import fab
 		#---errors in the supervised execution are inscrutable so we provide a line number here
 		print('%s %s'%(fab('[ERROR]','red_black'),
 			'caught the following error at line %s of the supervised script %s'%(

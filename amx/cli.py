@@ -15,8 +15,8 @@ __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
 	'codecheck','collect_parameters','write_continue_script','show_kickstarters','hardstart']
 
 from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
-from calls import get_machine_config
-from continue_script import interpret_walltimes
+from gromacs.calls import get_machine_config
+from gromacs.continue_script import interpret_walltimes,write_continue_script_master
 from makeface import fab
 
 def get_amx():
@@ -299,9 +299,8 @@ def write_continue_script(hostname=None,overwrite=False,gmxpaths=None):
 	"""
 	machine_configuration = get_machine_config(hostname=hostname)
 	sys.path.insert(0,'amx')
-	import continue_script
 	here = globals()['state']['here'] if 'state' in globals() else None
-	script_fn = continue_script.write_continue_script_master(
+	script_fn = write_continue_script_master(
 		machine_configuration=machine_configuration,here=here,gmxpaths=gmxpaths)
 	return script_fn
 

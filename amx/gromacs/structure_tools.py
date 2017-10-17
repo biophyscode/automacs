@@ -5,7 +5,7 @@ import numpy as np
 import scipy
 import json
 
-#---! note that within the main module we import the normal way
+_not_reported = ['dotplace']
 from common import dotplace,contiguous_encode
 from topology_tools import GMXTopology
 from force_field_tools import Landscape

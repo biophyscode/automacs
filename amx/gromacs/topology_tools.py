@@ -2,8 +2,8 @@
 
 import sys,re,os,glob,json,shutil
 import numpy as np
-
-str_types = [str,unicode] if sys.version_info<(3,0) else [str]
+#---amx is already in the path when importing amx/gromacs
+from utils import str_types
 
 class GMXForceField:
 	"""
