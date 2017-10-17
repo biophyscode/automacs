@@ -268,6 +268,8 @@ def download(sure=False):
 	amx = get_amx()
 	if 'upload' not in amx.state: 
 		raise Exception('cannot find "upload" key in the state. did you upload this already?')
+	#---make a copy of the upload data for posterity. we will add this back to the state
+	upload_info = dict(upload_history=amx.state.get('upload_history',[]),upload=amx.state.upload)
 	destination = amx.state['upload']['to']
 	serialno = serial_number()
 	print("[STATUS] the state says that this simulation (#%d) is located at %s"%(serialno,destination))
@@ -291,6 +293,12 @@ def download(sure=False):
 		print("[ERROR] failed to find simulation")
 		print("[NOTE] find the data on the remote machine via \"find ./ -name serial-%s\""%serialno)
 		sys.exit(1)
+	#---save this download and the upload history
+	import datetime
+	ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d.%H%M')
+	from runner.states import state_set_and_save
+	upload_info['upload_history'].append(dict(**{'from':destination,'when':ts}))
+	state_set_and_save(state=amx.state,**upload_info)
 
 def write_continue_script(hostname=None,overwrite=False,gmxpaths=None):
 	"""
