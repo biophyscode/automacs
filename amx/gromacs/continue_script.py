@@ -11,7 +11,7 @@ the full automacs when writing cluster scripts.
 _not_all = ['continue_script','write_continue_script_master']
 
 import os,sys,json,re
-from calls import get_machine_config
+from calls import gmx_get_machine_config
 
 continue_script = """#!/bin/bash
 
@@ -103,9 +103,12 @@ def write_continue_script_master(script='script-continue.sh',
 	import makeface
 	#---we pass gmxpaths through so we do not need to load modules twice
 	if not gmxpaths:
-		get_gmx_paths = makeface.import_remote('amx/gromacs/calls')['gmx_get_paths']
-		gmxpaths = get_gmx_paths(hostname=hostname,override=override)
-	if not machine_configuration: machine_configuration = get_machine_config()
+		#get_gmx_paths = makeface.import_remote('amx/gromacs/calls.py')
+		#import ipdb;ipdb.set_trace()#['gmx_get_paths']
+		#from calls import gmx_get_paths
+		#---the gmx_get_paths function is an explicit import in amx.__init__._import_instruct
+		gmxpaths = gmx_get_paths(hostname=hostname,override=override)
+	if not machine_configuration: machine_configuration = gmx_get_machine_config()
 	#---CONTINUATION DEFAULTS HERE
 	settings = {
 		'maxhours':interpret_walltimes(machine_configuration.get('walltime',24))['maxhours'],

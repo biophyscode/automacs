@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import re
-from command_templates import gmx_call_templates
+#from command_templates import gmx_call_templates
 
 def gmx_commands_interpret(templates):
 	"""
@@ -40,9 +40,9 @@ def gmx_commands_interpret(templates):
 		gmxcalls[command] = {'command':command,'flags':flags,'required':list(set(args_required))}
 	return gmxcalls
 
-def convert_gmx_template_to_call(spec,kwargs,strict=False):
+def gmx_convert_template_to_call(spec,kwargs,strict=False):
 	"""
-	Use gromacs call instructions along with kwargs to make a new command.
+	Use GROMACS call instructions along with kwargs to make a new command.
 	"""
 	kwargs_copy = dict(kwargs)
 	#---check that we have the right incoming arguments
@@ -90,7 +90,7 @@ def gmx_get_last_call(name,this_state=None):
 	if not recents: raise Exception('no record of a gmx call to %s recently'%name)
 	return this_state.history_gmx[recents[-1]]
 
-def register_gmx_call(command,flag,value):
+def gmx_register_call(command,flag,value):
 	"""
 	Register an automatic rule for adding flags to gromacs calls.
 	"""

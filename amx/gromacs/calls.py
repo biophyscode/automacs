@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
+#---see amx/__init__.py for the import instructions
 import os,sys,re,subprocess,shutil,glob
-from commands import convert_gmx_template_to_call
 
 def gmx(program,**kwargs):
 	"""
@@ -19,7 +19,7 @@ def gmx(program,**kwargs):
 	elif protected['custom']: program_spec = protected['custom']
 	else: program_spec = state.gmxcalls[program]
 	#---construct the command from the template
-	call_spec = convert_gmx_template_to_call(kwargs=kwargs,spec=program_spec)
+	call_spec = gmx_convert_template_to_call(kwargs=kwargs,spec=program_spec)
 	cmd,recorded = call_spec['call'],call_spec['recorded']
 	#---check for automatic overrides
 	if 'gmx_call_rules' in state:
@@ -38,7 +38,6 @@ def gmx(program,**kwargs):
 	#---decorator is only available at run time because it comes from __init__.py
 	try: gmx_run_decorated = call_reporter(gmx_run,state)
 	except: gmx_run_decorated = gmx_run
-	#---! wtf does skip do?
 	gmx_run_decorated(cmd,log=protected['log'],
 		inpipe=protected['inpipe'],nonessential=protected['nonessential'])
 	#---if the run works, we log the completed command 
@@ -86,9 +85,9 @@ def gmx_run(cmd,log,nonessential=False,inpipe=None):
 					if nonessential: print('[NOTE] command failed but it is nonessential')
 					else: raise Exception('%s in %s'%(msg.strip(':'),log_fn))
 
-def get_machine_config(hostname=None):
+def gmx_get_machine_config(hostname=None):
 	"""
-	!!!
+	Probe the local or global configuration to see how to run GROMACS.
 	"""
 	machine_config = {}
 	#---!
@@ -130,6 +129,7 @@ def gmx_get_share():
 def modules_load(machine_config):
 	"""
 	Interact with environment modules to load software.
+	Currently used by get_gmx_paths but this is worth generalizing in the amx parent module.
 	"""
 	#---modules in LOCAL configuration must be loaded before checking version
 	if 'module_path' in machine_config: module_path = machine_config['module_path']
@@ -145,12 +145,12 @@ def modules_load(machine_config):
 	for mod in modlist:
 		#---always unload gromacs to ensure correct version
 		try: incoming['module']('unload','gromacs')
-                #---make sure that you can actually run a module load command
+		#---make sure that you can actually run a module load command
 		except:
-                        raise Exception('try editing your python module file (and module function) to reflect'+
-                                        "the folowing:\n(output, error) = subprocess.Popen(['/usr/bin/modulecmd', "+
-                                        "'python'] +\n\targs, stdout=subprocess.PIPE).communicate()\n"+
-                                        'or simply run using the factory environment')
+			raise Exception('try editing your python module file (and module function) to reflect'+
+				"the folowing:\n(output, error) = subprocess.Popen(['/usr/bin/modulecmd', "+
+				"'python'] +\n\targs, stdout=subprocess.PIPE).communicate()\n"+
+				'or simply run using the factory environment')
 		print('[STATUS] module load %s'%mod)
 		#---running `make cluster <hostname>` on a different machine will cause 
 		#---...an "Unable to locate a modulefile" error but this is not a problem. it might still be useful
@@ -159,7 +159,7 @@ def modules_load(machine_config):
 	
 def gmx_get_paths(override=False,gmx_series=False,hostname=None):
 	"""
-	!!!
+	Create a list of paths for GROMACS.
 	"""
 	gmx4paths = {'grompp':'grompp','mdrun':'mdrun','pdb2gmx':'pdb2gmx','editconf':'editconf',
 		'genbox':'genbox','make_ndx':'make_ndx','genion':'genion','genconf':'genconf',
@@ -169,8 +169,7 @@ def gmx_get_paths(override=False,gmx_series=False,hostname=None):
 		'genion':'gmx genion','trjconv':'gmx trjconv','genconf':'gmx genconf',
 		'tpbconv':'gmx convert-tpr','gmxcheck':'gmx check','vmd':'vmd','solvate':'gmx solvate','gmx':'gmx'}
 	#---note that we tacked-on "gmx" so you can use it to find the share folder using gmx_get_share
-
-	machine_config = get_machine_config(hostname=hostname)
+	machine_config = gmx_get_machine_config(hostname=hostname)
 	#---check the config for a "modules" keyword in case we need to laod it
 	print('[STATUS] loading modules to prepare gromacs paths')
 	if 'modules' in machine_config: modules_load(machine_config)
@@ -190,8 +189,9 @@ def gmx_get_paths(override=False,gmx_series=False,hostname=None):
 			if re.search('VERSION 4',check_mdrun): gmx_series = 4
 			elif not override: raise Exception('gromacs is absent. make sure it is installed. '+
 				'if your system uses the `module` command, try loading it with `module load gromacs` or '+
-				'something similar. you can also add `modules` in a list to the machine configuration dictionary '+
-				'in your gromacs config file (try `make gromacs_config` to see where it is).')
+				'something similar. you can also add `modules` in a list to the machine '+
+				'configuration dictionary in your gromacs config file (try `make gromacs_config` '+
+				'to see where it is).')
 			else: print('[NOTE] preparing gmxpaths with override')
 
 	if gmx_series == 4: gmxpaths = dict(gmx4paths)
@@ -199,7 +199,6 @@ def gmx_get_paths(override=False,gmx_series=False,hostname=None):
 	else: raise Exception('gmx_series must be either 4 or 5')
 
 	#---! need more consistent path behavior here
-
 	#---modify gmxpaths according to hardware configuration
 	config = machine_config
 	if suffix != '': 

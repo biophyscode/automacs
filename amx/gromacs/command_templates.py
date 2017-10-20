@@ -3,7 +3,8 @@
 #---command formulations
 #---note gromacs has a tricky syntax for booleans so 
 #---...we use TRUE and FALSE which map to -flag and -noflag
-#---! more explicit documentation for this format
+#---! more explicit documentation for this format, including the elaborate override scheme
+#---! option to define this in a more central place
 gmx_call_templates = """
 pdb2gmx -f STRUCTURE -ff FF -water WATER -o GRO.gro -p system.top -i BASE-posre.itp -missing TRUE -ignh TRUE
 editconf -f STRUCTURE.gro -o GRO.gro

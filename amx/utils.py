@@ -45,15 +45,20 @@ def status(string,i=0,looplen=None,bar_character=None,width=25,tag='',start=None
 		if i+1<looplen: sys.stdout.flush()
 		else: sys.stdout.write('\n')
 
-def bash(command,log=None,cwd=None,inpipe=None):
+def bash(command,log=None,cwd=None,inpipe=None,show=False):
 	"""
 	Run a bash command
 	"""
 	if not cwd: cwd = './'
-	if log == None: 
+	if log == None and not show: 
 		if inpipe: raise Exception('under development')
 		kwargs = dict(cwd=cwd,shell=True,executable='/bin/bash',
 			stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+		proc = subprocess.Popen(command,**kwargs)
+		stdout,stderr = proc.communicate()
+	elif log == None and show:
+		if inpipe: raise Exception('under development')
+		kwargs = dict(cwd=cwd,shell=True,executable='/bin/bash')
 		proc = subprocess.Popen(command,**kwargs)
 		stdout,stderr = proc.communicate()
 	else:

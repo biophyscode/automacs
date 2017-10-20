@@ -41,5 +41,6 @@ controlspec = {
 			('quick','jupyter_coda'):'quick',
 			('quick','cwd',):'quick',
 			('quick','settings','cwd'):'basic',
+			('quick','settings','cwd','tags'):'basic',
 			('quick','settings','cwd','params','extensions','tags'):'extensions',
 			('quick','settings','cwd','params','extensions','tags','imports'):'extensions_imports'},},}

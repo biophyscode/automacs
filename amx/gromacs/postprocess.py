@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-def get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
+def gmx_get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 	"""
 	Prepare or locate a snapshot of the last state of the system.
 
@@ -34,7 +34,7 @@ def get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 	transmit = os.path.abspath(dest)!=os.path.abspath(source)
 	#---current functionality requires that mdrun calls record the last supposed output
 	#---check if the last frame was correctly written
-	last_written_gro = source + get_last_gmx_call('mdrun')['flags']['-c']
+	last_written_gro = source + gmx_get_last_call('mdrun')['flags']['-c']
 	if os.path.isfile(last_written_gro):
 		if transmit:
 			#---if the source differs from the destination copy the file and save the path
@@ -44,14 +44,14 @@ def get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 		else: state.last_frame = last_written_gro
 	#---make the last frame from the cpt file
 	else:
-		cpt = source + get_last_gmx_call('mdrun')['flags']['-cpo']
+		cpt = source + gmx_get_last_call('mdrun')['flags']['-cpo']
 		if not os.path.isfile(cpt):
 			msg = 'failed to find final gro *and* a cpt (%s).'%cpt
 			msg += 'this might have occured if your simulation ran for less than 15 minutes'
 			'and hence failed to write a cpt file for us to record the final frame'
 			raise Exception(msg)
 		#---use a custom command template here in case gmxcalls lacks it
-		custom_gmxcall = commands_interpret('trjconv -f CPT -o OUT -s TPR')['trjconv']
+		custom_gmxcall = gmx_commands_interpret('trjconv -f CPT -o OUT -s TPR')['trjconv']
 		if dest:
 			dest_dn = os.path.join(os.path.abspath(dest),'')
 			if not os.path.isdir(dest_dn): raise Exception('cannot find folder %s'%dest)
@@ -59,21 +59,21 @@ def get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 			log = os.path.join(os.path.abspath(dest),'log-trjconv-last-frame')
 		else: 
 			log = 'trjconv-last-frame'
-		gmx('trjconv',cpt=get_last_gmx_call('mdrun')['flags']['-cpo'],
-			tpr=get_last_gmx_call('mdrun')['flags']['-s'],
+		gmx('trjconv',cpt=gmx_get_last_call('mdrun')['flags']['-cpo'],
+			tpr=gmx_get_last_call('mdrun')['flags']['-s'],
 			out=out,custom=custom_gmxcall,log=log,inpipe='0\n')
 		state.last_frame = state.here+out
 	#---get tpr, top, etc, if requested
 	#---! point to other functions
 	return state.last_frame
 
-def get_trajectory(dest=None):
+def gmx_get_trajectory(dest=None):
 	"""
 	Convert the trajectory to reassemble broken molecules.
 	Requires items from the history_gmx.
 	Note that this is customized for vmdmake but it could be generalized and added to automacs.py.
 	"""
-	last_call = get_last_gmx_call('mdrun')
+	last_call = gmx_get_last_call('mdrun')
 	last_tpr = last_call['flags']['-s']
 	last_xtc = last_call['flags']['-x']
 	last_cpt = last_call['flags']['-cpo']
@@ -85,9 +85,9 @@ def get_trajectory(dest=None):
 	else: log = 'trjconv-last-frame'
 	out = 'md.part%04d.pbcmol'%last_partno
 	if dest: out = os.path.join(dest_dn,out)
-	custom_gmxcall = commands_interpret('trjconv -f XTC -o OUT.xtc -s TPR -pbc mol')['trjconv']
+	custom_gmxcall = gmx_commands_interpret('trjconv -f XTC -o OUT.xtc -s TPR -pbc mol')['trjconv']
 	gmx('trjconv',tpr=last_tpr,out=out,custom=custom_gmxcall,xtc=last_xtc,log=log,inpipe='0\n')
-	custom_gmxcall = commands_interpret('trjconv -f CPT -o OUT.gro -s TPR -pbc mol')['trjconv']
+	custom_gmxcall = gmx_commands_interpret('trjconv -f CPT -o OUT.gro -s TPR -pbc mol')['trjconv']
 	gmx('trjconv',cpt=last_cpt,tpr=last_tpr,out=out,
 		custom=custom_gmxcall,log=log+'-gro',inpipe='0\n')
 	#---if the destination is remote we attach the full path to the tpr, which can remain in place

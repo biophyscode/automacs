@@ -301,7 +301,9 @@ def metarun():
 	Run a series of simulation steps.
 	"""
 	if os.path.isfile('script.py') or os.path.isfile('expt.json'):
-		raise Exception('refusing to run if script.py or expt.json are present. this is a metarun!')
+		raise Exception('refusing to run if script.py or expt.json are present. '
+			'if you wish to start from scratch, use `make go <name> clean` '
+			'and this will clear the old files.')
 	script_fns = glob.glob('script_*.py')
 	expt_fns = glob.glob('expt_*.json')
 	ranges = [sorted([int(re.match('^script_(\d)+\.py$',i).group(1)) for i in script_fns]),

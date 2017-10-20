@@ -15,8 +15,6 @@ __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
 	'codecheck','collect_parameters','write_continue_script','show_kickstarters','hardstart']
 
 from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
-from gromacs.calls import get_machine_config
-from gromacs.continue_script import interpret_walltimes,write_continue_script_master
 from makeface import fab
 
 def get_amx():
@@ -297,7 +295,7 @@ def write_continue_script(hostname=None,overwrite=False,gmxpaths=None):
 	Write the continue script if it does not yet exist.
 	Note that this script wraps the same function in amx.continue_script for the CLI.
 	"""
-	machine_configuration = get_machine_config(hostname=hostname)
+	machine_configuration = gmx_get_machine_config(hostname=hostname)
 	sys.path.insert(0,'amx')
 	here = globals()['state']['here'] if 'state' in globals() else None
 	script_fn = write_continue_script_master(
@@ -322,7 +320,7 @@ def cluster(hostname=None,overwrite=True):
 		#---...it is still very useful to prepare the cluster scripts before uploading to clusters
 		print(fab('[WARNING]','white_black')+' running `make cluster <hostname>` might throw errors '
 			'on modules which are not locally available')
-	machine_configuration = get_machine_config(hostname=hostname)
+	machine_configuration = gmx_get_machine_config(hostname=hostname)
 	if not 'cluster_header' in machine_configuration: 
 		raise Exception('no cluster information. add this machine to `machine_configuration` in '
 			'either `./gromacs_config.py` or `~/.automacs.py` and '
@@ -401,7 +399,7 @@ def submit():
 	if not os.path.isfile(here+'cluster-continue.sh'):
 		raise Exception('[ERROR] cannot find "cluster-continue.sh" in the last step directory (%s). '
 			%here+'try running `make cluster` to generate it.')
-	machine_config = get_machine_config()
+	machine_config = gmx_get_machine_config()
 	cmd = '%s cluster-continue.sh'%machine_config.get('submit_command','qsub')
 	print('[STATUS] running "%s"'%cmd)
 	subprocess.check_call(cmd,cwd=here,shell=True)

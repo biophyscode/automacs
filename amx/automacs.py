@@ -7,7 +7,7 @@
 #---native connection to GROMACS via a submodule
 #---note that gromacs/__init__.py exposes the automacs-GROMACS interface functions required here
 #---...and that other integrators can be added to the generic automacs functions here in a similar way
-from gromacs import gmx_get_paths,gmx,gmx_call_templates,gmx_get_last_call,gmx_commands_interpret
+#from gromacs import gmx_get_paths,gmx,gmx_call_templates,gmx_get_last_call,gmx_commands_interpret
 
 """
 Automacs library for automatic GROMACS simulations.
@@ -89,6 +89,15 @@ def make_step(name):
 	#---log files are in the step folder, and use the step name with ".log"
 	state.step_log_file = os.path.join(state.here,state.step+'.log')
 	state.steps.append(state.step)
+	#---the hook is a string that points to a function possibly from an extension code that runs here
+	hook = settings.get('make_step_hook',None)
+	if hook!=None:
+		#---this feature uses the self-referential encoding of the amx module as a dictionary in the state
+		#---...which has been added to importer.py to make sure we can get parts of amx with a wildcard import
+		if hook not in state.amx: 
+			raise Exception('received make_step_hook %s but this function is not available in amx.state. '%hook+
+				'are you sure that you have connected to all necessary extension codes?')
+		else: state.amx[hook]()
 	#---! note that files are not recopied on re-run because make-step only runs once
 	#---copy all files
 	for fn in state.q('files',[]):
@@ -97,7 +106,7 @@ def make_step(name):
 	#---copy all sources
 	for dn in state.q('sources',[]):
 		if os.path.basename(dn)=='.': raise Exception('not a valid source: %s'%dn)
-		if not os.path.isdir(dn): raise Exception('source %s is not a directory'%dn)
+		if not os.path.isdir(dn): raise Exception('requested source %s is not a directory'%dn)
 		shutil.copytree(dn,os.path.join(state.here,os.path.basename(dn)))
 	#---retrieve files from the file registry
 	if state.before and state.file_registry:
