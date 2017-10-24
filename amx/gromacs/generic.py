@@ -35,5 +35,5 @@ def include(name,ff=False):
 	which cause errors in GROMACS.
 	"""
 	which = 'ff_includes' if ff else 'itp'
-	if 'itp' not in state: state[which] = []
+	if which not in state: state[which] = []
 	if name not in state[which]: state[which].append(name)

@@ -53,7 +53,7 @@ def write_mdp(param_file=None,rootdir='./',outdir='',extras=None):
 
 	#---! we should use jsonify on parameters.py to check for repeated keys !
 	#---get mdp specs from the settings unless overridden by the call
-	mdpspecs = state.q('mdp_specs',[]) if not extras else ([] if not extras else extras)
+	mdpspecs = state.q('mdp_specs',{}) if not extras else ([] if not extras else extras)
 
 	#---retrieve the master inputs file
 	mdpfile = {}
