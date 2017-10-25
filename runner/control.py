@@ -144,13 +144,15 @@ def preplist(silent=False,verbose=False):
 			#---tags prefixed with "tag_" are emphasized
 			tags_tag = [re.match('^tag_(.+)$',i).group(1) for i in val['tags'] if re.match('^tag_',i)]
 			for tag in tags_tag: lead += fab('%s'%tag,'cyan_black')+' '
+			#---dev and test notes are bright red
+			if 'dev' in val['tags']: lead += fab('DEV','red_black')+' '
+			if 'test' in val['tags']: lead += fab('TEST?','red_black')+' '
 			#---passing test sets are marked in magenta/gray
 			tags_test = [re.match('^tested_(.+)$',i).group(1) for i in val['tags'] if re.match('^tested_',i)]
 			for tag in tags_test: lead += fab('+%s'%tag,'mag_gray')+' '
 			#---minor notes get white on black text
 			tags_notes = [re.match('^note_(.+)$',i).group(1) for i in val['tags'] if re.match('^note_',i)]
 			for tag in tags_notes: lead += fab('%s'%tag,'white_black')+' '
-			if 'dev' in val['tags']: lead += fab('DEV','red_black')+' '
 		if 'metarun' in val: 
 			toc['metarun'].append(dottoc(str(counter+1),key,spots[key],lead=lead))
 		elif 'quick' in val: toc['quick'].append(dottoc(counter+1,key,spots[key],lead=lead))
