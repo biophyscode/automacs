@@ -206,6 +206,10 @@ def prep_metarun(inputlib):
 	"""
 	#---prepare each step in the metarun
 	_keysets('metarun',*inputlib.keys(),check=True)
+	#---crude run for the prelude which is necessary for factory testing of cgmd simulations
+	#---! replace this with a bash call?
+	if 'prelude' in inputlib:
+		os.system(inputlib['prelude'])
 	steplist = inputlib.pop('metarun')
 	for stepno,item in enumerate(steplist):
 		scriptname,exptname = 'script_%d'%(stepno+1),'expt_%d'%(stepno+1)
