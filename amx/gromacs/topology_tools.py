@@ -125,7 +125,8 @@ class GMXTopology:
 		#---make replacements
 		for key,val in defs.items():
 			#---keeper
-			self.itp_raw = re.sub(self._regex_ifdef_block_sub%('' if val else 'n',key),r"\2",
+			#---! temporarily added \n before group 2 below for martini cholesterol
+			self.itp_raw = re.sub(self._regex_ifdef_block_sub%('' if val else 'n',key),r"\n\2",
 				self.itp_raw,flags=re.M+re.DOTALL)
 			#---discard
 			self.itp_raw = re.sub(self._regex_ifdef_block_sub%('n' if val else '',key),'',

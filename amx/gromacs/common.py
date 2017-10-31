@@ -692,7 +692,7 @@ def equilibrate(groups=None,structure='system',top='system',stages_only=False,se
 			gmx('grompp',base='md-%s'%name,top=top,
 				structure=structure if eqnum == 0 else 'md-%s'%seq[eqnum-1],
 				log='grompp-%s'%name,mdp='input-md-%s-eq-in'%name,
-				maxwarn=10,**({'n':groups} if groups else {}))
+				maxwarn=1,**({'n':groups} if groups else {}))
 			gmx('mdrun',base='md-%s'%name,log='mdrun-%s'%name,nonessential=True)
 			if not os.path.isfile(state.here+'md-%s.gro'%name): 
 				raise Exception('mdrun failure at %s'%name)

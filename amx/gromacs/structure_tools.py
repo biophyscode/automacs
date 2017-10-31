@@ -106,6 +106,7 @@ class GMXStructure:
 		"""
 		REPLACE WITH force_field_tools.py
 		"""
+		return None
 		if not fn: fn = state.landscape_metadata
 		#---identify molecule types from the landscape for the bilayer_sorter
 		if os.path.splitext(fn)[1]=='.yaml':
