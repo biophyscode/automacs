@@ -15,6 +15,7 @@ from calls import gmx,gmx_get_share
 from generic import component,include
 from force_field_tools import Landscape
 from utils import str_types
+from gromacs_commands import gmx_get_last_call
 
 #---hide some functions from logging because they are verbose
 _not_reported = ['write_gro','dotplace','unique']
@@ -519,7 +520,7 @@ def center_by_group(structure,gro,selection):
 	gmx('make_ndx',structure=structure,ndx=ndx,
 		inpipe='keep 0\n%s\nq\n'%selection,
 		log='make-ndx-counterions-check')
-	tpr = os.path.splitext(get_last_gmx_call('mdrun')['flags']['-s'])[0]
+	tpr = os.path.splitext(gmx_get_last_call('mdrun')['flags']['-s'])[0]
 	#---we send "1" then "0" to center on the second group while "system" is the first
 	gmx('trjconv',structure=structure,inpipe='1\n0\n',pbc='mol',
 		center=True,tpr=tpr,ndx=ndx,gro=gro,log='trjconv-center')

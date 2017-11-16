@@ -139,7 +139,7 @@ def write_mdp(param_file=None,rootdir='./',outdir='',extras=None):
 		#---always write to the step directory
 		with open(os.path.join(rootdir,state.here+mdpname),'w') as fp:
 			for heading,subset in settings.items():
-				fp.write('\n;---'+heading+'\n')
+				if subset: fp.write('\n;---'+heading+'\n')
 				for key,val in subset.items():
 					fp.write(str(key)+' = '+str(val)+'\n')
 

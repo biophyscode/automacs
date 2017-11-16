@@ -203,7 +203,7 @@ class GMXStructure:
 				self.__dict__[key] = np.concatenate((first.__dict__[key][:index_wedge],
 					second.__dict__[key],first.__dict__[key][index_wedge:]))
 
-	def write(self,out_fn):
+	def write(self,out_fn,renumber=True):
 
 		"""
 		Write a GRO file.
@@ -211,7 +211,7 @@ class GMXStructure:
 
 		#---! unfinished code? grospec = {'residue_indices'}
 
-		self.renumber()
+		if renumber: self.renumber()
 		residue_inds_abs = self.residue_indices
 		self.residue_indices = self.residue_indices%100000
 		lines = ['NAME HERE']

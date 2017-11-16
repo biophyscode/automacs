@@ -148,3 +148,14 @@ def register_file(fn):
 		raise Exception('file %s is already in the file registry'%fn)
 	state.file_registry.append(fn)
 
+def look_backwards(key,condition=lambda x:True,first=True):
+	"""
+	Prototype for a function to get stuff from previous states.
+	"""
+	collect = {}
+	#---walk backwards
+	for bnum,before in list(enumerate(state.before))[::-1]:
+		if key in before and condition(before[key]): 
+			collect[bnum] = before[key]
+	if first: return collect[sorted(collect)[0]]
+	else: return collect

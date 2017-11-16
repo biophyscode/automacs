@@ -204,12 +204,13 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 	!Note that putting sure before path ruins the argument handling hence makeface needs fix
 	"""
 	amx = get_amx()
-	from amx.calls import get_last_gmx_call
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.gromacs_commands import gmx_get_last_call
 	serial_number()
 	last_step = amx.state['here']
-	get_last_gmx_call('mdrun',this_state=amx.state)
+	gmx_get_last_call('mdrun',this_state=amx.state)
 	#---upload requires knowledge of the last mdrun so we only send up cpt and tpr
-	last_mdrun = get_last_gmx_call('mdrun',this_state=amx.state)
+	last_mdrun = gmx_get_last_call('mdrun',this_state=amx.state)
 	restart_fns = [last_step+i for i in [last_mdrun['flags']['-s'],last_mdrun['flags']['-cpo']]]
 	#---upload cluster files if they are already prepared by users who wish to run cluster before sending it
 	for fn in ['script-continue.sh','cluster-continue.sh']:

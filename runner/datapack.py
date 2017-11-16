@@ -20,7 +20,7 @@ import os,sys,re,json
 #---import magic
 sys.path.insert(0,os.path.dirname(os.path.relpath(os.path.abspath(__file__),os.getcwd())))
 from controlspec import controlspec,controlmsg
-#from acme import get_path_to_module
+str_types = [str,unicode] if sys.version_info<(3,0) else [str]
 
 #---release some functions for external import 
 #---...but then hide them from the function which parses the command-line for targets
@@ -72,6 +72,17 @@ class DotDict(dict):
 			#---...and the user should be able to do a traceback with the ample error messages
 			#---we addded the verbose message because we were not scrolling up to note JSON errors
 			raise Exception(msg_no_key%(id(self),key))
+	def getcheck(self,key,typ):
+		"""Get something from the dictionary and insist on its type."""
+		item = self.__getattr__(key)
+		if type(item)!=typ:
+			msg = 'looking up key "%s" expecting type %s but got type %s'%(key,typ,type(item))
+			if type(item) in str_types: 
+				msg += ('. if this came from settings, you probably have a syntax error. '
+					'your best bet is to take the value for this key and run it in a python terminal '
+					'to check for the syntax error.')
+			raise Exception(msg)
+		return item
 
 def jsonify(text): 
 	"""
@@ -155,7 +166,6 @@ def yamlb(text,style=None,ignore_json=False):
 	Development note: doesn't prevent errors with multiple keys in a dictionary!
 	"""
 	unpacked,compacts = {},{}
-	str_types = [str,unicode] if sys.version_info<(3,0) else [str]
 	#---evaluate code blocks first
 	regex_block_standard = r"^\s*([^\n]*?)\s*(?:\s*:\s*\|)\s*([^\n]*?)\n(\s+)(.*?)\n(?!\3)"
 	regex_block_tabbed = r"^\s*([^\n]*?)\s*(?:\s*:\s*\|)\s*\n(.*?)\n(?!\t)"
