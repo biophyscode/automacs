@@ -320,7 +320,7 @@ def get_gmx_paths(override=False,gmx_series=False,hostname=None):
 	if override and 'gmx_series' in machine_config: gmx_series = machine_config['gmx_series']
 	elif not gmx_series:
 		#---! is this the best way to search?
-		if not re.search('command not found',str(check_gmx[1])): gmx_series = 5
+		if not re.search('(C|c)ommand not found',str(check_gmx[1])): gmx_series = 5
 		else:
 			output = subprocess.Popen('mdrun%s -g /tmp/md.log'%suffix,shell=True,
 				executable='/bin/bash',stdout=subprocess.PIPE,stderr=subprocess.PIPE).communicate()
