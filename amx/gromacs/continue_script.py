@@ -12,6 +12,7 @@ _not_all = ['continue_script','write_continue_script_master']
 
 import os,sys,json,re
 from calls import gmx_get_machine_config
+str_types = [str] if (sys.version_info>(3,0)) else [str,unicode]
 
 continue_script = """#!/bin/bash
 
@@ -127,8 +128,8 @@ def write_continue_script_master(script='script-continue.sh',
 		settings_keys.insert(0,'nprocs')
 	settings.update(**kwargs)
 	setting_text = '\n'.join([
-		str(key.upper())+'='+('"' if type(settings[key])==str else '')+str(settings[key])+
-			('"' if type(settings[key])==str else '') for key in settings_keys])
+		str(key.upper())+'='+('"' if type(settings[key]) in str_types else '')+str(settings[key])+
+			('"' if type(settings[key]) in str_types else '') for key in settings_keys])
 	modules = machine_configuration.get('modules',None)
 	if modules:
 		modules = [modules] if type(modules)==str else modules

@@ -296,9 +296,13 @@ def write_continue_script(hostname=None,overwrite=False,gmxpaths=None):
 	Write the continue script if it does not yet exist.
 	Note that this script wraps the same function in amx.continue_script for the CLI.
 	"""
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.calls import gmx_get_machine_config
 	machine_configuration = gmx_get_machine_config(hostname=hostname)
 	sys.path.insert(0,'amx')
 	here = globals()['state']['here'] if 'state' in globals() else None
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.continue_script import write_continue_script_master
 	script_fn = write_continue_script_master(
 		machine_configuration=machine_configuration,here=here,gmxpaths=gmxpaths)
 	return script_fn
@@ -312,15 +316,15 @@ def cluster(hostname=None,overwrite=True):
 	Note that we do not log this operation because it only manipulates BASH scripts.
 	"""
 	amx = get_amx()
-	from amx.calls import get_last_gmx_call
-	sys.path.insert(0,'runner')
-	from makeface import import_remote
-	get_gmx_paths = import_remote('amx/calls.py')['get_gmx_paths']
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.gromacs_commands import gmx_get_last_call
 	if hostname: 
 		#---warn the user that specifying hostname from the commandline might show warnings, however
 		#---...it is still very useful to prepare the cluster scripts before uploading to clusters
 		print(fab('[WARNING]','white_black')+' running `make cluster <hostname>` might throw errors '
 			'on modules which are not locally available')
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.calls import gmx_get_machine_config
 	machine_configuration = gmx_get_machine_config(hostname=hostname)
 	if not 'cluster_header' in machine_configuration: 
 		raise Exception('no cluster information. add this machine to `machine_configuration` in '
@@ -344,6 +348,8 @@ def cluster(hostname=None,overwrite=True):
 		else: script_continue_fn = amx.state.here+amx.state.continuation_script
 		#---code from base.functions.write_continue_script to rewrite the continue script
 		with open(script_continue_fn,'r') as fp: lines = fp.readlines()
+		#---! a rare connection down to gromacs which needs to be revised
+		from amx.gromacs.continue_script import interpret_walltimes
 		maxhours = interpret_walltimes(machine_configuration.get('walltime',24))['maxhours']
 		#---make a jobname from the directory name, which should be a unique identifier for the job
 		try: jobname = os.path.basename(os.getcwd())
@@ -400,6 +406,8 @@ def submit():
 	if not os.path.isfile(here+'cluster-continue.sh'):
 		raise Exception('[ERROR] cannot find "cluster-continue.sh" in the last step directory (%s). '
 			%here+'try running `make cluster` to generate it.')
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.calls import gmx_get_machine_config
 	machine_config = gmx_get_machine_config()
 	cmd = '%s cluster-continue.sh'%machine_config.get('submit_command','qsub')
 	print('[STATUS] running "%s"'%cmd)
