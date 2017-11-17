@@ -108,6 +108,7 @@ def write_continue_script_master(script='script-continue.sh',
 		#import ipdb;ipdb.set_trace()#['gmx_get_paths']
 		#from calls import gmx_get_paths
 		#---the gmx_get_paths function is an explicit import in amx.__init__._import_instruct
+		from calls import gmx_get_paths
 		gmxpaths = gmx_get_paths(hostname=hostname,override=override)
 	if not machine_configuration: machine_configuration = gmx_get_machine_config()
 	#---CONTINUATION DEFAULTS HERE

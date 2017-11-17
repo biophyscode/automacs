@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 import sys,os,re
-import numpy as np
-import scipy
+try: import numpy as np
+#---! automacs tries to load this even for e.g. make upload
+except: pass
 import json
 
 _not_reported = ['dotplace']
@@ -362,6 +363,7 @@ class GMXStructure:
 		if not discard: water_inds = self.select('not resname %s'%state.sol)
 		else: water_inds = self.select(discard)
 		print('[COMPUTE] KDTree for close waters')
+		import scipy
 		tree_not_water = scipy.spatial.KDTree(self.points[not_water_inds])
 		close_dists,neighbors = tree_not_water.query(self.points[water_inds],distance_upper_bound=gap)
 		print('[COMPUTE] done')
