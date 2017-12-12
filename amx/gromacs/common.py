@@ -693,7 +693,7 @@ def equilibrate(groups=None,structure='system',top='system',stages_only=False,se
 			gmx('grompp',base='md-%s'%name,top=top,
 				structure=structure if eqnum == 0 else 'md-%s'%seq[eqnum-1],
 				log='grompp-%s'%name,mdp='input-md-%s-eq-in'%name,
-				maxwarn=1,**({'n':groups} if groups else {}))
+				maxwarn=state.q('maxwarn',0),**({'n':groups} if groups else {}))
 			gmx('mdrun',base='md-%s'%name,log='mdrun-%s'%name,nonessential=True)
 			if not os.path.isfile(state.here+'md-%s.gro'%name): 
 				raise Exception('mdrun failure at %s'%name)
@@ -705,7 +705,7 @@ def equilibrate(groups=None,structure='system',top='system',stages_only=False,se
 			gmx('grompp',base=name,top=top,
 				structure='md-%s'%seq[-1] if seq else structure,
 				log='grompp-0001',mdp='input-md-in',
-				**({'n':groups} if groups else {}))
+				maxwarn=state.q('maxwarn',0),**({'n':groups} if groups else {}))
 			gmx('mdrun',base=name,log='mdrun-0001')
 
 def restart_clean(part,structure,groups,posres_coords=None,mdp='input-md-in'):
@@ -720,7 +720,7 @@ def restart_clean(part,structure,groups,posres_coords=None,mdp='input-md-in'):
 	if posres_coords: flags['r'] = posres_coords
 	gmx('grompp',base=name,top='system',
 		structure=structure,log='grompp-%04d'%part,mdp=mdp,
-		**flags)
+		maxwarn=state.q('maxwarn',0),**flags)
 	gmx('mdrun',base=name,log='mdrun-%04d'%part)
 
 def atomistic_or_coarse():
