@@ -30,7 +30,9 @@ controlspec = {
 	'keysets':{
 		'comment':{('comment'):'comment'},
 		'run':{('script','extensions','params','tags','settings','cwd'):'std'},
-		'metarun':{('metarun','cwd'):True,('metarun','cwd','tags'):True,('metarun','cwd','tags','prelude'):True},
+		'metarun':{('metarun','cwd'):True,('metarun','cwd','tags'):True,
+			('metarun','cwd','tags','prelude'):True,
+			('metarun','cwd','prelude'):True},
 		'metarun_steps':{
 			('step','do'):'simple',
 			('quick','settings'):'quick',
