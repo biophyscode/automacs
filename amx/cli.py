@@ -8,7 +8,7 @@ A collection of (helpful) command-line utilities. The interface is managed by th
 module.
 """
 
-import os,sys,subprocess,re,time,glob,shutil,json
+import os,sys,subprocess,re,time,glob,shutil,json,copy
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
 	'setup','notebook','upload','download','cluster','submit','gitcheck','gitpull','rewrite_config',
@@ -197,6 +197,12 @@ def serial_number():
 		state_set_and_save(amx.state,serial=serialno)
 	return amx.state['serial']
 
+def make_timestamp():
+	"""Make timestamps for upload/download logs."""
+	import datetime
+	ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d.%H%M')
+	return ts
+
 def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 	"""
 	Upload the data to a supercomputer.
@@ -248,8 +254,7 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 		if not bulk: os.remove('uploads.txt')
 	if p.returncode == 0 and last_step:
 		destination = '%s:%s/%s'%(alias,path,cwd)
-		import datetime
-		ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d.%H%M')
+		ts = make_timestamp()
 		from runner.states import state_set_and_save
 		this_upload = dict(to=destination,when=ts)
 		state_set_and_save(amx.state,upload=this_upload)
@@ -260,13 +265,16 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 		print("[STATUS] upload failure (not logged)")
 		sys.exit(1)
 
-def download(sure=False):
+def download(sure=False,state_fn='state.json'):
 	"""
 	Download a simulation from the cluster if it has already been uploaded.
 	"""
 	amx = get_amx()
 	if 'upload' not in amx.state: 
 		raise Exception('cannot find "upload" key in the state. did you upload this already?')
+	state_merge = dict()
+	state_merge['upload'] = copy.deepcopy(amx.state.upload)
+	state_merge['upload_history'] = amx.state.get('upload_history',[])
 	destination = amx.state['upload']['to']
 	serialno = serial_number()
 	print("[STATUS] the state says that this simulation (#%d) is located at %s"%(serialno,destination))
@@ -283,6 +291,19 @@ def download(sure=False):
 			print('[STATUS] running "%s"'%cmd)
 			p = subprocess.Popen(cmd,shell=True,cwd=os.path.abspath(os.getcwd()))
 			log = p.communicate()
+		#---if we get a state, add the upload history back and write it
+		if os.path.isfile('state.json'):
+			from runner.datapack import DotDict
+			from runner.states import statesave
+			state = DotDict(**json.load(open(state_fn)))
+			if 'upload' not in state: state.upload = state_merge['upload']
+			#---! should we check the destinations?
+			else: pass 
+			if 'upload_history' not in state: state.upload_history = state_merge['upload_history']
+			else: raise Exception('development error. need to merge upload history here.')
+			ts = make_timestamp()
+			state.upload_history.append({'from':destination,'to':'here','when':ts})
+			statesave(amx.state)
 	except Exception as e:
 		import traceback
 		s = traceback.format_exc()

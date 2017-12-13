@@ -45,10 +45,14 @@ def look(state='state.json'):
 	"""
 	View the current state from the commandline. Useful for debugging.
 	"""
+	print('[NOTE] use `statesave(state)` or '
+		'`state_set_and_save(state,**kwargs) to update the state`')
 	if not os.path.isfile(state): raise Exception('cannot find %s'%state)
-	bname = os.path.splitext(state)[0]
+	bname = re.sub('\.','_',os.path.splitext(state)[0])
+	if bname!='state': print('[NOTE] the state is called %s'%bname)
 	#---! no tab completion in python 2 for some reason
 	os.system('python -B -i -c "import json,sys;sys.path.insert(0,\'runner\');'+
+		'from states import statesave,state_set_and_save;'+
 		'exec(open(\'amx/pythonrc.py\').read());'+'from datapack import DotDict;'
 		'%s = DotDict(**json.load(open(\'%s\')));"'%(bname,state))
 
