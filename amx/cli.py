@@ -573,7 +573,7 @@ def hardstart():
 	dns = sorted(dns,key=lambda x:os.path.getmtime(x))
 	here = os.path.join(dns[-1],'')
 	from makeface import import_remote
-	get_gmx_paths = import_remote('amx/calls.py')['get_gmx_paths']
+	get_gmx_paths = import_remote('amx/gromacs/calls.py')['gmx_get_paths']
 	gmxpaths = get_gmx_paths()
 	state = dict(here=here,gmxpaths=gmxpaths)
 	state['history_gmx'] = [{'call':'mdrun','flags':{}}]
