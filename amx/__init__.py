@@ -19,8 +19,9 @@ _import_instruct = {
 		'generic.py','common.py','calls.py','gromacs_commands.py','mdp.py',
 		'topology_tools.py','structure_tools.py','continue_script.py','postprocess.py',
 		'restraints.py','force_field_tools.py']),
-		('lammps',['lammps/lammps.py'])],
-	'import_rules':[('top','gromacs'),('top','lammps')],
+		('lammps',['lammps/lammps.py'])
+		,][:-1], #! lammps is on a branch for now
+	'import_rules':[('top','gromacs'),('top','lammps')][:-1], #! lammps is on a branch for now
 	'import_rules_explicit':[
 		{'source':'calls.py','target':'continue_script.py','name':'gmx_get_paths'},
 		{'source':'calls.py','target':'cli.py','name':'gmx_get_machine_config'},
@@ -32,7 +33,7 @@ _import_instruct = {
 		{'source':'gromacs_commands.py','target':'calls.py','name':'gmx_convert_template_to_call'},
 		{'source':'gromacs_commands.py','target':'postprocess.py','name':'gmx_get_last_call'},
 		#---! move the machine configuration to amx and generalize it?
-		{'source':'calls.py','target':'lammps.py','name':'gmx_get_machine_config'},],
+		{'source':'calls.py','target':'lammps.py','name':'gmx_get_machine_config'},][:-1],
 	#---! need more central handling of the command templates
 	'coda':"exec(open('amx/gromacs/command_templates.py','r').read(),subs['automacs.py'].__dict__)"}
 
