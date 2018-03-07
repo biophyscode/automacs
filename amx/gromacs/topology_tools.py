@@ -2,8 +2,8 @@
 
 import sys,re,os,glob,json,shutil
 import numpy as np
-
-str_types = [str,unicode] if sys.version_info<(3,0) else [str]
+#---amx is already in the path when importing amx/gromacs
+from utils import str_types
 
 class GMXForceField:
 	"""
@@ -85,7 +85,9 @@ class GMXTopology:
 
 		self.molecules = {}
 		self.itp_source = itp
-		self.defs = kwargs.get('defs',{})
+		self.defs = kwargs.pop('defs',{})
+		self.constraints_to_bonds = kwargs.pop('constraints_to_bonds',False)
+		if kwargs: raise Exception('unprocessed kwargs: %s'%kwargs)
 
 		if self.itp_source:
 			with open(self.itp_source) as fp: self.itp_raw = fp.read()
@@ -104,9 +106,13 @@ class GMXTopology:
 				match_proc = self.entry_pre_proc(match_no_comment_tails)	
 				moldef = self.process_moleculetype(match_proc)
 				self.molecules[moldef['moleculetype']['molname']] = moldef
+			if self.constraints_to_bonds:
+				for molname in self.molecules:
+					if 'constraints' in self.molecules[molname]:
+						self.molecules[molname]['bonds'] = (self.molecules[molname]['bonds'] +
+							[dict(force=30000,**i) for i in self.molecules[molname].pop('constraints')])
 		#---if no source we create a blank topology
-		else:
-			self.defines = []
+		else: self.defines = []
 
 	def preproc(self):
 		"""
@@ -125,7 +131,8 @@ class GMXTopology:
 		#---make replacements
 		for key,val in defs.items():
 			#---keeper
-			self.itp_raw = re.sub(self._regex_ifdef_block_sub%('' if val else 'n',key),r"\2",
+			#---! temporarily added \n before group 2 below for martini cholesterol
+			self.itp_raw = re.sub(self._regex_ifdef_block_sub%('' if val else 'n',key),r"\n\2",
 				self.itp_raw,flags=re.M+re.DOTALL)
 			#---discard
 			self.itp_raw = re.sub(self._regex_ifdef_block_sub%('n' if val else '',key),'',

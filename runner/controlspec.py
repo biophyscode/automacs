@@ -30,7 +30,9 @@ controlspec = {
 	'keysets':{
 		'comment':{('comment'):'comment'},
 		'run':{('script','extensions','params','tags','settings','cwd'):'std'},
-		'metarun':{('metarun','cwd'):True,('metarun','cwd','tags'):True},
+		'metarun':{('metarun','cwd'):True,('metarun','cwd','tags'):True,
+			('metarun','cwd','tags','prelude'):True,
+			('metarun','cwd','prelude'):True},
 		'metarun_steps':{
 			('step','do'):'simple',
 			('quick','settings'):'quick',
@@ -41,5 +43,6 @@ controlspec = {
 			('quick','jupyter_coda'):'quick',
 			('quick','cwd',):'quick',
 			('quick','settings','cwd'):'basic',
+			('quick','settings','cwd','tags'):'basic',
 			('quick','settings','cwd','params','extensions','tags'):'extensions',
 			('quick','settings','cwd','params','extensions','tags','imports'):'extensions_imports'},},}

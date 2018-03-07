@@ -18,12 +18,13 @@ def statesave(state):
 	calls = [key for key,val in state.items() if hasattr(val,'__call__')]
 	#---check on _funcs without modifying the state
 	nosaves = state.get('_funcs',[])
+	#---amx is a special case. it is not a callable, but we want to exclude it from saving
+	if 'amx' in state: 
+		calls.append('amx')
+		nosaves.append('amx')
 	#---we make sure that the only functions in the state were registered and added to _funcs
-	if not set(calls)==set(nosaves): 
-		#---custom exception exception (for serial_number)
-		if not (set(calls)==set([]) and 
-			set(nosaves)==set(['q'])):
-			raise Exception('savestate finds that state._funcs is not equivalent to callables')
+	unregistered = [i for i in calls if i not in nosaves]
+	if any(unregistered): raise Exception('found unregistered callables: %s'%unregistered)
 	try: 
 		state_out = dict([(k,v) for k,v in state.items() if k not in set(nosaves+['_protect'])]) 
 		text = json.dumps(state_out)
@@ -91,8 +92,8 @@ def call_reporter(func,state={}):
 		#---if make_step registered a log file, we also write this to that file
 		if 'step_log_file' in state:
 			#---! note that `make quick vmd_protein` needs to use the state without q in many functions
-			no_log_needed = ['init','make_sidestep','get_last_frame',
-				'get_trajectory','gmx_run','call_reporter','get_last_gmx_call','write_continue_script']
+			no_log_needed = ['init','make_sidestep','gmx_get_last_frame',
+				'gmx_get_trajectory','gmx_run','call_reporter','gmx_get_last_call','write_continue_script']
 			if 'q' not in state and func.__name__ not in no_log_needed: 
 				raise Exception('dev error: %s called the reporter '%func.__name__+
 					'before the "q" function was registered. if this is okay, add the function '+

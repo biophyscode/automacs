@@ -8,15 +8,13 @@ A collection of (helpful) command-line utilities. The interface is managed by th
 module.
 """
 
-import os,sys,subprocess,re,time,glob,shutil,json
+import os,sys,subprocess,re,time,glob,shutil,json,copy
 
 __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
 	'setup','notebook','upload','download','cluster','submit','gitcheck','gitpull','rewrite_config',
 	'codecheck','collect_parameters','write_continue_script','show_kickstarters','hardstart']
 
 from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
-from calls import get_machine_config
-from continue_script import interpret_walltimes
 from makeface import fab
 
 def get_amx():
@@ -199,6 +197,12 @@ def serial_number():
 		state_set_and_save(amx.state,serial=serialno)
 	return amx.state['serial']
 
+def make_timestamp():
+	"""Make timestamps for upload/download logs."""
+	import datetime
+	ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d.%H%M')
+	return ts
+
 def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 	"""
 	Upload the data to a supercomputer.
@@ -206,12 +210,13 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 	!Note that putting sure before path ruins the argument handling hence makeface needs fix
 	"""
 	amx = get_amx()
-	from amx.calls import get_last_gmx_call
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.gromacs_commands import gmx_get_last_call
 	serial_number()
 	last_step = amx.state['here']
-	get_last_gmx_call('mdrun',this_state=amx.state)
+	gmx_get_last_call('mdrun',this_state=amx.state)
 	#---upload requires knowledge of the last mdrun so we only send up cpt and tpr
-	last_mdrun = get_last_gmx_call('mdrun',this_state=amx.state)
+	last_mdrun = gmx_get_last_call('mdrun',this_state=amx.state)
 	restart_fns = [last_step+i for i in [last_mdrun['flags']['-s'],last_mdrun['flags']['-cpo']]]
 	#---upload cluster files if they are already prepared by users who wish to run cluster before sending it
 	for fn in ['script-continue.sh','cluster-continue.sh']:
@@ -249,8 +254,7 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 		if not bulk: os.remove('uploads.txt')
 	if p.returncode == 0 and last_step:
 		destination = '%s:%s/%s'%(alias,path,cwd)
-		import datetime
-		ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d.%H%M')
+		ts = make_timestamp()
 		from runner.states import state_set_and_save
 		this_upload = dict(to=destination,when=ts)
 		state_set_and_save(amx.state,upload=this_upload)
@@ -261,15 +265,16 @@ def upload(alias,path='~',sure=False,state_fn='state.json',bulk=False):
 		print("[STATUS] upload failure (not logged)")
 		sys.exit(1)
 
-def download(sure=False):
+def download(sure=False,state_fn='state.json'):
 	"""
 	Download a simulation from the cluster if it has already been uploaded.
 	"""
 	amx = get_amx()
 	if 'upload' not in amx.state: 
 		raise Exception('cannot find "upload" key in the state. did you upload this already?')
-	#---make a copy of the upload data for posterity. we will add this back to the state
-	upload_info = dict(upload_history=amx.state.get('upload_history',[]),upload=amx.state.upload)
+	state_merge = dict()
+	state_merge['upload'] = copy.deepcopy(amx.state.upload)
+	state_merge['upload_history'] = amx.state.get('upload_history',[])
 	destination = amx.state['upload']['to']
 	serialno = serial_number()
 	print("[STATUS] the state says that this simulation (#%d) is located at %s"%(serialno,destination))
@@ -286,6 +291,19 @@ def download(sure=False):
 			print('[STATUS] running "%s"'%cmd)
 			p = subprocess.Popen(cmd,shell=True,cwd=os.path.abspath(os.getcwd()))
 			log = p.communicate()
+		#---if we get a state, add the upload history back and write it
+		if os.path.isfile('state.json'):
+			from runner.datapack import DotDict
+			from runner.states import statesave
+			state = DotDict(**json.load(open(state_fn)))
+			if 'upload' not in state: state.upload = state_merge['upload']
+			#---! should we check the destinations?
+			else: pass 
+			if 'upload_history' not in state: state.upload_history = state_merge['upload_history']
+			else: raise Exception('development error. need to merge upload history here.')
+			ts = make_timestamp()
+			state.upload_history.append({'from':destination,'to':'here','when':ts})
+			statesave(amx.state)
 	except Exception as e:
 		import traceback
 		s = traceback.format_exc()
@@ -293,23 +311,20 @@ def download(sure=False):
 		print("[ERROR] failed to find simulation")
 		print("[NOTE] find the data on the remote machine via \"find ./ -name serial-%s\""%serialno)
 		sys.exit(1)
-	#---save this download and the upload history
-	import datetime
-	ts = datetime.datetime.fromtimestamp(time.time()).strftime('%Y.%m.%d.%H%M')
-	from runner.states import state_set_and_save
-	upload_info['upload_history'].append(dict(**{'from':destination,'when':ts}))
-	state_set_and_save(state=amx.state,**upload_info)
 
 def write_continue_script(hostname=None,overwrite=False,gmxpaths=None):
 	"""
 	Write the continue script if it does not yet exist.
 	Note that this script wraps the same function in amx.continue_script for the CLI.
 	"""
-	machine_configuration = get_machine_config(hostname=hostname)
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.calls import gmx_get_machine_config
+	machine_configuration = gmx_get_machine_config(hostname=hostname)
 	sys.path.insert(0,'amx')
-	import continue_script
 	here = globals()['state']['here'] if 'state' in globals() else None
-	script_fn = continue_script.write_continue_script_master(
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.continue_script import write_continue_script_master
+	script_fn = write_continue_script_master(
 		machine_configuration=machine_configuration,here=here,gmxpaths=gmxpaths)
 	return script_fn
 
@@ -322,16 +337,16 @@ def cluster(hostname=None,overwrite=True):
 	Note that we do not log this operation because it only manipulates BASH scripts.
 	"""
 	amx = get_amx()
-	from amx.calls import get_last_gmx_call
-	sys.path.insert(0,'runner')
-	from makeface import import_remote
-	get_gmx_paths = import_remote('amx/calls.py')['get_gmx_paths']
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.gromacs_commands import gmx_get_last_call
 	if hostname: 
 		#---warn the user that specifying hostname from the commandline might show warnings, however
 		#---...it is still very useful to prepare the cluster scripts before uploading to clusters
 		print(fab('[WARNING]','white_black')+' running `make cluster <hostname>` might throw errors '
 			'on modules which are not locally available')
-	machine_configuration = get_machine_config(hostname=hostname)
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.calls import gmx_get_machine_config
+	machine_configuration = gmx_get_machine_config(hostname=hostname)
 	if not 'cluster_header' in machine_configuration: 
 		raise Exception('no cluster information. add this machine to `machine_configuration` in '
 			'either `./gromacs_config.py` or `~/.automacs.py` and '
@@ -354,6 +369,8 @@ def cluster(hostname=None,overwrite=True):
 		else: script_continue_fn = amx.state.here+amx.state.continuation_script
 		#---code from base.functions.write_continue_script to rewrite the continue script
 		with open(script_continue_fn,'r') as fp: lines = fp.readlines()
+		#---! a rare connection down to gromacs which needs to be revised
+		from amx.gromacs.continue_script import interpret_walltimes
 		maxhours = interpret_walltimes(machine_configuration.get('walltime',24))['maxhours']
 		#---make a jobname from the directory name, which should be a unique identifier for the job
 		try: jobname = os.path.basename(os.getcwd())
@@ -410,7 +427,9 @@ def submit():
 	if not os.path.isfile(here+'cluster-continue.sh'):
 		raise Exception('[ERROR] cannot find "cluster-continue.sh" in the last step directory (%s). '
 			%here+'try running `make cluster` to generate it.')
-	machine_config = get_machine_config()
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.calls import gmx_get_machine_config
+	machine_config = gmx_get_machine_config()
 	cmd = '%s cluster-continue.sh'%machine_config.get('submit_command','qsub')
 	print('[STATUS] running "%s"'%cmd)
 	subprocess.check_call(cmd,cwd=here,shell=True)
@@ -554,7 +573,7 @@ def hardstart():
 	dns = sorted(dns,key=lambda x:os.path.getmtime(x))
 	here = os.path.join(dns[-1],'')
 	from makeface import import_remote
-	get_gmx_paths = import_remote('amx/calls.py')['get_gmx_paths']
+	get_gmx_paths = import_remote('amx/gromacs/calls.py')['gmx_get_paths']
 	gmxpaths = get_gmx_paths()
 	state = dict(here=here,gmxpaths=gmxpaths)
 	state['history_gmx'] = [{'call':'mdrun','flags':{}}]

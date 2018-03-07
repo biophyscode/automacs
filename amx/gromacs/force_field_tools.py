@@ -11,7 +11,8 @@ charmm_lipids = {
 	
 }
 
-#---! WHAT IS GOING ON HERE. dOES THIS REPLACE landscape.json?
+#---! we think the following section will replace landscape.json
+#---! note that a landscape.json was removed from the charmm module but can be found in the history
 
 landscape_spec = {
 	'martini':{

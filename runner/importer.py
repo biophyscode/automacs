@@ -97,6 +97,33 @@ if here not in sys.path: sys.path.insert(0,here)
 #---select all valid python scripts in the current folder for imports
 sub_scripts = [os.path.basename(i) for i in glob.glob(os.path.join(os.path.dirname(__file__),'*.py'))]
 sub_scripts_valid = [i for i in sub_scripts if not os.path.basename(i)=='__init__.py']
+core_import_mapping,core_import_mapping_explicit = [],[]
+#---import instructions overrides the method above. this allows the user to more carefully specify the import targets
+if '_import_instruct' in globals():
+	sub_scripts_valid_grouped = _import_instruct.get('special_import_targets',[])
+	sub_scripts_valid = []
+	#---formulate the list of submodule targets for the import scheme
+	for tag,items in sub_scripts_valid_grouped: sub_scripts_valid.extend(items)
+	invalid_targets = [i for i in sub_scripts_valid if os.path.basename(i)=='__init__.py' 
+		or not os.path.isfile(os.path.join(os.path.dirname(__file__),i))]
+	if any(invalid_targets): raise Exception('invalid import targets: %s'%invalid_targets)
+	#---ensure all imports are not-by-filename
+	for fnum,fn in enumerate(sub_scripts_valid):
+		if os.path.sep in fn: 
+			if os.path.basename(fn) in sub_scripts_valid: 
+				raise Exception('the submodule target %s is already in sub_scripts_valid (%s)'%(fn,sub_scripts_valid))
+			sub_scripts_valid[fnum] = os.path.basename(fn)
+			dn = os.path.join(os.path.dirname(__file__),os.path.dirname(fn))
+			if dn not in sys.path: sys.path.insert(0,dn)
+	core_import_mapping_raw = _import_instruct.get('import_rules',[])
+	#---reformulate the mapping to route all of the functions
+	for import_from,import_to in core_import_mapping_raw:
+		for i in dict(sub_scripts_valid_grouped)[import_from]:
+			for j in dict(sub_scripts_valid_grouped)[import_to]:
+				#---keep track of import movements by basename. note that there is a check for repetition above
+				core_import_mapping.append(tuple([os.path.basename(k) for k in [i,j]]))
+	#---extract explicit import rules
+	core_import_mapping_explicit = _import_instruct.get('import_rules_explicit',[])
 
 #---get "my" name -- the name of this module
 my_name = os.path.split(os.path.dirname(__file__))[-1]
@@ -113,6 +140,9 @@ _acme_silence = globals().get('_acme_silence',not is_tops)
 #---get extensions
 extras_in = expt.pop('EXTENSIONS',[])
 sub_scripts_valid_extras = get_extras(extras_in)
+
+#---we load everything into a dictionary which is then exported to globals for clarity
+amx_exports = {}
 
 #---import all targeted submodules
 for sub in sub_scripts_valid + sub_scripts_valid_extras:
@@ -131,7 +161,7 @@ for sub in sub_scripts_valid + sub_scripts_valid_extras:
 		#---...if it weren't in the incoming module then maybe another module put it in globals
 		vars_intercepted = test.__dict__.get('_not_all',[])
 		for key in vars_intercepted:
-			if key in globals() and key in test.__dict__: del globals()[key]
+			if key in amx_exports and key in test.__dict__: del amx_exports[key]
 	except Exception as e: 
 		from makeface import tracebacker
 		tracebacker(e)
@@ -153,14 +183,14 @@ for sub in sub_scripts_valid + sub_scripts_valid_extras:
 			#---...otherwise it will run call_reporter on tons of exported submodules
 			#---also avoid the call_reporter on e.g. classes (which have no __code__)
 			if _use_call_reporter and hasattr(test.__dict__[key],'__code__'): 
-				stable[key] = globals()[key] = call_reporter(test.__dict__[key],state)
+				stable[key] = amx_exports[key] = call_reporter(test.__dict__[key],state)
 			else:
-				stable[key] = globals()[key] = test.__dict__[key]
+				stable[key] = amx_exports[key] = test.__dict__[key]
 				#---only pass main modules back to the stable for later
 				if sub not in sub_scripts_valid_extras: stable[key] = test.__dict__[key]
 		#---import everything else into this global namespace
 		elif callable(test.__dict__[key]): 
-			stable[key] = globals()[key] = test.__dict__[key]
+			stable[key] = amx_exports[key] = test.__dict__[key]
 			#---only pass main modules back to the stable for later
 			if sub not in sub_scripts_valid_extras: stable[key] = test.__dict__[key]
 	#---! should we have an else here to send variables from e.g. amx submodules to the extensions?
@@ -168,6 +198,13 @@ for sub in sub_scripts_valid + sub_scripts_valid_extras:
 	test.state,test.settings,test.expt = state,settings,expt
 	#---send the call_reporter back to the module in case calls to locals in the module should be logged
 	test.call_reporter = call_reporter
+
+	#---if this is a core-submodule check rules and then perform import/exports
+	if sub in [j[1] for j in core_import_mapping]:
+		sources = [i for i,j in core_import_mapping if sub==j]
+		if any([i not in subs for i in sources]): 
+			raise Exception('import rules in _import_instruct have the wrong sequence')
+		for i in sources: test.__dict__.update(**subs[i].__dict__)
 
 	#---if this is an extension, check for backwash/sidewash
 	if sub in sub_scripts_valid_extras:
@@ -188,6 +225,15 @@ for sub in sub_scripts_valid + sub_scripts_valid_extras:
 		#---after back/side-washing, populating the stable, we export the local functions to the extensions
 		for key in stable: test.__dict__[key] = stable[key]
 
+#---explicit function mappings
+for route in core_import_mapping_explicit:
+	#---send the subject from source to target
+	try: subs[route['target']].__dict__[route['name'] ] = subs[route['source']].__dict__[route['name'] ]
+	except: raise Exception('explicit import failed %s'%route)
+
+#---coda for more custom rules
+if '_import_instruct' in globals() and 'coda' in _import_instruct: exec(_import_instruct['coda'])
+
 #---send overrides from the extensions back to the main codes
 for sub in [i for i in subs if i not in sub_scripts_valid_extras]:
 	for key,val in washes['back']['objects'].items(): subs[sub].__dict__[key] = val
@@ -195,13 +241,31 @@ for sub in [i for i in subs if i not in sub_scripts_valid_extras]:
 for sub in [i for i in subs if i in sub_scripts_valid_extras]:
 	for key,val in washes['side']['objects'].items(): subs[sub].__dict__[key] = val
 
-#---iterative reexection may rely on things that happen in init, so we always run that
+#---iterative reexecution may rely on things that happen in init, so we always run that
 #---...as long as makeface.py is the first command in the call and we are doing "run"
 #---...since "run" is the only function that you would use when doing iterative reexecution
 if ('init' in globals() and hasattr(init,'__call__') and state.get('status',None)=='error' and
 	len(sys.argv)>0 and sys.argv[0]=='exec.py'): 
 	print('[NOTE] detected an error state so we are executing init again')
 	init()
+
+#---export the collected automacs module into globals
+#---note that users can still import amx in multiple ways i.e. with "from amx import *" in the parent script
+#---...and "import amx" in an extension module if they wish to have more control. as long as it's called "amx" it will
+#---...be imported here. note also that the state is spread to amx components by the _import_instruct variable
+#---...which is essential to carefully merging these modules *and* sharing these key variables via a highly 
+#---...unorthodox but effective reverse-import that happens in this file. this does not prevent other amx modules 
+#---...from importing from e.g. the gromacs submodule in the standard way, which complements the _import_instruct 
+#---...method to complete the inter-module connections necessary for amx to work. to recap: the _import_instruct
+#---...will merge key modules e.g. gromacs *and* give it the state using the acme_submodulator while standard imports
+#---...are also allowed as long as those funnctions do not require the special variables like state
+globals().update(**amx_exports)
+#---the state contains a pointer to amx. this is an end-run around the "from amx import *" method which allows you to 
+#---...get globals e.g. functions from extension modules when you do not have the global namespace, as long as you have
+#---...the state. we register amx with _funcs so it is not saved to JSON later on.
+if '_funcs' not in state: state._funcs = []
+state._funcs.append('amx')
+state.amx = amx_exports
 
 #---reset the paths
 sys.path = list(paths)

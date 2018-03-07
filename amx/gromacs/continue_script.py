@@ -11,7 +11,8 @@ the full automacs when writing cluster scripts.
 _not_all = ['continue_script','write_continue_script_master']
 
 import os,sys,json,re
-from calls import get_machine_config
+from calls import gmx_get_machine_config
+str_types = [str] if (sys.version_info>(3,0)) else [str,unicode]
 
 continue_script = """#!/bin/bash
 
@@ -103,9 +104,13 @@ def write_continue_script_master(script='script-continue.sh',
 	import makeface
 	#---we pass gmxpaths through so we do not need to load modules twice
 	if not gmxpaths:
-		get_gmx_paths = makeface.import_remote('amx/calls')['get_gmx_paths']
-		gmxpaths = get_gmx_paths(hostname=hostname,override=override)
-	if not machine_configuration: machine_configuration = get_machine_config()
+		#get_gmx_paths = makeface.import_remote('amx/gromacs/calls.py')
+		#import ipdb;ipdb.set_trace()#['gmx_get_paths']
+		#from calls import gmx_get_paths
+		#---the gmx_get_paths function is an explicit import in amx.__init__._import_instruct
+		from calls import gmx_get_paths
+		gmxpaths = gmx_get_paths(hostname=hostname,override=override)
+	if not machine_configuration: machine_configuration = gmx_get_machine_config()
 	#---CONTINUATION DEFAULTS HERE
 	settings = {
 		'maxhours':interpret_walltimes(machine_configuration.get('walltime',24))['maxhours'],
@@ -124,8 +129,8 @@ def write_continue_script_master(script='script-continue.sh',
 		settings_keys.insert(0,'nprocs')
 	settings.update(**kwargs)
 	setting_text = '\n'.join([
-		str(key.upper())+'='+('"' if type(settings[key])==str else '')+str(settings[key])+
-			('"' if type(settings[key])==str else '') for key in settings_keys])
+		str(key.upper())+'='+('"' if type(settings[key]) in str_types else '')+str(settings[key])+
+			('"' if type(settings[key]) in str_types else '') for key in settings_keys])
 	modules = machine_configuration.get('modules',None)
 	if modules:
 		modules = [modules] if type(modules)==str else modules

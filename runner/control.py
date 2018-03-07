@@ -45,10 +45,14 @@ def look(state='state.json'):
 	"""
 	View the current state from the commandline. Useful for debugging.
 	"""
+	print('[NOTE] use `statesave(state)` or '
+		'`state_set_and_save(state,**kwargs) to update the state`')
 	if not os.path.isfile(state): raise Exception('cannot find %s'%state)
-	bname = os.path.splitext(state)[0]
+	bname = re.sub('\.','_',os.path.splitext(state)[0])
+	if bname!='state': print('[NOTE] the state is called %s'%bname)
 	#---! no tab completion in python 2 for some reason
 	os.system('python -B -i -c "import json,sys;sys.path.insert(0,\'runner\');'+
+		'from states import statesave,state_set_and_save;'+
 		'exec(open(\'amx/pythonrc.py\').read());'+'from datapack import DotDict;'
 		'%s = DotDict(**json.load(open(\'%s\')));"'%(bname,state))
 
@@ -144,13 +148,15 @@ def preplist(silent=False,verbose=False):
 			#---tags prefixed with "tag_" are emphasized
 			tags_tag = [re.match('^tag_(.+)$',i).group(1) for i in val['tags'] if re.match('^tag_',i)]
 			for tag in tags_tag: lead += fab('%s'%tag,'cyan_black')+' '
+			#---dev and test notes are bright red
+			if 'dev' in val['tags']: lead += fab('DEV','red_black')+' '
+			if 'test' in val['tags']: lead += fab('TEST?','red_black')+' '
 			#---passing test sets are marked in magenta/gray
 			tags_test = [re.match('^tested_(.+)$',i).group(1) for i in val['tags'] if re.match('^tested_',i)]
 			for tag in tags_test: lead += fab('+%s'%tag,'mag_gray')+' '
 			#---minor notes get white on black text
 			tags_notes = [re.match('^note_(.+)$',i).group(1) for i in val['tags'] if re.match('^note_',i)]
 			for tag in tags_notes: lead += fab('%s'%tag,'white_black')+' '
-			if 'dev' in val['tags']: lead += fab('DEV','red_black')+' '
 		if 'metarun' in val: 
 			toc['metarun'].append(dottoc(str(counter+1),key,spots[key],lead=lead))
 		elif 'quick' in val: toc['quick'].append(dottoc(counter+1,key,spots[key],lead=lead))
@@ -204,6 +210,10 @@ def prep_metarun(inputlib):
 	"""
 	#---prepare each step in the metarun
 	_keysets('metarun',*inputlib.keys(),check=True)
+	#---crude run for the prelude which is necessary for factory testing of cgmd simulations
+	#---! replace this with a bash call?
+	if 'prelude' in inputlib:
+		os.system(inputlib['prelude'])
 	steplist = inputlib.pop('metarun')
 	for stepno,item in enumerate(steplist):
 		scriptname,exptname = 'script_%d'%(stepno+1),'expt_%d'%(stepno+1)
@@ -301,7 +311,9 @@ def metarun():
 	Run a series of simulation steps.
 	"""
 	if os.path.isfile('script.py') or os.path.isfile('expt.json'):
-		raise Exception('refusing to run if script.py or expt.json are present. this is a metarun!')
+		raise Exception('refusing to run if script.py or expt.json are present. '
+			'if you wish to start from scratch, use `make go <name> clean` '
+			'and this will clear the old files.')
 	script_fns = glob.glob('script_*.py')
 	expt_fns = glob.glob('expt_*.json')
 	ranges = [sorted([int(re.match('^script_(\d)+\.py$',i).group(1)) for i in script_fns]),

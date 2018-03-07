@@ -11,18 +11,18 @@ Generic extensions used by: proteins, bilayers
 import os,sys,re,glob,shutil,subprocess,json
 import numpy as np
 
-str_types = [str,unicode] if sys.version_info<(3,0) else [str]
-
-from automacs import component,include
-from calls import gmx,get_machine_config,move_file,get_last_gmx_call,get_gmx_share
+from calls import gmx,gmx_get_share
+from generic import component,include
 from force_field_tools import Landscape
+from utils import str_types
+from gromacs_commands import gmx_get_last_call
 
 #---hide some functions from logging because they are verbose
 _not_reported = ['write_gro','dotplace','unique']
 #---extensions shared throughout the codes
 _shared_extensions = ['dotplace','unique']
 
-#---! soon to move to GMXStructure
+#---write a float in a format favorable to GRO to ensure the dot is always in the right place
 dotplace = lambda n: re.compile(r'(\d)0+$').sub(r'\1',"%8.3f"%float(n)).ljust(8)
 
 def unique(items):
@@ -62,7 +62,7 @@ def get_start_structure(path):
 	shutil.copy(fn,os.path.join(state.here,''))
 	shutil.copyfile(fn,os.path.join(state.here,'start-structure.pdb'))
 
-def get_pdb(code):
+def get_pdb(code,path=None):
 	"""
 	Download a PDB from the database or copy from file.
 	"""
@@ -72,7 +72,11 @@ def get_pdb(code):
 	else: from urllib.request import urlopen
 	response = urlopen('http://www.rcsb.org/pdb/files/'+code+'.pdb')
 	pdbfile = response.read()
-	with open(state.here+'start-structure.pdb','w') as fp: fp.write(pdbfile.decode())
+	if path==None: dest = state.here+'start-structure.pdb'
+	else: 
+		if os.path.isdir(path): dest = os.path.join(path,code+'.pdb')
+		else: dest = path
+	with open(dest,'w') as fp: fp.write(pdbfile.decode())
 	#---! we should log that the PDB was successfully got
 
 def get_last(name,cwd=None):
@@ -281,7 +285,6 @@ def write_gro(**kwargs):
 	"""
 	Write a GRO file with new coordinates.
 	"""
-	dotplace = lambda n: re.compile(r'(\d)0+$').sub(r'\1',"%8.3f"%float(n)).ljust(8)	
 	input_file = kwargs.get('input_file',None)
 	output_file = kwargs.get('output_file',None)
 	if input_file:
@@ -313,7 +316,7 @@ def gro_combinator(*args,**kwargs):
 		#---use the box vectors from the first structure
 		if not box: fp.write(collection[0][-1])		
 		else: fp.write(' %.3f %.3f %.3f\n'%tuple(box))
-	#---! added this because resnrs were fucuuuucckckckded
+	#---! added this because resnrs were scrambled
 	gmx('editconf',structure=out,gro=out+'-renumber',log='editconf-combo-%s'%out,resnr=1)
 	move_file(out+'-renumber.gro',out+'.gro')
 	os.remove(state.here+'log-editconf-combo-%s'%out)
@@ -517,7 +520,7 @@ def center_by_group(structure,gro,selection):
 	gmx('make_ndx',structure=structure,ndx=ndx,
 		inpipe='keep 0\n%s\nq\n'%selection,
 		log='make-ndx-counterions-check')
-	tpr = os.path.splitext(get_last_gmx_call('mdrun')['flags']['-s'])[0]
+	tpr = os.path.splitext(gmx_get_last_call('mdrun')['flags']['-s'])[0]
 	#---we send "1" then "0" to center on the second group while "system" is the first
 	gmx('trjconv',structure=structure,inpipe='1\n0\n',pbc='mol',
 		center=True,tpr=tpr,ndx=ndx,gro=gro,log='trjconv-center')
@@ -551,7 +554,7 @@ def solvate(structure,gro,edges=None,center=False):
 	#---if no solvent argument we go and fetch it
 	solvent = state.q('solvent','spc216')
 	if solvent=='spc216' and not os.path.isfile(state.here+'spc216.gro'):
-		share_dn = get_gmx_share()
+		share_dn = gmx_get_share()
 		shutil.copyfile(os.path.join(share_dn,'spc216.gro'),state.here+'spc216.gro')
 	#---! solvent must be centered. for some reason spc216 is not in the box entirely.
 	if solvent=='spc216':
@@ -690,7 +693,7 @@ def equilibrate(groups=None,structure='system',top='system',stages_only=False,se
 			gmx('grompp',base='md-%s'%name,top=top,
 				structure=structure if eqnum == 0 else 'md-%s'%seq[eqnum-1],
 				log='grompp-%s'%name,mdp='input-md-%s-eq-in'%name,
-				maxwarn=10,**({'n':groups} if groups else {}))
+				maxwarn=state.q('maxwarn',0),**({'n':groups} if groups else {}))
 			gmx('mdrun',base='md-%s'%name,log='mdrun-%s'%name,nonessential=True)
 			if not os.path.isfile(state.here+'md-%s.gro'%name): 
 				raise Exception('mdrun failure at %s'%name)
@@ -702,7 +705,7 @@ def equilibrate(groups=None,structure='system',top='system',stages_only=False,se
 			gmx('grompp',base=name,top=top,
 				structure='md-%s'%seq[-1] if seq else structure,
 				log='grompp-0001',mdp='input-md-in',
-				**({'n':groups} if groups else {}))
+				maxwarn=state.q('maxwarn',0),**({'n':groups} if groups else {}))
 			gmx('mdrun',base=name,log='mdrun-0001')
 
 def restart_clean(part,structure,groups,posres_coords=None,mdp='input-md-in'):
@@ -717,7 +720,7 @@ def restart_clean(part,structure,groups,posres_coords=None,mdp='input-md-in'):
 	if posres_coords: flags['r'] = posres_coords
 	gmx('grompp',base=name,top='system',
 		structure=structure,log='grompp-%04d'%part,mdp=mdp,
-		**flags)
+		maxwarn=state.q('maxwarn',0),**flags)
 	gmx('mdrun',base=name,log='mdrun-%04d'%part)
 
 def atomistic_or_coarse():

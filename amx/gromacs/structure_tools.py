@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 
 import sys,os,re
-import numpy as np
-import scipy
+try: import numpy as np
+#---! automacs tries to load this even for e.g. make upload
+except: pass
 import json
 
-#---! note that within the main module we import the normal way
+_not_reported = ['dotplace']
 from common import dotplace,contiguous_encode
 from topology_tools import GMXTopology
 from force_field_tools import Landscape
@@ -106,6 +107,7 @@ class GMXStructure:
 		"""
 		REPLACE WITH force_field_tools.py
 		"""
+		return None
 		if not fn: fn = state.landscape_metadata
 		#---identify molecule types from the landscape for the bilayer_sorter
 		if os.path.splitext(fn)[1]=='.yaml':
@@ -202,7 +204,7 @@ class GMXStructure:
 				self.__dict__[key] = np.concatenate((first.__dict__[key][:index_wedge],
 					second.__dict__[key],first.__dict__[key][index_wedge:]))
 
-	def write(self,out_fn):
+	def write(self,out_fn,renumber=True):
 
 		"""
 		Write a GRO file.
@@ -210,7 +212,7 @@ class GMXStructure:
 
 		#---! unfinished code? grospec = {'residue_indices'}
 
-		self.renumber()
+		if renumber: self.renumber()
 		residue_inds_abs = self.residue_indices
 		self.residue_indices = self.residue_indices%100000
 		lines = ['NAME HERE']
@@ -361,6 +363,7 @@ class GMXStructure:
 		if not discard: water_inds = self.select('not resname %s'%state.sol)
 		else: water_inds = self.select(discard)
 		print('[COMPUTE] KDTree for close waters')
+		import scipy
 		tree_not_water = scipy.spatial.KDTree(self.points[not_water_inds])
 		close_dists,neighbors = tree_not_water.query(self.points[water_inds],distance_upper_bound=gap)
 		print('[COMPUTE] done')

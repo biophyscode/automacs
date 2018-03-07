@@ -78,7 +78,6 @@ def import_remote(script,is_script=False):
 	"""Import a script as a module, directly, iff it is not in the path."""
 	dn,fn = os.path.dirname(script),os.path.basename(script)
 	assert is_script or os.path.isdir(dn),'cannot find directory "%s" for script %s'%(dn,script)
-	#assert os.path.isfile(script),'cannot find file "%s"'%fn
 	dn_abs = os.path.join(os.getcwd(),dn)
 	assert dn_abs not in sys.path,'found "%s" in sys.path already'%dn_abs
 	paths = list(sys.path)
