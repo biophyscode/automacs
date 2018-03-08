@@ -108,7 +108,7 @@ def gromacs_config(where=None):
 	#---instead of using config.py, we hard-code a global config location
 	#---the global configuration is overridden if a local config file exists
 	#---we source the config from a default copy in the amx directory
-	default_config = 'gromacs_config.py.bak'
+	default_config = 'gromacs/gromacs_config.py.bak'
 	if where:
 		if where not in ['home','local']:
 			#---! print the error message here?
