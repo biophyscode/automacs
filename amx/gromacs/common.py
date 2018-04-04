@@ -571,12 +571,11 @@ def solvate(structure,gro,edges=None,center=False):
 	gro_combinator(structure+'.gro','solvate-empty-uncentered-untrimmed.gro',
 		box=boxdims_old,cwd=state.here,gro='solvate-dense')
 	atom_resolution = atomistic_or_coarse()
-	trim_waters(structure='solvate-dense',gro='solvate',gap=state.q('water_buffer',3),
+	trim_waters(structure='solvate-dense',gro=gro,gap=state.q('water_buffer',3),
 		boxvecs=boxdims_old,method=atom_resolution,boxcut=True)
 	#---! ugly
-	structure = 'solvate'
 	sol = state.q('sol','SOL')
-	nwaters = count_molecules(structure,sol)/({'aamd':3.0,'cgmd':1.0}[atom_resolution])
+	nwaters = count_molecules(gro,sol)/({'aamd':3.0,'cgmd':1.0}[atom_resolution])
 	if round(nwaters)!=nwaters: raise Exception('[ERROR] fractional water molecules')
 	else: nwaters = int(nwaters)
 	component(sol,count=nwaters)
