@@ -237,7 +237,7 @@ class GMXTopology:
 					if type(o)!=dict: 
 						import ipdb;ipdb.set_trace()
 					if not set(header_keys[:len(o.keys())])==set(o.keys()):
-						raise Exception('the set of keys in this entry does not match a starting subsequence '+
+						raise Exception('the set of keys in this entry %s does not match a starting subsequence '%entry+
 							'from the header. the available keys are %s and the header is %s'%(o.keys(),header_keys))
 					for key in header_keys[:len(o.keys())]:
 						line += '%s '%str(o[key])
