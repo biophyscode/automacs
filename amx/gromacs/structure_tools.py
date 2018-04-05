@@ -154,7 +154,10 @@ class GMXStructure:
 		#---! would be better to match the resnames here with the system.top
 		#---! ULTRA-ANNOYING ION NAMING CONVENTION. Sticking to resname "ion" because 
 		#---! ... I must have done that for a good reason (since I remember it requiring a lot of work)
-		if resnames[-1]!='ION': raise Exception('ions have been hacked for martini please fix them')
+		if resnames[-1]!='ION': 
+			#! hacking for multiply_general experiment
+			return
+			raise Exception('ions have been hacked for martini please fix them')
 		indices = [np.where(self.residue_names==r)[0] for r in resnames[:-1]]
 		#---! handle ions separately by adding their positions to the end of the list which will be catted
 		indices += [np.where(np.all((self.residue_names=='ION',self.atom_names==i),axis=0))[0]
@@ -376,8 +379,9 @@ class GMXStructure:
 		"""
 		Infer the topology.
 		"""
-		if not state.landscape_metadata:
-			raise Exception('state/settings needs `landscape.yaml` for metadata')
+		#! removed when building multiply_general expt 
+		#! ...if not state.landscape_metadata:
+		#! ...	raise Exception('state/settings needs `landscape.yaml` for metadata')
 		resnames,resnames_inds = np.unique(self.residue_names,return_index=True)
 		resnames = resnames[np.argsort(resnames_inds)]
 		composition = [(r,len(np.unique(
