@@ -42,7 +42,11 @@ def yamlb_special(text,style=None,ignore_json=False):
 
 if not os.path.isfile(state_fn): state = DotDict()
 else:
-	try: state = DotDict(**json.load(open(state_fn)))
+	try: 
+		state = DotDict(**json.load(open(state_fn)))
+		# convert previous states to DotDict for compatibility
+		if 'before' in state.__dict__:
+			for bb,b in enumerate(state.before): state.before[bb] = DotDict(**b)
 	except: state = DotDict()
 if not os.path.isfile(expt_fn): settings,expt = DotDict(),DotDict()
 else: 
