@@ -59,8 +59,9 @@ def init():
 	prev_states = glob.glob('state_*.json')
 	if prev_states: 
 		state.before = []
+		from datapack import DotDict
 		for fn in sorted(prev_states):
-			with open(fn) as fp: state.before.append(json.load(fp))
+			with open(fn) as fp: state.before.append(DotDict(**json.load(fp)))
 	#---store settings for posterity minus the _protect
 	state.settings = dict(settings)
 	state.expt = dict(expt)
