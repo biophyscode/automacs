@@ -34,7 +34,12 @@ def gmx_get_last_frame(gro='system-previous',dest=None,source=None,tpr=False):
 	transmit = os.path.abspath(dest)!=os.path.abspath(source)
 	#---current functionality requires that mdrun calls record the last supposed output
 	#---check if the last frame was correctly written
-	last_written_gro = source + gmx_get_last_call('mdrun')['flags']['-c']
+	try: last_written_gro = source + gmx_get_last_call('mdrun')['flags']['-c']
+	except:
+		# check the previous states
+		try: last_written_gro = source + gmx_get_last_call(
+			'mdrun',this_state=state.before[-1])['flags']['-c']
+		except: raise Exception('failed to lookup last call from the current and previous states')
 	if os.path.isfile(last_written_gro):
 		if transmit:
 			#---if the source differs from the destination copy the file and save the path
