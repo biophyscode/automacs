@@ -312,7 +312,7 @@ def asciitree(obj,depth=0,wide=2,last=[],recursed=False):
 					print('\n'+tl+horizo_bold*(len(key)+0)+
 						tr+spacer_this+vertic_bold+str(key)+vertic_bold+'\n'+\
 						bl+horizo_bold*len(key)+br+'\n'+vertic)
-				else: print(spacer_this+key)
+				else: print(spacer_this+str(key))
 				asciitree(obj[key],depth=depth+1,
 					last=last+([depth] if ind==len(obj)-1 else []),
 					recursed=True)
