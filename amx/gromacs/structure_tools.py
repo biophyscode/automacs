@@ -130,7 +130,7 @@ class GMXStructure:
 		"""
 		return ''.join([' %.5f'%j for j in self.box])+'\n'
 
-	def regroup(self):
+	def regroup_deprecated(self):
 		"""
 		Sort everything in the system so it follows the composition order.
 		"""
@@ -156,8 +156,9 @@ class GMXStructure:
 		#---! ... I must have done that for a good reason (since I remember it requiring a lot of work)
 		if resnames[-1]!='ION': 
 			#! hacking for multiply_general experiment
-			return
-			raise Exception('ions have been hacked for martini please fix them')
+			#return
+			#raise Exception('ions have been hacked for martini please fix them')
+			print('warning of some kind goes here!')
 		indices = [np.where(self.residue_names==r)[0] for r in resnames[:-1]]
 		#---! handle ions separately by adding their positions to the end of the list which will be catted
 		indices += [np.where(np.all((self.residue_names=='ION',self.atom_names==i),axis=0))[0]
@@ -169,7 +170,36 @@ class GMXStructure:
 		self.residue_indices = self.residue_indices[reindexed]
 		self.points = self.points[reindexed]
 		#print('UNDER DEVELOPMENT!!!!!!!!!!')
-		#import pdb;pdb.set_trace()
+		import pdb;pdb.set_trace()
+
+	def regroup(self):
+		"""Ensure that the order of molecules matches the composition."""
+		#! not suitable for proteins yet!
+		# first check that there are no repeats in the composition
+		#! assume we want the composition from the state but perhaps it should be attached to self
+		resnames_comp = list(zip(*state.composition))[0]
+		if len(set(resnames_comp))!=len(resnames_comp):
+			raise Exception('repeats in resnames %s'%resnames_comp)
+		#! rename via special instructions
+		rename_detected_composition = settings.get('rename_detected_composition')
+		if rename_detected_composition:
+			#! hacked backwards
+			rename_detected_composition_r = dict([(j,i) for i,j in rename_detected_composition.items()])
+			resnames_comp = [rename_detected_composition_r.get(i,i) for i in resnames_comp]
+		# check that residue name lists are equivalent
+		resnames,rn_inds = np.unique(self.residue_names,return_index=True)
+		if set(resnames)!=set(resnames_comp): 
+			raise Exception(
+				'note that the composition %s does not match residue names in the structure %s'%(
+				resnames_comp,resnames))
+		reindexer = [np.where(self.residue_names==resname)[0] for resname in resnames]
+		natoms = sum([len(i) for i in reindexer])
+		if natoms!=self.atom_names.shape[0]: raise Exception('atom count mismatch')
+		reindexed = np.concatenate(reindexer)
+		self.residue_names = self.residue_names[reindexed]
+		self.atom_names = self.atom_names[reindexed]
+		self.residue_indices = self.residue_indices[reindexed]
+		self.points = self.points[reindexed]
 
 	def fix_residue_numbering(self):
 		"""
@@ -375,7 +405,7 @@ class GMXStructure:
 			self.residue_indices[water_inds[np.where(close_dists<=gap)]])))[0]
 		self.remove(waters_in_zone)
 
-	def detect_composition(self):
+	def detect_composition(self,composition_adjust=None):
 		"""
 		Infer the topology.
 		"""
@@ -409,6 +439,10 @@ class GMXStructure:
 		#---! EXTREMELY ANNOYING DEBUGGING PROBLEM IS THAT JSON CANNOT DO numpy.str_
 		#---! ...add a converter in the statesave function !!!
 		composition = [[str(i),int(j)] for i,j in composition]
+		if composition_adjust:
+			get_comp_adjust = {}
+			exec(composition_adjust,get_comp_adjust)
+			composition = get_comp_adjust['composition_adjust'](composition)
 		return composition
 
 	def detect_composition_NEWISH(self):
