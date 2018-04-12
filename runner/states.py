@@ -94,7 +94,7 @@ def call_reporter(func,state={}):
 			#---! note that `make quick vmd_protein` needs to use the state without q in many functions
 			no_log_needed = ['init','make_sidestep','gmx_get_last_frame',
 				'gmx_get_trajectory','gmx_run','call_reporter','gmx_get_last_call','write_continue_script',
-				'get_last_mdps']
+				'get_last_mdps','gmx']
 			if 'q' not in state and func.__name__ not in no_log_needed: 
 				raise Exception('dev error: %s called the reporter '%func.__name__+
 					'before the "q" function was registered. if this is okay, add the function '+

@@ -44,20 +44,21 @@ def gmx(program,**kwargs):
 	if 'history_gmx' not in state: state.history_gmx = []
 	state.history_gmx.append(recorded)
 
+gmx_error_strings = [
+	'File input/output error:',
+	'command not found',
+	'Fatal error:',
+	'Fatal Error:',
+	'Can not open file:',
+	'Invalid command line argument:',
+	'Error in user input:'
+	'Software inconsistency error',
+	'Syntax error']
+
 def gmx_run(cmd,log,nonessential=False,inpipe=None):
 	"""
 	Run a GROMACS command instantly and log the results to a file.
 	"""
-	gmx_error_strings = [
-		'File input/output error:',
-		'command not found',
-		'Fatal error:',
-		'Fatal Error:',
-		'Can not open file:',
-		'Invalid command line argument:',
-		'Software inconsistency error',
-		'Syntax error']
-
 	if log == None: raise Exception('[ERROR] gmx_run needs a log file to route output')
 	#---if the log is an absolute path we drop the log there without prepending "log-"
 	elif log and not os.path.basename(log)==log:
@@ -78,12 +79,21 @@ def gmx_run(cmd,log,nonessential=False,inpipe=None):
 			stdout=output,stderr=output,stdin=subprocess.PIPE)
 		proc.communicate(input=str(inpipe).encode())
 	#---check for errors
-	with open(log_fn,'r') as logfile:
-		for line in logfile:
-			for msg in gmx_error_strings:
-				if re.search(msg,line)!=None: 
-					if nonessential: print('[NOTE] command failed but it is nonessential')
-					else: raise Exception('%s in %s'%(msg.strip(':'),log_fn))
+	with open(log_fn,'r') as logfile: logfile_text = logfile.read()
+	for msg in gmx_error_strings:
+		if re.search(msg,logfile_text,flags=re.M)!=None: 
+			if nonessential: print('[NOTE] command failed but it is nonessential')
+			else: 
+
+				#! note that this error reporting resembles that in gmx_run
+				errors = re.findall('\n-{2,}(.*?(?:%s).*?)-{2,}'%('|'.join(gmx_error_strings)),
+					logfile_text,re.M+re.DOTALL)
+				for error in errors:
+					status('caught error in %s:'%log_fn,tag='error')
+					print('\n[ERROR] | '.join(error.split('\n')))
+				raise Exception('%s in %s'%(msg.strip(':'),log_fn))
+
+				#except: raise Exception('%s in %s'%(msg.strip(':'),log_fn))
 
 def gmx_get_machine_config(hostname=None):
 	"""

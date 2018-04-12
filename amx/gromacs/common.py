@@ -654,10 +654,22 @@ def minimize(name,method='steep',top=None):
 	"""
 	Standard minimization procedure.
 	"""
+	log_base = 'grompp-%s-%s'%(name,method)
 	gmx('grompp',base='em-%s-%s'%(name,method),top=name if not top else re.sub('^(.+)\.top$',r'\1',top),
-		structure=name,log='grompp-%s-%s'%(name,method),mdp='input-em-%s-in'%method,nonessential=True)
+		structure=name,log=log_base,mdp='input-em-%s-in'%method,nonessential=True)
 	tpr = state.here+'em-%s-%s.tpr'%(name,method)
-	if not os.path.isfile(tpr): raise Exception('cannot find %s. check the grompp step.'%tpr)
+	if not os.path.isfile(tpr): 
+		try:
+			#! note that this error reporting resembles that in gmx_run
+			from calls import gmx_error_strings
+			log_fn = state.here+'log-%s'%log_base
+			with open(log_fn) as fp: log_text = fp.read()
+			errors = re.findall('\n-{2,}(.*?(?:%s).*?)-{2,}'%('|'.join(gmx_error_strings)),log_text,re.M+re.DOTALL)
+			for error in errors:
+				status('caught error in %s:'%log_fn,tag='error')
+				print('\n[ERROR] | '.join(error.split('\n')))
+			raise Exception('cannot find %s. see errors above and check the grompp step.'%tpr)
+		except: raise Exception('cannot find %s. check the grompp step.'%tpr)
 	gmx('mdrun',base='em-%s-%s'%(name,method),log='mdrun-%s-%s'%(name,method))
 	shutil.copyfile(state.here+'em-'+'%s-%s.gro'%(name,method),state.here+'%s-minimized.gro'%name)
 

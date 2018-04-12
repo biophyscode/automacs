@@ -305,7 +305,7 @@ def asciitree(obj,depth=0,wide=2,last=[],recursed=False):
 				print(spacer_this+key+' = '+str(obj[key]))
 			#---special: skip lists if blank dictionaries
 			elif type(obj[key])==list and all([i=={} for i in obj[key]]):
-				print(spacer_this+key+' = (empty)')
+				print(spacer_this+str(key)+' = (empty)')
 			elif obj[key] != {}:
 				#---fancy border for top level
 				if depth == 0:
