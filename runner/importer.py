@@ -83,7 +83,7 @@ import glob,re
 str_types = [str] if (sys.version_info>(3,0)) else [str,unicode]
 
 #---settings
-verbose = False
+verbose = True
 event_log = {}
 verbose_pedantic = False
 protected_signals = ['_not_all','_not_reported']
