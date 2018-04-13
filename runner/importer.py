@@ -38,6 +38,7 @@ _msg_no_global_imports = 'absolutely no "import *" allowed in a module which dec
 	'call_reporter. remove them from %s (or its submodules) or use'+\
 	'"_acme_silence = False" before "exec(acme_submodulator)" in your __init__.py'
 
+import os
 from acme import read_config,get_path_to_module
 
 def get_extras(extensions):
@@ -83,7 +84,7 @@ import glob,re
 str_types = [str] if (sys.version_info>(3,0)) else [str,unicode]
 
 #---settings
-verbose = False
+verbose = os.environ.get('AMX_REPORT',False) not in [0,'False',False]
 event_log = {}
 verbose_pedantic = False
 protected_signals = ['_not_all','_not_reported']
