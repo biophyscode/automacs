@@ -180,19 +180,36 @@ class GMXStructure:
 		resnames_comp = list(zip(*state.composition))[0]
 		if len(set(resnames_comp))!=len(resnames_comp):
 			raise Exception('repeats in resnames %s'%resnames_comp)
-		#! rename via special instructions
+		#! rename via special instructions designed for some polmyers work
 		rename_detected_composition = settings.get('rename_detected_composition')
 		if rename_detected_composition:
-			#! hacked backwards
+			#! update development after refactor below
+			print('finish refactor!')
+			import ipdb;ipdb.set_trace()
+			raise Exception('finish refactor')
+			#! reversed the order here. rename_detected_composition may be used elsewhere? 
 			rename_detected_composition_r = dict([(j,i) for i,j in rename_detected_composition.items()])
 			resnames_comp = [rename_detected_composition_r.get(i,i) for i in resnames_comp]
-		# check that residue name lists are equivalent
-		resnames,rn_inds = np.unique(self.residue_names,return_index=True)
-		if set(resnames)!=set(resnames_comp): 
+		# generate residue,atom pairings
+		pairings = np.transpose((self.residue_names,self.atom_names))
+		# list of residue names where we include the atom name in the reordering
+		groupable_residues = ['ION']
+		# blank the atom names wherever the pairings 
+		pairings[np.where(~np.in1d(pairings[:,0],groupable_residues))[0],1] = ''
+		# generate a canonical ordering method that accounts for possible aliases
+		residues_unordered,residue_order = np.unique(pairings,return_index=True,axis=0)
+		residue_pairs = residues_unordered[np.argsort(residue_order)]
+		# we now have a list of residues, along with atom names if they are special
+		residues_possible_structure = [i for i in residue_pairs.reshape(-1) if i]
+		unmatched_residues = [i for i in resnames_comp if i not in residues_possible_structure]
+		if any(unmatched_residues):
+			# stop if any of the residue names in the composition do not match the structure
 			raise Exception(
-				'note that the composition %s does not match residue names in the structure %s'%(
-				resnames_comp,resnames))
-		reindexer = [np.where(self.residue_names==resname)[0] for resname in resnames]
+				('we have residue (and atom, if applicable) pairs from the structure %s '
+					'which do not match the composition/topology %s'%(
+						residues_possible_structure,unmatched_residues)))
+		# perform the re-indexing here
+		reindexer = [np.where(np.all(pairings==pair,axis=1))[0] for pair in residue_pairs]
 		natoms = sum([len(i) for i in reindexer])
 		if natoms!=self.atom_names.shape[0]: raise Exception('atom count mismatch')
 		reindexed = np.concatenate(reindexer)
