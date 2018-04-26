@@ -184,6 +184,9 @@ def prep_single(inputlib,scriptname='script',exptname='expt',noscript=False,over
 	Prepare a single-step program.
 	"""
 	_keysets('run',*inputlib.keys(),check=True)
+	#! run prelude if necessary. replace with bash call?	
+	if 'prelude' in inputlib:
+		os.system(inputlib['prelude'])
 	#---get the script name
 	script_fn = os.path.join(inputlib['cwd'],inputlib['script'])
 	#---if the path is not local we use the @ syntax sugar and drop the cwd
