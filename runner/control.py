@@ -247,10 +247,12 @@ def audit(fancy=False,since=None):
 	summary['unclassified tags'] = list(set([i for j in [stock[name].get('also',[]) 
 		for name in stock] for i in j]))
 	asciitree(dict(categories=cats))
-	for key in ['current','never tested','outdated']:
+	pass_cats = ['current','never tested','outdated']
+	total = len(set([i for j in [summary[k] for k in pass_cats] for i in j]))
+	for key in pass_cats:
 		if key in summary: 
 			out = textwrap.wrap(' '.join(summary[key]),width=120)
-			print('\n%s\n%s\n'%(key.upper(),'\n'.join(out)))
+			print('\n%s (%d/%d)\n%s\n'%(key.upper(),len(summary[key]),total,'\n'.join(out)))
 
 def prep_json():
 	"""
