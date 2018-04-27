@@ -16,6 +16,7 @@ __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
 
 from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
 from makeface import fab
+from control import preplist
 
 def get_amx():
 	"""
