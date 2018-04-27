@@ -179,7 +179,7 @@ def prep_json():
 	expts = preplist(silent=True)
 	print('NOTE: '+json.dumps(expts['details']))
 
-def prep_single(inputlib,scriptname='script',exptname='expt',noscript=False,overrides=None):
+def prep_single(inputlib,scriptname='script',exptname='expt',noscript=False,overrides=None,step=None):
 	"""
 	Prepare a single-step program.
 	"""
@@ -197,6 +197,8 @@ def prep_single(inputlib,scriptname='script',exptname='expt',noscript=False,over
 	ins['EXTENSIONS'] = inputlib.get('extensions',None)
 	#---allow settings overrides so metarun settings overrides can use original run settings
 	if overrides: ins['settings_overrides'] = overrides
+	#---step can be overridden by the step key in a metarun
+	if step: ins['step_name'] = step 
 	#---! consoldiate script and experiment name to just use a number. run will use this naming convention
 	write_expt(ins,fn='%s.json'%exptname)
 	#---copy the script file into place 
@@ -221,8 +223,8 @@ def prep_metarun(inputlib):
 		extras = dict([(key,item[key]) for key in ['jupyter_coda'] if key in item])
 		#---run a standard step verbatim
 		if _keysets('metarun_steps',*item.keys())=='simple': 
-			#---! need to send the step name!
-			prep_single(read_inputs(item['do']),scriptname=scriptname,exptname=exptname)
+			prep_single(read_inputs(item['do']),scriptname=scriptname,
+				exptname=exptname,step=item.get('step',None))
 		#---run a step with different settings
 		elif _keysets('metarun_steps',*item.keys())=='settings': 
 			ins = read_inputs(item['do'])
@@ -230,7 +232,8 @@ def prep_metarun(inputlib):
 			#---note that the metarun overrides do not have to be complete. the metarun settings
 			#---...block will always be attached as settings_overrides and applied after the settings
 			#---...are loaded, which means that metaruns can make changes without redundant settings text
-			prep_single(ins,scriptname=scriptname,exptname=exptname,overrides=item['settings'])
+			prep_single(ins,scriptname=scriptname,exptname=exptname,
+				overrides=item['settings'],step=item.get('step',None))
 		#---quick to script with settings
 		elif _keysets('metarun_steps',*item.keys())=='quick': 
 			quick(item['quick'],settings=item['settings'],stepno=stepno+1,settings_extras=extras)

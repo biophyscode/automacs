@@ -180,16 +180,17 @@ class GMXStructure:
 		resnames_comp = list(zip(*state.composition))[0]
 		if len(set(resnames_comp))!=len(resnames_comp):
 			raise Exception('repeats in resnames %s'%resnames_comp)
-		#! rename via special instructions designed for some polmyers work
-		rename_detected_composition = settings.get('rename_detected_composition')
-		if rename_detected_composition:
-			#! update development after refactor below
-			print('finish refactor!')
-			import ipdb;ipdb.set_trace()
-			raise Exception('finish refactor')
-			#! reversed the order here. rename_detected_composition may be used elsewhere? 
-			rename_detected_composition_r = dict([(j,i) for i,j in rename_detected_composition.items()])
-			resnames_comp = [rename_detected_composition_r.get(i,i) for i in resnames_comp]
+		if False:
+			#! rename via special instructions designed for some polmyers work
+			rename_detected_composition = settings.get('rename_detected_composition')
+			if rename_detected_composition:
+				#! update development after refactor below
+				print('finish refactor!')
+				import ipdb;ipdb.set_trace()
+				raise Exception('finish refactor')
+				#! reversed the order here. rename_detected_composition may be used elsewhere? 
+				rename_detected_composition_r = dict([(j,i) for i,j in rename_detected_composition.items()])
+				resnames_comp = [rename_detected_composition_r.get(i,i) for i in resnames_comp]
 		# generate residue,atom pairings
 		pairings = np.transpose((self.residue_names,self.atom_names))
 		# list of residue names where we include the atom name in the reordering

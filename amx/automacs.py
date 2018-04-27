@@ -65,6 +65,8 @@ def init():
 	#---store settings for posterity minus the _protect
 	state.settings = dict(settings)
 	state.expt = dict(expt)
+	#---metarun will send the step key from the experiment to step_name to override it
+	if 'step_name' in expt: settings.step = expt['step_name']
 	#---no need to save the _protect list from the DotDict here
 	del state.settings['_protect']
 	del state.expt['_protect']
