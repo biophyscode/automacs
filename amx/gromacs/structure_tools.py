@@ -204,11 +204,18 @@ class GMXStructure:
 		residues_possible_structure = [i for i in residue_pairs.reshape(-1) if i]
 		unmatched_residues = [i for i in resnames_comp if i not in residues_possible_structure]
 		if any(unmatched_residues):
-			# stop if any of the residue names in the composition do not match the structure
-			raise Exception(
-				('we have residue (and atom, if applicable) pairs from the structure %s '
-					'which do not match the composition/topology %s'%(
-						residues_possible_structure,unmatched_residues)))
+			rename_detected_composition = settings.get('rename_detected_composition')
+			if rename_detected_composition:
+				rename_detected_composition_r = dict([(j,i) 
+					for i,j in rename_detected_composition.items()])
+				resnames_comp = [rename_detected_composition_r.get(i,i) for i in resnames_comp]
+				unmatched_residues = [i for i in resnames_comp if i not in residues_possible_structure]
+			if unmatched_residues: 
+				# stop if any of the residue names in the composition do not match the structure
+				raise Exception(
+					('we have residue (and atom, if applicable) pairs from the structure %s '
+						'which do not match the composition/topology %s'%(
+							residues_possible_structure,unmatched_residues)))
 		# perform the re-indexing here
 		reindexer = [np.where(np.all(pairings==pair,axis=1))[0] for pair in residue_pairs]
 		natoms = sum([len(i) for i in reindexer])
