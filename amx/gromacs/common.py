@@ -485,8 +485,14 @@ def solvate_protein(structure,top):
 		#top='solvate-standard',
 	#---trim waters if the protein_water_gap setting is not False
 	water_gap = state.q('protein_water_gap')
-	if water_gap: trim_waters(structure='solvate-dense',gro='solvate',gap=water_gap,boxvecs=boxvecs)
-	else: copy_file(state.here+'solvate-dense.gro',state.here+'solvate.gro')
+	if water_gap: 
+		try:
+			import scipy
+			trim_waters(structure='solvate-dense',gro='solvate',gap=water_gap,boxvecs=boxvecs)
+		except:
+			status('failed to load scipy so continuing without a water_gap',tag='warning')
+			copy_file('solvate-dense.gro','solvate.gro')
+	else: copy_file('solvate-dense.gro','solvate.gro')
 	gmx('make_ndx',structure='solvate',ndx='solvate-water-check',inpipe='q\n',
 		log='make-ndx-solvate-check')
 	with open(state.here+'log-make-ndx-solvate-check','r') as fp: lines = fp.readlines()

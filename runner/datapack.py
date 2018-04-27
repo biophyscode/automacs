@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 """
 DATAPACK
 
@@ -318,6 +320,9 @@ def asciitree(obj,depth=0,wide=2,last=[],recursed=False):
 					recursed=True)
 			elif type(obj[key])==list and obj[key]==[]:
 				print(spacer_this+'(empty)')
+			elif type(obj[key])==dict and obj[key]=={}:
+				print(spacer_this+'%s = {}'%key,end='')
 			else: print('unhandled tree object')
+	elif obj == {}: print('NONE')
 	else: print('unhandled tree object')
 	if not recursed: print('\n')

@@ -17,8 +17,10 @@ from acme import read_config,config_fn,read_inputs,write_expt,set_config,get_pat
 from controlspec import controlspec
 from loadstate import state,expt,settings
 from makeface import fab
+from datapack import str_types #! wasteful?
 
-__all__ = ['look','quick','prep','run','metarun','clean','back','preplist','set_config','go','prep_json']
+__all__ = ['look','quick','prep','run','metarun','clean','back',
+	'preplist','set_config','go','prep_json','audit']
 
 def fetch_script(src,cwd='./'):
 	"""
@@ -170,20 +172,103 @@ def preplist(silent=False,verbose=False):
 		counter += 1
 	if not silent: 
 		for key in ['quick','run','metarun']: asciitree({key:toc[key]})
-	return {'order':expt_order,'details':toc_clean}
+	return {'order':expt_order,'summary':toc_clean,'details':toc}
+
+def audit(fancy=False,since=None):
+	"""
+	Candidate to replace preplist. Currently used to introspect on passing test.
+	"""
+	# both preplist and prep are the initial user-commands so we check for install here
+	import pprint,textwrap
+	from makeface import fab
+	from datapack import asciitree
+	inputlib,spots = read_inputs(procname=None,return_paths=True)
+	stock = {}
+	# interpret the tests
+	categories = ['cgmd','aamd','aamd_cgmd','free','protein-bilayer',
+		'test','protein','bilayer','dev','lipidome','homology','flat']
+	regexes = [
+		('tested[dev]','^tested_(.*?)_dev$'),
+		('tested','^tested_(.*?)$'),
+		('tags','^tag_(.+)$'),
+		('notes','^note_(.+)$')]
+	regexes.extend([(i,'^(%s)$'%i) for i in categories])
+	# classify tests
+	for name in sorted(inputlib.keys()):
+		stock[name] = {}
+		# ignore comments
+		if re.match('comment_',name): continue
+		val = inputlib[name]
+		tags = val.get('tags',[])
+		for tag in list(tags):
+			for key,pattern in regexes:
+				this = next((item.group(1) for item in re.compile(pattern).finditer(tag)),'')
+				if this:
+					if key in stock[name]: stock[name][key] = [stock[name][key]]+[this]
+					else: stock[name][key] = this
+					tags.remove(tag)
+					break
+		if tags: stock[name]['also'] = tags
+	if fancy: asciitree(stock)
+	else: pprint.pprint(stock)
+	#!? interesting
+	summary = {}
+	summary['never tested'] = [k for k,v in stock.items() if 'tested' not in v]
+	# follow-up reports
+	if since:
+		import datetime as dt
+		try: timestamp = dt.datetime.strptime(since,'%Y.%M.%d.%H%m')
+		except ValueError: timestamp = dt.datetime.strptime(since,'%Y.%M.%d')
+		else: raise Exception('failed to interpret %s'%since)
+		times = [(k,v['tested']) for k,v in stock.items() if 'tested' in v]
+		before_or_never = list(summary['never tested'])
+		current = []
+		for name,time in times:
+			max_time = time if type(time) in str_types else max(time)
+			#! repetitive with above
+			try: this_time = dt.datetime.strptime(max_time,'%Y.%M.%d.%H%m')
+			except ValueError: this_time = dt.datetime.strptime(max_time,'%Y.%M.%d')
+			else: raise Exception('failed to interpret %s'%max_time)
+			if this_time>timestamp: current.append(name)
+			else: before_or_never.append(name)
+		summary['current'] = sorted(current)
+		summary['outdated'] = sorted(before_or_never)
+		print(summary.keys())
+	def get_style(name): 
+		if 'quick' in inputlib[name]: return 'quick'
+		elif 'metarun' in inputlib[name]: return 'metarun'
+		else: return 'run'
+	cats = dict([(cat,['%s (%s)'%(name,get_style(name)) 
+		for name in stock if cat in stock[name]]) for cat in categories])
+	unclassified_tags = list(set([i for j in [stock[name].get('also',[]) 
+		for name in stock] for i in j]))
+	if unclassified_tags: 
+		raise Exception('cannot recognize all tags so add them to the function: %s'%unclassified_tags)
+	summary['unclassified tags'] = list(set([i for j in [stock[name].get('also',[]) 
+		for name in stock] for i in j]))
+	asciitree(dict(categories=cats))
+	pass_cats = ['current','never tested','outdated']
+	total = len(set([i for j in [summary[k] for k in pass_cats] for i in j]))
+	for key in pass_cats:
+		if key in summary: 
+			out = textwrap.wrap(' '.join(summary[key]),width=120)
+			print('\n%s (%d/%d)\n%s\n'%(key.upper(),len(summary[key]),total,'\n'.join(out)))
 
 def prep_json():
 	"""
 	Print the experiments list in JSON format. Useful for  the factory.
 	"""
 	expts = preplist(silent=True)
-	print('NOTE: '+json.dumps(expts['details']))
+	print('NOTE: '+json.dumps(expts['summary']))
 
 def prep_single(inputlib,scriptname='script',exptname='expt',noscript=False,overrides=None,step=None):
 	"""
 	Prepare a single-step program.
 	"""
 	_keysets('run',*inputlib.keys(),check=True)
+	#! run prelude if necessary. replace with bash call?	
+	if 'prelude' in inputlib:
+		os.system(inputlib['prelude'])
 	#---get the script name
 	script_fn = os.path.join(inputlib['cwd'],inputlib['script'])
 	#---if the path is not local we use the @ syntax sugar and drop the cwd
@@ -244,7 +329,7 @@ def prep_metarun(inputlib):
 		#---! elif _keysets('quick',*item.keys())=='simple': quick(item['quick'],stepno=stepno+1)
 		else: raise Exception('no formula for metarun item: %r'%item)
 
-def prep(procname=None,noscript=False,v=False):
+def prep(procname=None,noscript=False,v=True):
 	"""
 	Prepare an experiment from inputs specified by the config.
 	There are two modes: a "metarun" or a single program.

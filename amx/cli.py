@@ -16,6 +16,7 @@ __all__ = ['locate','flag_search','config','watch','layout','gromacs_config',
 
 from datapack import asciitree,delve,delveset,yamlb,jsonify,check_repeated_keys
 from makeface import fab
+from control import preplist
 
 def get_amx():
 	"""
@@ -388,6 +389,9 @@ def cluster(hostname=None,overwrite=True):
 			for m in need_modules: head += "module load %s\n"%m
 		for key in ['extend','until']: 
 			if key in machine_configuration: settings[key] = machine_configuration[key]
+		# if until is in the machine configuration we also set mode to match
+		#! this feature needs tested against the new continue script
+		if 'until' in machine_configuration: settings['mode'] = 'until' 
 		#---! must intervene above to come up with the correct executables
 		setting_text = '\n'.join([str(key.upper())+'='+('"' if type(val)==str else '')+
 			str(val)+('"' if type(val)==str else '') for key,val in settings.items()])
