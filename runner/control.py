@@ -251,7 +251,7 @@ def audit(fancy=False,since=None):
 	total = len(set([i for j in [summary[k] for k in pass_cats] for i in j]))
 	for key in pass_cats:
 		if key in summary: 
-			out = textwrap.wrap(' '.join(summary[key]),width=120)
+			out = textwrap.wrap(' '.join(sorted(summary[key])),width=120)
 			print('\n%s (%d/%d)\n%s\n'%(key.upper(),len(summary[key]),total,'\n'.join(out)))
 
 def prep_json():
