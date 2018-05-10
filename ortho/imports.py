@@ -29,7 +29,7 @@ def remote_import_script(source):
 	mod = {}
 	with open(source) as f:
 		code = compile(f.read(),source,'exec')
-		exec(code,globals(),mod)
+		exec(code,mod,mod)
 	return mod
 
 def remote_import_module(source):
@@ -73,16 +73,19 @@ def importer(source,verbose=False):
 		mod = importlib.import_module(fn,package=dn)
 		# always return the module as a dictionary
 		return strip_builtins(mod)
-	except: 
-		if verbose: print('warning','standard import failed')
+	except Exception as e: 
+		if verbose: 
+			print('warning','standard import failed for %s,%s'%(dn,fn))
+			print('exception',e)
 		# import the script remotely if import_module fails above
 		if os.path.isfile(source_full): 
 			if verbose: print('status','remote_import_script for %s'%source)
 			return remote_import_script(source_full)
 		# import the module remotely
-		else: 
+		elif os.path.isdir(source_full): 
 			if verbose: print('status','remote_import_module for %s'%source)
 			return remote_import_module(source_full)
+		else: raise Exception('cannot find %s'%source)
 
 def glean_functions(source):
 	"""

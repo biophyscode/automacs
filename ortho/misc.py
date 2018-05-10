@@ -11,7 +11,7 @@ def listify(x):
 	"""Turn a string or a list into a list."""
 	if type(x)==str: return [x]
 	elif type(x)==list: return x
-	else: raise Exception('str_or_list expects a string or a list')
+	else: raise Exception('listify expects a string or a list')
 
 def asciitree(obj,depth=0,wide=2,last=[],recursed=False):
 	"""

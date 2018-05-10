@@ -1,8 +1,9 @@
-#!/usr/bin/env PYTHONDONTWRITEBYTECODE=1 python
+#!/usr/bin/env python
 
 """
 ORTHO
 Makefile interFACE (makeface) command-line interface
+Note that you should debug with `python -c "import ortho;ortho.get_targets(verbose=True)"`
 """
 
 from __future__ import print_function
@@ -23,7 +24,7 @@ expose_aliases = {'set_config':'set'}
 global funcs,_ortho_keys_exposed
 funcs = None
 
-def collect_functions():
+def collect_functions(verbose=False):
 	"""
 	Collect available functions.
 	"""
@@ -37,15 +38,25 @@ def collect_functions():
 	# accrue functions over sources sequentially
 	for source in sources:
 		if os.path.isfile(source) or os.path.isdir(source):
-			try: mod = importer(source)
+			print('status','source %s'%source)
+			try: 
+				if verbose: print('status','importing source %s'%source)
+				mod = importer(source)
 			# if importing requires env then it is not ready when we get makefile targets
-			except: funcs.update(**glean_functions(source))
+			except Exception as e:
+				# debug imports during dev with `ortho.get_targets(verbose=True)`
+				if verbose: print('exception',e)
+				funcs.update(**glean_functions(source))
 			else:
 				incoming = dict([(k,v) for k,v in mod.items() if callable(v)])
 				# remove items if they are not in all
 				mod_all = mod.get('__all__',[])
-				if mod_all: incoming_exposed = dict([(k,v) for k,v in incoming.items() if k in mod_all])
+				# also allow __all__ to be temporarily blanked during development
+				if '__all__' in mod or mod_all: 
+					incoming_exposed = dict([(k,v) for k,v in incoming.items() if k in mod_all])
 				else: incoming_exposed = incoming
+				if verbose: print('status','trimming source %s to __all__=%s'%(
+					source,incoming_exposed.keys()))
 				funcs.update(**incoming_exposed)
 		else: raise Exception('cannot locate code source %s'%source)
 	# note which core functions are exposed so we can filter the rest
@@ -54,15 +65,15 @@ def collect_functions():
 	# no return because we just refresh funcs in globals
 	return
 
-def get_targets():
+def get_targets(verbose=False):
 	"""
 	Announce available function names.
+	Note that any printing that happens during the make call to get_targets is hidden by make.
 	"""
 	global _ortho_keys # from __init__.py
-	if not funcs: collect_functions()
+	if not funcs: collect_functions(verbose=verbose)
 	targets = funcs
 	# filter out utility functions from ortho
-	print(funcs)
 	target_names = list(set(targets.keys())-(set(_ortho_keys)-_ortho_keys_exposed))
 	print("make targets: %s"%(' '.join(sorted(target_names))))
 

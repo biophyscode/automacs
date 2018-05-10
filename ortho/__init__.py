@@ -9,8 +9,10 @@ expose = {
 	'bootstrap':['bootstrap'],
 	'cli':['get_targets','run_program'],
 	'config':['set_config','setlist','unset','read_config','write_config'],
+	'data':['check_repeated_keys'],
 	'dev':['tracebacker'],
 	'environments':['manage'],
+	'imports':['importer'],
 	'misc':['listify','treeview','str_types','say'],}
 
 # use `python -c "import ortho"` to bootstrap the makefile
@@ -40,7 +42,7 @@ def prepare_print(override=False):
 		_print = print
 		def print_stylized(*args,**kwargs):
 			"""Custom print function."""
-			key_leads = ['status','warning','error','note','usage']
+			key_leads = ['status','warning','error','note','usage','exception','except','question']
 			if len(args)>0 and args[0] in key_leads:
 				return _print('[%s]'%args[0].upper(),*args[1:])
 			else: return _print(*args,**kwargs)
