@@ -1,49 +1,79 @@
+
 ### makeface (MAKEfile interFACE)
-### a crude but convenient way of making CLI's for python
-### this file requires makeface.py (see the documentation there)
+### by Ryan Bradley, distributed under copyleft
+### a crude but convenient way of making CLIs for python
+### this file requires a minimal makeface.py and the ortho library
 
-# connect to runner
-makeface = runner/makeface.py
-
-# script and checkfile force the execution
-checkfile = .pipeline_up_to_date
+# set the shell (sh lacks source)
+SHELL:=/bin/bash
+# unbuffered output is best. exclude bytecode
+# add the "-tt" flag here for python3 errors
+python_flags = "-ttuB"
+# remove protected standalone args
 protected_targets=
-# pass debug flag for automatic debugging
-PYTHON_DEBUG = "$(shell echo $$PYTHON_DEBUG)"
-python_flags = "-B"
+# you can set the python executable before or after make
+python?=python
 
-# filter and evaluate
-MAKEFLAGS += -s
-RUN_ARGS_UNFILTER := $(wordlist 1,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
-RUN_ARGS := $(filter-out $(protected_targets),$(RUN_ARGS_UNFILTER))
-$(eval $(RUN_ARGS):;@:)
+# write makeface backend
+define MAKEFACE_BACKEND
+#!/bin/bash
+"exec" "python" "-B" "$0" "$@"
+from __future__ import print_function
+import ortho
+ortho.run_program()
+endef
+# to shell to python
+export MAKEFACE_BACKEND
 
-# valid function names from the python script
-TARGETS := $(shell python $(python_flags) $(makeface) | \
-	perl -ne 'print $$1 . "\n" if /.+\:(.*?)\n/')
+# unpack
+MAKEFLAGS+=-s
+RUN_ARGS_UNFILTER:=$(wordlist 1,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+RUN_ARGS:=$(filter-out $(protected_targets),$(RUN_ARGS_UNFILTER))
 
-# make without arguments first
-default: $(checkfile)
-# make with arguments
-$(TARGETS): $(checkfile)
+# request targets from python
+#! getting targets requires one full loop with imports
+#? speed things up by using a header of some kind, or ast?
+SHELL_CHECK_TARGETS:=$(python) $(python_flags) -c "import ortho;ortho.get_targets()"
+TARGETS:=$(shell ${SHELL_CHECK_TARGETS} | \
+	perl -ne 'print $$1 if /^.*?make targets\:\s*(.+)/')
+
+# request env from config
+SHELL_CHECK_ENV:=(ENV_PROBE=True $(python) $(python_flags) -c "import ortho")
+ENV_CMD:=$(shell ${SHELL_CHECK_ENV} | \
+	perl -ne 'print $$1 if /^.*?environment\:\s*(.+)/')
 
 # exit if target not found
 controller_function = $(word 1,$(RUN_ARGS))
 ifneq ($(controller_function),)
 ifeq ($(filter $(controller_function),$(TARGETS)),)
-    $(info [ERROR] "$(controller_function)" is not a valid make target)
-    $(info [ERROR] see the makefile documentation for instructions)
-    $(info [ERROR] make targets="$(TARGETS)"")
-    $(error [ERROR] exiting)
+    $(info invalid make target `$(controller_function)`)
+    $(info see the makefile documentation for instructions)
+    $(info make targets="$(TARGETS)")
+    $(error missing target)
 endif
 endif
 
-# route the make command to makeface every time
+# dummy file for always executing
+checkfile=.pipeline_up_to_date
 touchup:
+ifeq ($(RUN_ARGS),)
+	@echo "[STATUS] makefile targets: \"$(TARGETS)\""
 	@touch $(checkfile)
+endif
 $(checkfile): touchup
-	@/bin/echo "[STATUS] calling controller: python $(python_flags) \
-	$(makeface) ${RUN_ARGS} ${MAKEFLAGS}"
-	@env PYTHON_DEBUG=$(PYTHON_DEBUG) python $(python_flags) \
-	$(makeface) ${RUN_ARGS} ${MAKEFLAGS} && \
-	echo "[STATUS] done" || { echo "[STATUS] fail"; exit 1; }
+
+# make without arguments
+default: $(checkfile)
+
+# route to targets
+$(TARGETS): $(checkfile)
+ifeq ($(ENV_CMD),)
+	@env $(python) $(python_flags) -c "$$MAKEFACE_BACKEND" ${RUN_ARGS} ${MAKEFLAGS}
+else
+	@/bin/echo "[STATUS] environment: \"source $(ENV_CMD)\""
+	( source $(ENV_CMD) && ENV_CMD="$(ENV_CMD)" env $(python) \
+	$(python_flags) -c "$$MAKEFACE_BACKEND" ${RUN_ARGS} ${MAKEFLAGS} )
+endif
+
+# ignore run arguments
+$(RUN_ARGS): 
