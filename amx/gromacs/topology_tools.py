@@ -44,7 +44,7 @@ class GMXTopology:
 		'moleculetype':{'records':'molname nrexcl','lines':1},
 		'atoms':{'records':'id type resnr resname atom cgnr charge mass typeB chargeB massB'},
 		'bonds':{'records':'i j funct length force'},
-		'constraints':{'records':'i j funct length'},
+		'constraints':{'records':'i j funct length fc'},
 		'angles':{'records':'i j k funct angle force'},
 		'dihedrals':{'records':'i j k l funct angle force multiplicity'},
 		'position_restraints':{'records':'ai  funct  fcx    fcy    fcz'},
@@ -235,9 +235,11 @@ class GMXTopology:
 					#---...here we check that the items on the list are present
 					header_keys = self._entry_abstracted[entry]['records'].split()
 					if type(o)!=dict: 
-						import ipdb;ipdb.set_trace()
+						raise Exception
 					if not set(header_keys[:len(o.keys())])==set(o.keys()):
-						raise Exception('the set of keys in this entry %s does not match a starting subsequence '%entry+
+						raise Exception(
+							'processing molecule %s entry %s. '%(mol,entry)+
+							'the set of keys in this entry %s does not match a starting subsequence '%entry+
 							'from the header. the available keys are %s and the header is %s'%(o.keys(),header_keys))
 					for key in header_keys[:len(o.keys())]:
 						line += '%s '%str(o[key])
