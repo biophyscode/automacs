@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-import os,sys
+import os,sys,re,importlib
 
 def strip_builtins(mod):
 	"""
@@ -20,19 +20,41 @@ def strip_builtins(mod):
 	# .. so instead we pass along a copy of the relevant functions for the caller
 	return dict([(key,obj[key]) for key in keys])
 
-def remote_import_script(source):
+def remote_import_script(source,distribute=None):
 	"""
 	Import the functions in a single script.
 	This code is cross-compatible with python2.7-3.6 and we use it because there is basically no way to do 
 	this from the standard library.
 	"""
+	if distribute: raise Exception('dev')
 	mod = {}
 	with open(source) as f:
 		code = compile(f.read(),source,'exec')
 		exec(code,mod,mod)
 	return mod
 
-def remote_import_module(source):
+def distribute_to_module(mod,distribute):
+	"""
+	Distribute a builtin-esque variable to a module and to one level of its submodules.
+	Development note: 
+		This method distributes variables to the top level of a module but no deeper. The automacs
+		magic_importer method will go one step further and use some conservative inference on sys.modules to 
+		distribute the variables to all submodules automatically. However, it would be slightly more elegant 
+		to recursively collect modules and distribute automatically without using sys.modules (or worse,
+		builtins). If a recursive method is developed, the `distribute_down` method can be removed from the
+		automacs magic importer.
+	"""
+	# distribute to the top level
+	for key,val in distribute.items(): setattr(mod,key,val)
+	#! note that this will not distribute below the top level
+	for key in mod.__dict__.keys():
+		#! conservative? I think everything has a class and name
+		if hasattr(mod.__dict__[key],'__class__') and hasattr(mod.__dict__[key].__class__,'__name__'):
+			if mod.__dict__[key].__class__.__name__=='module':
+				for varname,var in distribute.items():
+					setattr(mod.__dict__[key],varname,var)
+
+def remote_import_module(source,distribute=None):
 	"""
 	Remotely import a module.
 	Note that we call this from the importer after trying the standard importlib.import_module.
@@ -44,47 +66,82 @@ def remote_import_module(source):
 	# manipulate paths for remote import
 	original_path = list(sys.path)
 	sys.path.insert(0,os.path.dirname(source))
-	import importlib
+	#try: 
 	mod = importlib.import_module(os.path.basename(source),package=os.path.dirname(source))
+	#except ValueError as e:
+	if False:
+		if str(e)=='Attempted relative import beyond toplevel package':
+			raise Exception(('attempted relative import beyond toplevel package '
+				'for "%s" which typically occurs when you try to access a parent (i.e. amx) module '
+				'function from inside a submodule. we recommend ???')%source)
+			#!!! figure out alternative
+		else: raise Exception(e)
+	if distribute: distribute_to_module(mod,distribute)
 	sys.path = list(original_path)
 	# we return modules as dictionaries
 	return strip_builtins(mod)
 
-def importer(source,verbose=False):
+def import_strict(fn,dn,verbose=False):
+	"""Standard importer with no exceptions for importing the local script.py."""
+	if verbose: print('note','importing from %s, %s'%(dn,fn))
+	mod = importlib.import_module(fn,package=dn)
+	if verbose: print('note','successfully imported')
+	return mod
+
+def importer(source,verbose=False,distribute=None,strict=False):
 	"""
 	Route import requests according to type.
 	We always return the module dictionary because the fallback remote_import_script must run exec.
-	Testing notes:
+	We only use the exec in the remote script importer if absolutely necessary. To avoid this we try
+	several different uses of importlib.import_module beforehand. The remote script importer makes it possible
+	to include scripts at any location using the commands flag in the config managed by ortho.conf which can
+	be useful in some edge cases.
+	!! Testing notes:
 	- import a local script directly with import_module
 	- import a local script manually using exec
 	- import a local module with import_module
 	- import a remote module by manipulating and resetting the path
-		
 	"""
 	source_full = os.path.expanduser(os.path.abspath(source))
 	# get paths for standard import method
 	if os.path.isfile(source_full): 
 		fn,dn = os.path.splitext(os.path.basename(source_full))[0],os.path.dirname(source_full)
 	else: fn,dn = os.path.basename(source_full),os.path.dirname(source_full)
+	if strict: return import_strict(fn,dn,verbose=verbose)
 	# standard import method
 	try:
 		if verbose: print('status','standard import for %s'%source)
-		import importlib
-		mod = importlib.import_module(fn,package=dn)
+		try:
+			if verbose: print('note','importing from %s, %s'%(dn,fn))
+			mod = importlib.import_module(fn,package=dn)
+			if verbose: print('note','successfully imported')
+		# try import if path is in subdirectory
+		except Exception as e:
+			rel_dn = os.path.relpath(dn,os.getcwd())
+			# if the path is a subdirectory we try the import with dots
+			if os.path.relpath(dn,os.getcwd())[:2]!='..':
+				fn_alt = '%s.%s'%(re.sub(os.path.sep,'.',rel_dn),fn)
+				if verbose: print('note','importing locally from %s'%(fn_alt))
+				mod = importlib.import_module(fn_alt,package='./')
+				if verbose: print('note','imported locally via alternate method')
+			else: 
+				print('go up to next try?')
+				raise Exception(e)
+		if distribute: distribute_to_module(mod,distribute)
 		# always return the module as a dictionary
 		return strip_builtins(mod)
 	except Exception as e: 
 		if verbose: 
-			print('warning','standard import failed for %s,%s'%(dn,fn))
+			print('warning','standard import failed for "%s" at "%s"'%(fn,dn))
 			print('exception',e)
 		# import the script remotely if import_module fails above
 		if os.path.isfile(source_full): 
 			if verbose: print('status','remote_import_script for %s'%source)
-			return remote_import_script(source_full)
+			return remote_import_script(source_full,distribute=distribute)
 		# import the module remotely
 		elif os.path.isdir(source_full): 
 			if verbose: print('status','remote_import_module for %s'%source)
-			return remote_import_module(source_full)
+			return remote_import_module(source_full,distribute=distribute)
 		else: raise Exception('cannot find %s'%source)
 
 def glean_functions(source):

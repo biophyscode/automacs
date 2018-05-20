@@ -38,15 +38,17 @@ def collect_functions(verbose=False):
 	# accrue functions over sources sequentially
 	for source in sources:
 		if os.path.isfile(source) or os.path.isdir(source):
-			print('status','source %s'%source)
 			try: 
 				if verbose: print('status','importing source %s'%source)
-				mod = importer(source)
+				mod = importer(source,verbose=verbose)
 			# if importing requires env then it is not ready when we get makefile targets
 			except Exception as e:
 				# debug imports during dev with `ortho.get_targets(verbose=True)`
 				if verbose: print('exception',e)
-				funcs.update(**glean_functions(source))
+				if os.path.isdir(source):
+					raise Exception('failed to import %s '%source+
+						'and cannot glean functions because it is not a file')
+				else: funcs.update(**glean_functions(source))
 			else:
 				incoming = dict([(k,v) for k,v in mod.items() if callable(v)])
 				# remove items if they are not in all
@@ -82,7 +84,6 @@ def run_program(_do_debug=False):
 	Interpret the command-line arguments.
 	"""
 	global funcs
-	if not funcs: collect_functions()
 	ignore_flags = ['w','--','s','ws','sw']
 	arglist = [i for i in list(sys.argv) if i not in ignore_flags]
 	# previously wrote the backend script i.e. makeface.py from the makefile via:
@@ -94,6 +95,8 @@ def run_program(_do_debug=False):
 			'however we received %s'%arglist)
 	if not arglist: raise Exception('no arguments to parse')
 	else: arglist = arglist[1:]
+	if arglist[0] in ['set','unset']: funcs = {'set':set_config,'unset':unset}
+	elif not funcs: collect_functions()
 	args,kwargs = [],{}
 	arglist = list(arglist)
 	funcname = arglist.pop(0)
@@ -146,7 +149,8 @@ def run_program(_do_debug=False):
 	# we must check for ipdb here before we try the target function
 	try: import ipdb as pdb_this
 	except: import pdb as pdb_this
-	try: funcs[funcname](*args,**kwargs)
+	try: 
+		funcs[funcname](*args,**kwargs)
 	#? catch a TypeError in case the arguments are not formulated properly
 	except Exception as e: 
 		tracebacker(e)
