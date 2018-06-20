@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
-import os,sys,re
+import os,sys,re,json
 
 # adjucate string types between versions
 str_types = [str,unicode] if sys.version_info<(3,0) else [str]
@@ -75,8 +75,24 @@ def treeview(data,style=None):
 	"""
 	Print a tree in one of several styles.
 	"""
-	if not style: style = conf.get('tree_style','unicode')
-	if style=='unicode': return asciitree(data)
+	if not style: style = conf.get('tree_style','unicode')  # pylint: disable=undefined-variable
+	if style=='unicode': 
+		# protect against TeeMultiplexer here because it cannot print unicode to the log file
+		do_swap_stdout = sys.stdout.__class__.__name__=='TeeMultiplexer'
+		do_swap_stderr = sys.stderr.__class__.__name__=='TeeMultiplexer'
+		if do_swap_stdout: 
+			hold_stdout = sys.stdout
+			#! assume fd1 is the original stream
+			sys.stdout = sys.stdout.fd1
+		if do_swap_stderr: 
+			hold_stderr = sys.stderr
+			#! assume fd1 is the original stream
+			sys.stderr = sys.stderr.fd1
+		# show the tree here
+		asciitree(data)
+		# swap back
+		if do_swap_stderr: sys.stderr = hold_stderr
+		if do_swap_stdout: sys.stdout = hold_stdout
 	elif style=='json': return print(json.dumps(data))
 	elif style=='pprint': 
 		import pprint
@@ -89,7 +105,7 @@ def say(text,*flags):
 	colors = {'gray':(0,37,48),'cyan_black':(1,36,40),'red_black':(1,31,40),'black_gray':(0,37,40),
 		'white_black':(1,37,40),'mag_gray':(0,35,47)}
 	# no colors if we are logging to a text file because nobody wants all that unicode in a log
-	if flags and sys.stdout.isatty()==True: 
+	if flags and hasattr(sys.stdout,'isatty') and sys.stdout.isatty()==True: 
 		if any(f for f in flags if f not in colors): 
 			raise Exception('cannot find a color %s. try one of %s'%(str(flags),colors.keys()))
 		for f in flags[::-1]: 

@@ -4,15 +4,17 @@ from __future__ import print_function
 import os,sys
 
 # import ortho with wildcard because we control everything here
+# note that CLI functions are set in cli.py
 expose = {
-	'bash':['command_check'],
+	'bash':['command_check','bash'],
 	'bootstrap':['bootstrap'],
 	'cli':['get_targets','run_program'],
 	'config':['set_config','setlist','unset','read_config','write_config'],
 	'data':['check_repeated_keys'],
 	'dev':['tracebacker'],
-	'environments':['manage'],
+	'environments':['environ','env_list','register_extension','load_extension'],
 	'imports':['importer'],
+	'unittester':['unittester'],
 	'misc':['listify','treeview','str_types','say'],}
 
 # use `python -c "import ortho"` to bootstrap the makefile
@@ -42,7 +44,8 @@ def prepare_print(override=False):
 		_print = print
 		def print_stylized(*args,**kwargs):
 			"""Custom print function."""
-			key_leads = ['status','warning','error','note','usage','exception','except','question','run']
+			key_leads = ['status','warning','error','note','usage',
+				'exception','except','question','run','tail','watch']
 			if len(args)>0 and args[0] in key_leads:
 				return _print('[%s]'%args[0].upper(),*args[1:])
 			else: return _print(*args,**kwargs)
@@ -79,6 +82,7 @@ config_fn = 'config.json'
 default_config = {}
 
 # read the configuration here
+# pylint: disable=undefined-variable
 conf = config.read_config(config_fn,default=default_config)
 
 # distribute configuration to submodules
@@ -91,3 +95,22 @@ for mod,ups in expose.items():
 	# note the utility functions for screening later
 	globals()[mod].__dict__['_ortho_keys'] = _ortho_keys
 	for up in ups: globals()[up] = globals()[mod].__dict__[up]
+
+# if the tee flag is set then we dump stdout and stderr to a file
+tee_fn = conf.get('tee',False)
+if tee_fn:
+	#! we could move the log aside here
+	if os.path.isfile(tee_fn): os.remove(tee_fn)
+	from .bash import TeeMultiplexer
+	stdout_prev = sys.stdout
+	sys.stdout = TeeMultiplexer(stdout_prev,open(tee_fn,'a'))
+	stderr_prev = sys.stderr
+	sys.stderr = TeeMultiplexer(stdout_prev,open(tee_fn,'a'))
+
+### LEGACY FUNCTIONS
+
+# manual method for checking strings, without six. use `type(a) in str_types`
+# note that it might be better to use six.string_types and isinstance
+str_types = [str,unicode] if sys.version_info<(3,0) else [str]
+# shorthand for full path even if you use tilde
+def abspath(path): return os.path.abspath(os.path.expanduser(path))

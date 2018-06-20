@@ -28,6 +28,8 @@ def remote_import_script(source,distribute=None):
 	"""
 	if distribute: raise Exception('dev')
 	mod = {}
+	#! is this working? if distribute: raise Exception('dev')
+	if distribute: mod.update(**distribute)
 	with open(source) as f:
 		code = compile(f.read(),source,'exec')
 		exec(code,mod,mod)
@@ -66,16 +68,8 @@ def remote_import_module(source,distribute=None):
 	# manipulate paths for remote import
 	original_path = list(sys.path)
 	sys.path.insert(0,os.path.dirname(source))
-	#try: 
+	# removed a try/except message that handled the old "attempted relative import beyond toplevel" issue
 	mod = importlib.import_module(os.path.basename(source),package=os.path.dirname(source))
-	#except ValueError as e:
-	if False:
-		if str(e)=='Attempted relative import beyond toplevel package':
-			raise Exception(('attempted relative import beyond toplevel package '
-				'for "%s" which typically occurs when you try to access a parent (i.e. amx) module '
-				'function from inside a submodule. we recommend ???')%source)
-			#!!! figure out alternative
-		else: raise Exception(e)
 	if distribute: distribute_to_module(mod,distribute)
 	sys.path = list(original_path)
 	# we return modules as dictionaries
@@ -102,6 +96,9 @@ def importer(source,verbose=False,distribute=None,strict=False):
 	- import a local module with import_module
 	- import a remote module by manipulating and resetting the path
 	"""
+	if not distribute: distribute = {}
+	# include __file__ which is otherwise absent when we import this way
+	distribute['__file__'] = source 
 	source_full = os.path.expanduser(os.path.abspath(source))
 	# get paths for standard import method
 	if os.path.isfile(source_full): 

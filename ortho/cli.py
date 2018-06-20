@@ -12,12 +12,14 @@ import os,sys,re,importlib,inspect
 from .dev import tracebacker
 from .misc import str_types
 from .config import set_config,setlist,unset,config,set_hash
-from .environments import manage
+from .environments import environ,env_list
 from .bootstrap import bootstrap
 from .imports import importer,glean_functions
+from .unittester import unittester
 
 # any functions from ortho exposed to CLI must be noted here and imported above
-expose_funcs = {'set_config','setlist','unset','set_hash','manage','config','bootstrap'}
+expose_funcs = {'set_config','setlist','unset','set_hash','environ','config','bootstrap','env_list',
+	'unittester'}
 expose_aliases = {'set_config':'set'}
 
 # collect functions once
@@ -28,13 +30,11 @@ def collect_functions(verbose=False):
 	"""
 	Collect available functions.
 	"""
-	global conf # from __init__.py
 	global funcs
 	funcs = {}
 	# start with the basic utility functions specified at the top
 	funcs = dict([(expose_aliases.get(k,k),globals()[k]) for k in expose_funcs])
-	sources = conf.get('commands',[])
-	from .config import set_config,setlist,unset
+	sources = conf.get('commands',[])  # pylint: disable=undefined-variable
 	# accrue functions over sources sequentially
 	for source in sources:
 		if os.path.isfile(source) or os.path.isdir(source):
@@ -72,11 +72,11 @@ def get_targets(verbose=False):
 	Announce available function names.
 	Note that any printing that happens during the make call to get_targets is hidden by make.
 	"""
-	global _ortho_keys # from __init__.py
-	if not funcs: collect_functions(verbose=verbose)
+	if not funcs: collect_functions()
 	targets = funcs
 	# filter out utility functions from ortho
-	target_names = list(set(targets.keys())-(set(_ortho_keys)-_ortho_keys_exposed))
+	target_names = list(set(targets.keys())-
+		(set(_ortho_keys)-_ortho_keys_exposed))  # pylint: disable=undefined-variable
 	print("make targets: %s"%(' '.join(sorted(target_names))))
 
 def run_program(_do_debug=False):
@@ -113,14 +113,17 @@ def run_program(_do_debug=False):
 				argspec = inspect.getargspec(funcs[funcname])
 				argspec_args = argspec.args
 			else:
-				sig = inspect.signature(funcs[funcname])
+				sig = inspect.signature(funcs[funcname]) # pylint: disable=no-member
 				argspec_args = [name for name,value in sig.parameters.items() 
-					if value.default==inspect._empty or type(value.default)==bool]
+					if value.default==inspect._empty or type(value.default)==bool] # pylint: disable=no-member
 			#! note that a function like runner.control.prep which uses an arg=None instead of just an
 			#! ...arg will need to make sure the user hasn't sent the wrong flags through.
 			#! needs protection
 			if arg in argspec_args: kwargs[arg] = True
 			else: args.append(arg)
+	for k,v in kwargs.items():
+		try: kwargs[k] = eval(v)
+		except: pass
 	# ignore python flag which controls python version
 	kwargs.pop('python',None)
 	args = tuple(args)
@@ -139,7 +142,7 @@ def run_program(_do_debug=False):
 			'because you do not have the right environment'%(funcname,funcs[funcname]))
 		print('status','to investigate the problem we will now import the module so you can see the error. '
 			'importing %s'%funcs[funcname])
-		try: mod = importer(funcs[funcname])
+		try: mod = importer(funcs[funcname]) # pylint: disable=unused-variable
 		except Exception as e: 
 			tracebacker(e)
 			print('error','to continue you can correct the script. '
@@ -154,8 +157,8 @@ def run_program(_do_debug=False):
 	#? catch a TypeError in case the arguments are not formulated properly
 	except Exception as e: 
 		tracebacker(e)
-		if conf.get('auto_debug',_do_debug):
-			typ,value,tb = sys.exc_info()
+		if conf.get('auto_debug',_do_debug): # pylint: disable=undefined-variable
+			_,value,tb = sys.exc_info()
 			pdb_this.post_mortem(tb)
 		else: sys.exit(1)
 	except KeyboardInterrupt:
