@@ -9,13 +9,16 @@ Generic extensions used by: proteins, bilayers
 """
 
 import os,sys,re,glob,shutil,subprocess,json
-import numpy as np
+#!!! removing because more honest import scheme! import numpy as np
 
 from calls import gmx,gmx_get_share
 from generic import component,include
 from force_field_tools import Landscape
-from utils import str_types
+from ortho import str_types
 from gromacs_commands import gmx_get_last_call
+#! note if we can do these automacs imports why can't we also get the call_reporter?
+from ..utils import status
+from ..automacs import copy_file
 
 #---hide some functions from logging because they are verbose
 _not_reported = ['write_gro','dotplace','unique']
@@ -169,18 +172,18 @@ def write_top_original(topfile):
 	Write the topology file.
 	"""
 	#---forcefield.itp is a default
-	state.ff_includes = state.q('ff_includes',['forcefield'])
+	state.ff_includes = state.get('ff_includes',['forcefield'])
 	with open(state.here+topfile,'w') as fp:
 		#---write include files for the force field
 		for incl in state.ff_includes:
 			if not state.force_field: 
 				raise Exception('state.force_field is undefined. refusing to write a topology.')
-			fp.write('#include "%s.ff/%s.itp"\n'%(state.q('force_field'),incl))
+			fp.write('#include "%s.ff/%s.itp"\n'%(state['force_field'],incl))
 		#---write include files
 		if 'itp' not in state: state.itp = []
 		for itp in state.itp: fp.write('#include "'+itp+'"\n')
 		#---write system name
-		fp.write('[ system ]\n%s\n\n[ molecules ]\n'%state.q('system_name'))
+		fp.write('[ system ]\n%s\n\n[ molecules ]\n'%state.get('system_name'))
 		for key,val in state.composition: 
 			if val>0: fp.write('%s %d\n'%(key,val))
 
@@ -710,7 +713,7 @@ def equilibrate(groups=None,structure='system',top='system',stages_only=False,se
 			gmx('grompp',base='md-%s'%name,top=top,
 				structure=structure if eqnum == 0 else 'md-%s'%seq[eqnum-1],
 				log='grompp-%s'%name,mdp='input-md-%s-eq-in'%name,
-				maxwarn=state.q('maxwarn',0),**({'n':groups} if groups else {}))
+				maxwarn=state.get('maxwarn',0),**({'n':groups} if groups else {}))
 			gmx('mdrun',base='md-%s'%name,log='mdrun-%s'%name,nonessential=True)
 			if not os.path.isfile(state.here+'md-%s.gro'%name): 
 				raise Exception('mdrun failure at %s'%name)
@@ -722,7 +725,7 @@ def equilibrate(groups=None,structure='system',top='system',stages_only=False,se
 			gmx('grompp',base=name,top=top,
 				structure='md-%s'%seq[-1] if seq else structure,
 				log='grompp-0001',mdp='input-md-in',
-				maxwarn=state.q('maxwarn',0),**({'n':groups} if groups else {}))
+				maxwarn=state.get('maxwarn',0),**({'n':groups} if groups else {}))
 			gmx('mdrun',base=name,log='mdrun-0001')
 
 def restart_clean(part,structure,groups,posres_coords=None,mdp='input-md-in'):

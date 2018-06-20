@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-#---see amx/__init__.py for the import instructions
 import os,sys,re,subprocess,shutil,glob
+from gromacs_commands import gmx_convert_template_to_call
 
 def gmx(program,**kwargs):
 	"""
@@ -58,6 +58,10 @@ gmx_error_strings = [
 def gmx_run(cmd,log,nonessential=False,inpipe=None):
 	"""
 	Run a GROMACS command instantly and log the results to a file.
+	!!! It would be useful to replace shell=True with proper arguments however commands like
+	!!! ... `gmx make_ndx` are not being found without shell. Also note that I explored the possibility
+	!!! ... of tailing the log file or piping it through the function or doing something with threading
+	!!! ... or async I/O to watch the log during the run but this is really tricky.
 	"""
 	if log == None: raise Exception('[ERROR] gmx_run needs a log file to route output')
 	#---if the log is an absolute path we drop the log there without prepending "log-"
@@ -84,7 +88,6 @@ def gmx_run(cmd,log,nonessential=False,inpipe=None):
 		if re.search(msg,logfile_text,flags=re.M)!=None: 
 			if nonessential: print('[NOTE] command failed but it is nonessential')
 			else: 
-
 				#! note that this error reporting resembles that in gmx_run
 				errors = re.findall('\n-{2,}(.*?(?:%s).*?)-{2,}'%('|'.join(gmx_error_strings)),
 					logfile_text,re.M+re.DOTALL)
@@ -92,8 +95,6 @@ def gmx_run(cmd,log,nonessential=False,inpipe=None):
 					status('caught error in %s:'%log_fn,tag='error')
 					print('\n[ERROR] | '.join(error.split('\n')))
 				raise Exception('%s in %s'%(msg.strip(':'),log_fn))
-
-				#except: raise Exception('%s in %s'%(msg.strip(':'),log_fn))
 
 def gmx_get_machine_config(hostname=None):
 	"""

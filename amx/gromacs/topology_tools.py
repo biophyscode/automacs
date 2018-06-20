@@ -3,7 +3,7 @@
 import sys,re,os,glob,json,shutil
 import numpy as np
 #---amx is already in the path when importing amx/gromacs
-from utils import str_types
+from ortho import str_types
 
 class GMXForceField:
 	"""

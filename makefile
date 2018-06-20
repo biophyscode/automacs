@@ -33,14 +33,18 @@ RUN_ARGS:=$(filter-out $(protected_targets),$(RUN_ARGS_UNFILTER))
 # request targets from python
 #! getting targets requires one full loop with imports
 #? speed things up by using a header of some kind, or ast?
-SHELL_CHECK_TARGETS:=$(python) $(python_flags) -c "import ortho;ortho.get_targets()"
+SHELL_CHECK_TARGETS:=ORTHO_GET_TARGETS=True $(python) $(python_flags) -c "import ortho;ortho.get_targets()"
 TARGETS:=$(shell ${SHELL_CHECK_TARGETS} | \
 	perl -ne 'print $$1 if /^.*?make targets\:\s*(.+)/')
+ENV_EXCLUDES:=set unset
 
 # request env from config
 SHELL_CHECK_ENV:=(ENV_PROBE=True $(python) $(python_flags) -c "import ortho")
 ENV_CMD:=$(shell ${SHELL_CHECK_ENV} | \
 	perl -ne 'print $$1 if /^.*?environment\:\s*(.+)/')
+
+# single target is the intersection of available targets and the first argument
+TARGET:=$(filter $(TARGETS), $(word 1,$(RUN_ARGS)))
 
 # exit if target not found
 controller_function = $(word 1,$(RUN_ARGS))
@@ -66,14 +70,21 @@ $(checkfile): touchup
 default: $(checkfile)
 
 # route to targets
-$(TARGETS): $(checkfile)
+$(TARGET): $(checkfile)
+# if the target is in a special exclude list then we skip the environment and run directly
+ifneq ($(filter $(TARGET),$(ENV_EXCLUDES)),)
+	@/bin/echo "[STATUS] executing special function $(TARGET) without environment"
+	@env $(python) $(python_flags) -c "$$MAKEFACE_BACKEND" ${RUN_ARGS} ${MAKEFLAGS}
+else
+# or if we have no environment we run directly
 ifeq ($(ENV_CMD),)
+	@/bin/echo "[STATUS] executing without environment"
 	@env $(python) $(python_flags) -c "$$MAKEFACE_BACKEND" ${RUN_ARGS} ${MAKEFLAGS}
 else
 	@/bin/echo "[STATUS] environment: \"source $(ENV_CMD)\""
 	( source $(ENV_CMD) && ENV_CMD="$(ENV_CMD)" env $(python) \
 	$(python_flags) -c "$$MAKEFACE_BACKEND" ${RUN_ARGS} ${MAKEFLAGS} )
 endif
-
+endif
 # ignore run arguments
 $(RUN_ARGS): 

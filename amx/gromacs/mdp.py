@@ -3,11 +3,11 @@
 import os,re,sys
 from copy import deepcopy
 #---amx is already in the path when importing amx/gromacs
-from utils import str_types
+from ortho import str_types
 
 _not_reported = ['deepcopy']
 
-def write_mdp(param_file=None,rootdir='./',outdir='',extras=None):
+def write_mdp(param_file=None,rootdir='./',outdir='',extras=None,verbose=False):
 
 	"""
 	Universal MDP file writer which creates input files based on a unified dictionary.
@@ -53,7 +53,10 @@ def write_mdp(param_file=None,rootdir='./',outdir='',extras=None):
 
 	#---! we should use jsonify on parameters.py to check for repeated keys !
 	#---get mdp specs from the settings unless overridden by the call
-	mdpspecs = state.q('mdp_specs',{}) if not extras else ([] if not extras else extras)
+
+	#mdpspecs = state.get('mdp_specs',{}) if not extras else ([] if not extras else extras)
+	mdpspecs = settings.get('mdp_specs',state.get('mdp_specs',{}))
+	mdpspecs = extras if extras else mdpspecs
 
 	#---retrieve the master inputs file
 	mdpfile = {}
@@ -63,7 +66,7 @@ def write_mdp(param_file=None,rootdir='./',outdir='',extras=None):
 			from runner.acme import get_path_to_module
 			param_file = get_path_to_module(expt.params)
 		#---if no module syntax then the path must be local
-		else: param_file = param_file = os.path.join(expt.cwd_source,expt.params)
+		else: param_file = param_file = os.path.join(expt.meta['cwd'],expt.params)
 	#---path lookups from config.py are triggerd with the "@" syntax
 	with open(param_file) as fp: param_text = fp.read()
 	#---eval the param_file otherwise exec tuple errors in python <2.7.9 
@@ -88,13 +91,13 @@ def write_mdp(param_file=None,rootdir='./',outdir='',extras=None):
 		raise Exception('all mdp files must have the mdp file extension: %s'%str(mdps_misnamed))
 
 	for mdpname in target_mdps:
-		settings = {}
+		settings_this = {}
 		#---run through defaults and add them to our MDP file dictionary
 		#---the defaults list contains keys that name essential sections of every MDP file
 		for key,val in mdpdefs['defaults'].items():
 			#---if default says None then we get the parameters for that from the top level
-			if val==None: settings[key] = deepcopy(mdpdefs[key])
-			else: settings[key] = deepcopy(mdpdefs[key][val])
+			if val==None: settings_this[key] = deepcopy(mdpdefs[key])
+			else: settings_this[key] = deepcopy(mdpdefs[key][val])
 		#---refinements are given in the mdpspecs dictionary
 		if mdpspecs['mdps'][mdpname] != None:
 			#---all refinements should be a list of strings and dictionaries so we promote a dict to list
@@ -102,43 +105,43 @@ def write_mdp(param_file=None,rootdir='./',outdir='',extras=None):
 			refine_loop = [refine_loop] if type(refine_loop) in [dict]+str_types else refine_loop
 			for refinecode in refine_loop:
 				#---if the refinement code in the list given at mdpspecs[mdpname] is a string then we
-				#---...navigate to mdpdefs[refinecode] and use its children to override settings[key] 
+				#---...navigate to mdpdefs[refinecode] and use its children to override settings_this[key] 
 				if type(refinecode) in str_types:
 					for key,val in mdpdefs[refinecode].items():
 						#---if the value for an object in mdpdefs[refinecode] is a dictionary, we 
-						#---...replace settings[key] with that dictionary
-						if type(val)==dict: settings[key] = deepcopy(val)
+						#---...replace settings_this[key] with that dictionary
+						if type(val)==dict: settings_this[key] = deepcopy(val)
 						#---otherwise the value is really a lookup code and we search for a default value
 						#---...at the top level of mdpdefs where we expect mdpdefs[key][val] to be 
 						#---...a particular default value for the MDP heading given by key
-						elif type(val) in str_types: settings[key] = deepcopy(mdpdefs[key][val])				
+						elif type(val) in str_types: settings_this[key] = deepcopy(mdpdefs[key][val])				
 						else: raise Exception('unclear refinecode = '+refinecode+', '+key+', '+str(val))
 				#---if the refinement code is a dictionary, we iterate over each rule
 				else:
 					for key2,val2 in refinecode.items():
-						settings_flat = [j for k in [settings[i].keys() for i in settings] for j in k]
-						#---if the rule is in the top level of mdpdefs then it selects groups of settings
+						settings_this_flat = [j for k in [settings_this[i].keys() for i in settings_this] for j in k]
+						#---if the rule is in the top level of mdpdefs then it selects groups of settings_this
 						if key2 in mdpdefs.keys(): 
-							print('[NOTE] using MDP override collection: '+key2+': '+str(val2))
-							settings[key2] = deepcopy(mdpdefs[key2][val2])
+							if verbose: print('[NOTE] using MDP override collection: '+key2+': '+str(val2))
+							settings_this[key2] = deepcopy(mdpdefs[key2][val2])
 						#---if not, then we assume the rule is meant to override a native MDP parameter
-						#---...so we check to make sure it's already in settings and then we override
-						elif key2 in settings_flat:
-							print('[NOTE] overriding MDP parameter: '+key2+': '+str(val2))
-							for sub in settings:
-								if key2 in settings[sub]: settings[sub][key2] = deepcopy(val2)
+						#---...so we check to make sure it's already in settings_this and then we override
+						elif key2 in settings_this_flat:
+							if verbose: print('[NOTE] overriding MDP parameter: '+key2+': '+str(val2))
+							for sub in settings_this:
+								if key2 in settings_this[sub]: settings_this[sub][key2] = deepcopy(val2)
 						else: 
 							#---! note that GROMACS parameters might be case-insensitive
 							raise Exception(
 								'cannot comprehend one of your overrides: "%r"="%r"'%(key2,val2)+
-								'\nnote that the settings list is: "%r"'%settings_flat)
+								'\nnote that the settings_this list is: "%r"'%settings_this_flat)
 		#---completely remove some items if they are set to -1, specifically the flags for trr files
 		for key in ['nstxout','nstvout']:
-			for heading,subset in settings.items():
+			for heading,subset in settings_this.items():
 				if key in subset and subset[key] == -1: subset.pop(key)
 		#---always write to the step directory
 		with open(os.path.join(rootdir,state.here+mdpname),'w') as fp:
-			for heading,subset in settings.items():
+			for heading,subset in settings_this.items():
 				if subset: fp.write('\n;---'+heading+'\n')
 				for key,val in subset.items():
 					fp.write(str(key)+' = '+str(val)+'\n')

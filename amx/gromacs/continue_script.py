@@ -123,7 +123,7 @@ def write_continue_script_master(script='script-continue.sh',
 	"""
 	this_script = str(continue_script)
 	#---remote import to avoid large packages
-	import makeface
+	#import makeface
 	#---we pass gmxpaths through so we do not need to load modules twice
 	if not gmxpaths:
 		#get_gmx_paths = makeface.import_remote('amx/gromacs/calls.py')
@@ -170,3 +170,21 @@ def write_continue_script_master(script='script-continue.sh',
 	with open(here+script,'w') as fp: fp.write(this_script)
 	os.chmod(here+script,0o744)
 	return here+script
+
+from .calls import gmx_get_machine_config
+
+def write_continue_script(hostname=None,overwrite=False,gmxpaths=None):
+	"""
+	Write the continue script if it does not yet exist.
+	Note that this script wraps the same function in amx.continue_script for the CLI.
+	"""
+	#---! a rare connection down to gromacs which needs to be revised
+	#from amx.gromacs.calls import gmx_get_machine_config
+	machine_configuration = gmx_get_machine_config(hostname=hostname)
+	sys.path.insert(0,'amx')
+	here = globals()['state']['here'] if 'state' in globals() else None
+	#---! a rare connection down to gromacs which needs to be revised
+	from amx.gromacs.continue_script import write_continue_script_master
+	script_fn = write_continue_script_master(
+		machine_configuration=machine_configuration,here=here,gmxpaths=gmxpaths)
+	return script_fn

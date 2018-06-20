@@ -17,11 +17,13 @@ class DotDict(dict):
 		for key,val in args: self.__dict__[key] = val
 		self.update(**kwargs)
 	def __setattr__(self,key,val):
+		"""Attributes act as dictionary keys and vis-versa."""
 		if key in self.get('_protect',[]): 
 			raise Exception('cannot use key %s as an attribute %s'%key)
 		# special sauce that allows you to set new attributes
 		super(dict,self).__setattr__(key,val)
 	def __repr__(self): 
+		"""Support the __setattr__ function which makes keys into attributes."""
 		# hide the underscore attributes
 		return str(dict([(i,j) for i,j in self.items() if not i.startswith('_')]))
 
@@ -60,20 +62,36 @@ class AMXState(DotDict):
 				'replacing spaces with underscores %s'%keys_redundant)
 		kwargs = dict([(re.sub(' ','_',i),j) for i,j in kwargs.items()])
 		return kwargs
-	def __getattr__(self,key):
+	def __getattr__(self,key): return self._getattr(key,strict=False)
+	def _getattr(self,key,strict=False):
 		"""Get attributes and fall back to other dictionaries."""
 		#! current default behavior returns None instead of key failure
 		#! make the default return value malleable on init depending on the primary use-cases
-		if key in self['_protect']: return self[key]
+		if key in self._protect: return self[key]
 		elif key in self: return self[key]
 		else: 
 			# parse fallback dictionaries in order and check for the key
 			for fallback in self._fallbacks:
-				if key in fallback: return fallback[key]			
+				if key in fallback: 
+					return getattr(fallback,key)
 			else:
-				if self.__dict__['_except_on_missing']: raise Exception(
+				if self._except_on_missing: raise Exception(
 					'The DotDict(AMXState) named "%s" is missing key "%s"'%(self.__dict__['_name'],key))
-				else: return None
+				else: 
+					if not strict: return None
+					else: raise Exception('cannot find key %s'%key)
+	def __getitem__(self,key):
+		"""
+		Note that attribute lookups for DotDict and get both return none on missing keys. We retain the
+		getitem method as one way to insist on a non-null key value after checking both the self and the 
+		fallbacks using the attribute method.
+		"""
+		if key in self.__dict__: 
+			# we must use get here to avoid recursion
+			return self.__dict__.get(key)
+		else:
+			try: return self._getattr(key,strict=False)
+			except: raise Exception('the dictionary "%s" is missing a key "%s"'%(self._name,key))
 	def update(self, *args, **kwargs):
 		if args and len(args)>1:
 			raise TypeError("update expected at most 1 arguments, got %d"%len(args))
@@ -84,3 +102,11 @@ class AMXState(DotDict):
 		# merge and check mapping
 		kwargs = self._key_map_checker(incoming)
 		for key,val in kwargs.items(): self[key] = kwargs[key]
+	def q(self,key,default=None):
+		"""Legacy wrapper for get."""
+		if default: 
+			# the following except handles default values correctly but might be slow
+			try: self._getattr(key,strict=True)
+			except: return default
+		else: return self._getattr(key,strict=False)
+
