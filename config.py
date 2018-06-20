@@ -6,9 +6,13 @@ Simple configuration manager.
 """
 
 from __future__ import print_function
-import os,json,re
+import os,json,re,sys
 from .misc import treeview,str_types
 from .bootstrap import bootstrap
+
+# exported in from __init__.py (defined for linting)
+conf = {}
+config_fn = None
 
 def abspath(path):
 	"""Get the right path."""
@@ -65,7 +69,7 @@ def interpret_command_text(raw):
 		elif re.match('^(N|n)one$',val): result = None
 		#! may be redundant with the eval command above
 		elif re.match('^[0-9]+$',val): result = int(val)
-		elif re.match('^[0-9]*\.[0-9]*$',val): result = float(val)
+		elif re.match(r"^[0-9]*\.[0-9]*$",val): result = float(val)
 		else: result = val
 	else: result = val
 	return result
@@ -115,10 +119,10 @@ def unset(*args):
 		else: print('[WARNING] cannot unset %s because it is absent'%arg)
 	write_config(config)
 
-def config():
+def config(text=False):
 	"""Print the configuration."""
 	global conf,config_fn # from __init__.py
-	treeview({config_fn:conf})
+	treeview({config_fn:conf},style={False:'unicode',True:'pprint'}[text])
 
 def set_hash(*args,**kwargs):
 	"""
@@ -137,6 +141,6 @@ def set_hash(*args,**kwargs):
 	pairwise = dict(zip(pairs[::2],pairs[1::2]))
 	pairwise.update(**kwargs)
 	for key,val in pairwise.items():
-		pairwise[key] = interpret_command_text(val)
+	 	pairwise[key] = interpret_command_text(val)
 	conf[name] = pairwise
 	write_config(conf)

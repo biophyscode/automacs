@@ -11,10 +11,11 @@ def bootstrap(post=True):
 	After writing the default configuration, we run `bootstrap_post()` if it is available. This function also
 	runs on any repeated execution of `make bootstrap` from the command line. 
 	"""
-	import importlib,os
+	import importlib,os,sys
 	if not os.path.isfile('bootstrap.py'): return None
 	# import to run the script
-	mod = importlib.import_module('bootstrap',package='.')
+	if (sys.version_info < (3, 0)): mod = importlib.import_module('bootstrap',package='.')
+	else: mod = importlib.import_module('bootstrap',package=None)
 	has_bootstrap_default = hasattr(mod,'bootstrap_default')
 	has_bootstrap_post = hasattr(mod,'bootstrap_post')
 	if not has_bootstrap_post and not has_bootstrap_default:

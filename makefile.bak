@@ -34,6 +34,7 @@ RUN_ARGS:=$(filter-out $(protected_targets),$(RUN_ARGS_UNFILTER))
 #! getting targets requires one full loop with imports
 #? speed things up by using a header of some kind, or ast?
 SHELL_CHECK_TARGETS:=$(python) $(python_flags) -c "import ortho;ortho.get_targets()"
+#! probably avoid making an "env" function because problems
 TARGETS:=$(shell ${SHELL_CHECK_TARGETS} | \
 	perl -ne 'print $$1 if /^.*?make targets\:\s*(.+)/')
 
@@ -46,9 +47,10 @@ ENV_CMD:=$(shell ${SHELL_CHECK_ENV} | \
 controller_function = $(word 1,$(RUN_ARGS))
 ifneq ($(controller_function),)
 ifeq ($(filter $(controller_function),$(TARGETS)),)
-    $(info invalid make target `$(controller_function)`)
-    $(info see the makefile documentation for instructions)
-    $(info make targets="$(TARGETS)")
+    $(info [ERROR] invalid make target `$(controller_function)`)
+    $(info [NOTE] expose python functions to make via `make setlist commands path/to/script.py`)
+    $(info [NOTE] alternately check your setup routine to make sure config.json is correct)
+    $(info [NOTE] make targets="$(TARGETS)")
     $(error missing target)
 endif
 endif
@@ -77,3 +79,7 @@ endif
 
 # ignore run arguments
 $(RUN_ARGS): 
+
+# forget flags for recursive make calls
+unexport MAKEFLAGS
+unexport RUN_ARGS
