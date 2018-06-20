@@ -83,7 +83,7 @@ def remote_import_module(source,distribute=None):
 
 def import_strict(fn,dn,verbose=False):
 	"""Standard importer with no exceptions for importing the local script.py."""
-	if verbose: print('note','importing from %s, %s'%(dn,fn))
+	if verbose: print('note','importing (importlib, strict) from %s: %s'%(dn,fn))
 	mod = importlib.import_module(fn,package=dn)
 	if verbose: print('note','successfully imported')
 	return mod
@@ -112,24 +112,27 @@ def importer(source,verbose=False,distribute=None,strict=False):
 	try:
 		if verbose: print('status','standard import for %s'%source)
 		try:
-			if verbose: print('note','importing from %s, %s'%(dn,fn))
+			if verbose: print('note','importing (importlib) from %s: %s'%(dn,fn))
 			mod = importlib.import_module(fn,package=dn)
 			if verbose: print('note','successfully imported')
 		# try import if path is in subdirectory
+		# note that we have to use the fn_alt below if we don't want to perturb paths
 		except Exception as e:
 			rel_dn = os.path.relpath(dn,os.getcwd())
 			# if the path is a subdirectory we try the import with dots
 			if os.path.relpath(dn,os.getcwd())[:2]!='..':
 				fn_alt = '%s.%s'%(re.sub(os.path.sep,'.',rel_dn),fn)
-				if verbose: print('note','importing locally from %s'%(fn_alt))
+				if verbose: 
+					print('note','previous exception was: %s'%e)
+					print('note','importing (local) from %s'%(fn_alt))
 				mod = importlib.import_module(fn_alt,package='./')
-				if verbose: print('note','imported locally via alternate method')
 			else: 
-				print('go up to next try?')
+				#!? print('go up to next try?')
 				raise Exception(e)
 		if distribute: distribute_to_module(mod,distribute)
 		# always return the module as a dictionary
 		return strip_builtins(mod)
+	# fallback methods for importing remotely
 	except Exception as e: 
 		if verbose: 
 			print('warning','standard import failed for "%s" at "%s"'%(fn,dn))
