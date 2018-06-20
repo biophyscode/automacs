@@ -57,7 +57,7 @@ def collect_functions(verbose=False):
 				if '__all__' in mod or mod_all: 
 					incoming_exposed = dict([(k,v) for k,v in incoming.items() if k in mod_all])
 				else: incoming_exposed = incoming
-				if verbose: print('status','trimming source %s to __all__=%s'%(
+				if verbose: print('status','trimming source %s to __all__ = %s'%(
 					source,incoming_exposed.keys()))
 				funcs.update(**incoming_exposed)
 		else: raise Exception('cannot locate code source %s'%source)
