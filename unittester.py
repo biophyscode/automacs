@@ -74,7 +74,7 @@ def get_unit_tests():
                 matches.append(os.path.join(root,filename))
     return matches
 
-def unittester(name='basic'):
+def unittester(name='basic',save_config=False):
     """Run the unit tests."""
     regex_test = {'basic':None,'special':'^SpecialTest'}[name]
     #! previously daisy-chained this function to a system call to a separated unit test file
@@ -110,5 +110,6 @@ def unittester(name='basic'):
             shutil.copyfile(fp,config_fn)
             raise Exception(e)
         else: 
-            if os.path.isfile(config_fn): shutil.copyfile(config_fn,'config.json.tested')
+            if os.path.isfile(config_fn) and save_config: 
+                shutil.copyfile(config_fn,'config.json.tested')
             shutil.copyfile(fp,config_fn)

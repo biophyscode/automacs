@@ -28,6 +28,7 @@ def read_config(source=None,default=None):
 	elif not found and default!=None: 
 		# when new users run make for the first time and create the config.json it also runs bootstrap.py
 		# ... to set up any other paths from the dependent module
+		# a minimal bootstrap.py might be: def bootstrap_default(): return {'commands':['path/to/code.py']}
 		boot = bootstrap(post=False)
 		if type(boot)==dict:
 			if 'default' not in boot and 'post' not in boot: 
