@@ -62,7 +62,7 @@ default_envs = dict([
 			'reqs':'reqs.yaml',},
 		'name':'py%d'%v,
 		'update':False,
-		'python_version':2,
+		'python_version':v,
 		'install_commands':[
 			"this = dict(sources_installer=self.sources['installer'],where=self.where,"+
 				"extra=' -u' if self.update else '')",
@@ -73,13 +73,15 @@ default_envs = dict([
 				"python=%(version)s -y -n %(name)s'%dict(name=self.name,version=self.python_version,"+
 				"where_env=os.path.join(self.where,'bin','activate')),"+
 				"log='logs/log-create-%s'%self.name)",
-			"bash('source %(where_env)s py2 && conda env update --file %(reqs)s'%"+
-				"dict(reqs=self.sources['reqs'],where_env=os.path.join(self.where,'bin','activate')),"+
+			"bash('source %(where_env)s %(name)s && conda env update --file %(reqs)s'%"+
+				"dict(name=self.name,reqs=self.sources['reqs'],where_env=os.path.join("+
+				"self.where,'bin','activate')),"+
 				"log='logs/log-conda-refresh')",
 			"bash('make set activate_env=\"%s %s\"'%(os.path.join(self.where,'bin','activate'),self.name))",],
 		'refresh_commands':[
-			"bash('source %(where_env)s py2 && conda env update --file %(reqs)s'%"+
-				"dict(reqs=self.sources['reqs'],where_env=os.path.join(self.where,'bin','activate')),"+
+			"bash('source %(where_env)s %(name)s && conda env update --file %(reqs)s'%"+
+				"dict(name=self.name,reqs=self.sources['reqs'],where_env=os.path.join("+
+				"self.where,'bin','activate')),"+
 				"log='logs/log-conda-refresh')",],}
 	# provide python 2 and python 3 environment options
 	) for v in [2,3]])
@@ -95,8 +97,8 @@ class Factory:
 			if kwargs.get('all',False):
 				# no arguments and the all kwargs runs through all environments
 				for name,detail in self.envs.items(): self.validate(name,detail)
-			else: print('warning','use `make env_list` to see available environments and use '
-				'`make environ <name>` to install or refresh one or `make environ all=True` for all')
+			else: print('warning','use `make env list` to see available environments and use '
+				'`make env <name>` to install or refresh one or `make env all=True` for all')
 		else: 
 			# only make environments for the arguments
 			for arg in args:
@@ -127,7 +129,8 @@ class Factory:
 			# check sources to preempt an anaconda error
 			for source_name,source_fn in self.sources.items():
 				if not os.path.isfile(source_fn):
-					raise Exception('cannot find source "%s" requested by env %s: %s'%(
+					raise Exception(('we need an additional requirement. '+
+						'cannot find source "%s" requested by env %s: %s')%(
 						source_name,name,source_fn))
 			# use exec to loop over commands. note that the install_commands can use the where,sources,style,
 			# ... etc which are set above by default from the detail. note that the default configuration
@@ -170,7 +173,9 @@ with open(os.path.join(env_etc_conda,'deactivate.d','env_vars.sh'),'w') as fp:
 
 def environ(*args,**kwargs): 
 	"""The env command instantiates a Factory."""
-	Factory(*args,**kwargs)
+	if 'list' in args and len(args)>1: raise Exception('cannot run `make env list` with extra arguments')
+	elif args==('list',): env_list(**kwargs)
+	else: Factory(*args,**kwargs)
 
 def env_list(text=False):
 	from .misc import treeview

@@ -15,6 +15,7 @@ protected_targets=
 python?=python
 
 # write makeface backend
+# try _do_debug=True for run_program to debug in-place
 define MAKEFACE_BACKEND
 #!/bin/bash
 "exec" "python" "-B" "$0" "$@"

@@ -12,15 +12,16 @@ import os,sys,re,importlib,inspect
 from .dev import tracebacker
 from .misc import str_types
 from .config import set_config,setlist,unset,config,set_hash
-from .environments import environ,env_list
+from .environments import environ
 from .bootstrap import bootstrap
 from .imports import importer,glean_functions
 from .unittester import unittester
+from .reexec import interact
 
 # any functions from ortho exposed to CLI must be noted here and imported above
-expose_funcs = {'set_config','setlist','unset','set_hash','environ','config','bootstrap','env_list',
-	'unittester'}
-expose_aliases = {'set_config':'set'}
+expose_funcs = {'set_config','setlist','unset','set_hash','environ',
+	'config','bootstrap','interact','unittester'}
+expose_aliases = {'set_config':'set','environ':'env'}
 
 # collect functions once
 global funcs,_ortho_keys_exposed

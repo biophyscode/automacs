@@ -1,0 +1,3 @@
+.pipeline_up_to_date
+config.json
+*.pyc
