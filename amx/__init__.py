@@ -38,11 +38,14 @@ needs:
 """
 
 settings = AMXState(me='settings')
-state = AMXState(me='state',fallbacks=[settings])
-with open('expt.json') as fp: 
-	# the expt variable has strict attribute lookups
-	expt = AMXState(me='expt',except_on_missing=True,**json.load(fp))
-expt.meta = AMXState(me='expt.meta',except_on_missing=True,**expt.pop('meta'))
+state = AMXState(settings,me='state',upnames={0:'settings'})
+# import of the amx package depends on expt.json and any functions that do not require special importing
+#   which occurs outside of the main import e.g. amx/gromacs/configurator.py: gromacs_config
+with open('expt.json') as fp: incoming = json.load(fp)
+meta = incoming.pop('meta',{})
+# the expt variable has strict attribute lookups
+expt = AMXState(me='expt',strict=True,base=incoming)
+expt.meta = AMXState(me='expt.meta',strict=True,base=meta)
 settings.update(**expt.get('settings',{}))
 if _has_state: print('dev','get the state here!')
 
@@ -95,7 +98,7 @@ _import_instruct = ortho.conf.get('_import_instruct',_import_instruct)
 MAGIC IMPORTS
 The following section replaces the acme submodulator a.k.a. importer.py for importing extension modules.
 We define the import routing and then send state/settings to the function which collects the extension 
-modules, performs any backwashing or side-washing, and then returns exposed functiosn for the user.
+modules, performs any backwashing or side-washing, and then returns exposed functions for the user.
 """
 
 decorate_calls = _import_instruct.pop('decorate',[])

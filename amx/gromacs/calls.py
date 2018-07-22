@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import os,sys,re,subprocess,shutil,glob
 from gromacs_commands import gmx_convert_template_to_call
+from amx.utils import status
 
 def gmx(program,**kwargs):
 	"""
@@ -88,12 +90,14 @@ def gmx_run(cmd,log,nonessential=False,inpipe=None):
 		if re.search(msg,logfile_text,flags=re.M)!=None: 
 			if nonessential: print('[NOTE] command failed but it is nonessential')
 			else: 
-				#! note that this error reporting resembles that in gmx_run
+				#! error reporting may be duplicated in minimize and worth consolidating
 				errors = re.findall('\n-{2,}(.*?(?:%s).*?)-{2,}'%('|'.join(gmx_error_strings)),
 					logfile_text,re.M+re.DOTALL)
 				for error in errors:
-					status('caught error in %s:'%log_fn,tag='error')
+					status('caught error in %s:\n[ERROR] | '%log_fn,tag='error')
 					print('\n[ERROR] | '.join(error.split('\n')))
+					print('note',
+						'the extracted output above may not capture the full error, so check the file')
 				raise Exception('%s in %s'%(msg.strip(':'),log_fn))
 
 def gmx_get_machine_config(hostname=None):

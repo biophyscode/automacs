@@ -8,6 +8,7 @@ Extra functions common to many simulations.
 Generic extensions used by: proteins, bilayers
 """
 
+from __future__ import print_function
 import os,sys,re,glob,shutil,subprocess,json
 #!!! removing because more honest import scheme! import numpy as np
 
@@ -351,7 +352,6 @@ def get_box_vectors(structure,gro=None,d=0,log='checksize'):
 		import pdb;pdb.set_trace()
 	#---no need to keep the output since it is a verbatim copy for diagnostic only
 	os.remove(os.path.join(state.here,gro+'.gro'))
-	#import pdb;pdb.set_trace()
 	return vecs_old,vecs_new
 
 def count_molecules(structure,resname):
@@ -610,7 +610,7 @@ def counterions(structure,top=None,includes=None,ff_includes=None,gro='counterio
 	write_top('counterions.top')
 	gmx('grompp',base='genion',structure=structure,
 		top='counterions',mdp='input-em-steep-in',
-		log='grompp-genion')
+		log='grompp-genion',maxwarn=state.get('maxwarn',0))
 	gmx('make_ndx',structure=structure,ndx='solvate-waters',
 		inpipe='keep 0\nr %s\nkeep 1\nq\n'%resname,
 		log='make-ndx-counterions-check')
@@ -665,7 +665,8 @@ def minimize(name,method='steep',top=None):
 	"""
 	log_base = 'grompp-%s-%s'%(name,method)
 	gmx('grompp',base='em-%s-%s'%(name,method),top=name if not top else re.sub('^(.+)\.top$',r'\1',top),
-		structure=name,log=log_base,mdp='input-em-%s-in'%method,nonessential=True)
+		structure=name,log=log_base,mdp='input-em-%s-in'%method,nonessential=True,
+		maxwarn=state.q('maxwarn',0))
 	tpr = state.here+'em-%s-%s.tpr'%(name,method)
 	if not os.path.isfile(tpr): 
 		try:
@@ -673,10 +674,14 @@ def minimize(name,method='steep',top=None):
 			from calls import gmx_error_strings
 			log_fn = state.here+'log-%s'%log_base
 			with open(log_fn) as fp: log_text = fp.read()
-			errors = re.findall('\n-{2,}(.*?(?:%s).*?)-{2,}'%('|'.join(gmx_error_strings)),log_text,re.M+re.DOTALL)
+			errors = re.findall('\n-{2,}(.*?(?:%s).*?)-{2,}'%(
+				'|'.join(gmx_error_strings)),log_text,re.M+re.DOTALL)
 			for error in errors:
-				status('caught error in %s:'%log_fn,tag='error')
+				#! error reporting may be duplicated in gmx_run and worth consolidating
+				status('caught error in %s:\n[ERROR] | '%log_fn,tag='error')
 				print('\n[ERROR] | '.join(error.split('\n')))
+				print('note',
+					'the extracted output above may not capture the full error, so check the file')
 			raise Exception('cannot find %s. see errors above and check the grompp step.'%tpr)
 		except: raise Exception('cannot find %s. check the grompp step.'%tpr)
 	gmx('mdrun',base='em-%s-%s'%(name,method),log='mdrun-%s-%s'%(name,method))
