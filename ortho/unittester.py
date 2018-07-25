@@ -70,6 +70,7 @@ def get_unit_tests():
         for filename in fnmatch.filter(filenames,'*.py'):
             if filename == 'unittester.py': continue
             with open(os.path.join(root,filename)) as fp: text = fp.read()
+            #! is this criterion too weak?
             if re.search(r'unittest\.',text,re.M):
                 matches.append(os.path.join(root,filename))
     return matches

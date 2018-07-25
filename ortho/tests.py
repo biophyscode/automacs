@@ -11,7 +11,7 @@ or alternately make everything else temporary?
     ...
 """
 
-from __future__ import print_function
+from __future__ import print_function,unicode_literals
 import unittest
 import os,sys,copy,re,json
 import ortho
@@ -48,6 +48,35 @@ def conda_list():
 
 reqs_basic = {'channels':['conda-forge','defaults'],'dependencies':['ipdb','scipy','pylint']}
 
+### GENERIC TESTS
+
+# recommend testing Python 2 and 3 compatibility for generic tests and Ortho below with:
+#   python=python3 make unittester && make unittester
+#   but be sure to unset activate_env temporarily
+
+class TestOrthoBasicPython2(unittest.TestCase):
+    """Tests for the ortho module."""
+    def setUp(self): 
+        if sys.version_info[0]>=3: self.skipTest('This test is for Python 2.')
+    @unittest.expectedFailure
+    def test_1(self):
+        zip(*[(1,2),(3,4)])[0]
+    def test_2(self): self.assertTrue(b'1'==u'1')
+
+class TestOrthoBasicPython3(unittest.TestCase):
+    def setUp(self): 
+        if sys.version_info[0]<3: self.skipTest('This test is for Python 3.')
+    @unittest.expectedFailure
+    def test_1(self):
+        """ Python 3 syntax examples
+        a,b,*rest = range(10)
+        def f(a, b, *args, option=True) # no more accidental argument swallowing
+        def extendto(value, *, shorter=None, longer=None) # force kwargs for clarity
+        """
+        self.assertTrue(b'1'==u'1')
+
+### ORTHO TESTS
+
 class TestOrthoBasic(unittest.TestCase):
     """Tests for the ortho module."""
     # tests are ordered by line number via caseFactory/suiteFactory in unittester.py which runs this
@@ -78,8 +107,17 @@ class TestOrthoBasic(unittest.TestCase):
         conf = ortho.read_config() #! ignore this
         self.assertTrue(test_fn in conf.get('commands',[]))
         result = ortho.bash('make dummy',scroll=False)
-        self.assertIsNotNone(re.search('special code',result.get('stdout')))
+        # best to use bytes in patterns from now one
+        self.assertIsNotNone(re.search(b'special code',result.get('stdout')))
         os.remove(test_fn)
+    @unittest.expectedFailure
+    def test_compatibility_python2(self):
+        if sys.version_info>=3: raise Exception
+        zip(*[(1,2),(3,4)])[0]
+    def tearDown(self):
+        """Clean up tests, on failure."""
+        test_fn = 'test_commands.py'
+        if os.path.isfile(test_fn): os.remove(test_fn)
 
 ### SPECIAL TESTS MAKE NEW ENVIRONMENTS
 
@@ -109,7 +147,7 @@ class SpecialTestOrthoBasic(unittest.TestCase):
             if any(missing_keys): raise Exception('environment %s is missing sources: %s'%(
                 env_name,missing_keys))
         ortho.write_config(conf)
-        ortho.bash('make env_list text=True')
+        ortho.bash('make env list text=True')
 
     @classmethod
     def _generate_programmatic_tests(self):
@@ -138,7 +176,7 @@ class SpecialTestOrthoBasic(unittest.TestCase):
                 # use the update flag to install in a preexisting temporary directory
                 conf['envs'][env_name]['update'] = True
                 ortho.write_config(conf)
-                ortho.bash('make environ %s'%env_name)
+                ortho.bash('make env %s'%env_name)
                 ortho.bash('make set activate_env="%s %s"'%(os.path.join(custom_spot,
                     'bin','activate'),env_shortname))
                 # conda is quirky. it does not appear in the path but runs after you source the env 
