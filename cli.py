@@ -1,16 +1,16 @@
-#!/usr/bin/env PYTHONDONTWRITEBYTECODE=1 python
+#!/usr/bin/env python
 
 """
 ORTHO
 Makefile interFACE (makeface) command-line interface
-Note that you should debug with `python -c "import ortho;ortho.get_targets(verbose=True)"`
+Note that you should debug with `python -c "import ortho;ortho.get_targets(verbose=True,strict=True)"`
 """
 
 from __future__ import print_function
 
 import os,sys,re,importlib,inspect
 from .dev import tracebacker
-from .misc import str_types
+from .misc import str_types,locate
 from .config import set_config,setlist,unset,config,set_hash
 from .environments import environ
 from .bootstrap import bootstrap
@@ -20,16 +20,18 @@ from .reexec import interact
 
 # any functions from ortho exposed to CLI must be noted here and imported above
 expose_funcs = {'set_config','setlist','unset','set_hash','environ',
-	'config','bootstrap','interact','unittester'}
+	'config','bootstrap','interact','unittester','import_check','locate'}
 expose_aliases = {'set_config':'set','environ':'env'}
 
 # collect functions once
 global funcs,_ortho_keys_exposed
 funcs = None
 
-def collect_functions(verbose=False):
+def collect_functions(verbose=False,strict=False):
 	"""
 	Collect available functions.
+	Note that strict in this context only prevents "glean_functions" from being used, and is distinct from
+	the strict import scheme in ortho.imports which is used to perform standard pythonic imports.
 	"""
 	global funcs
 	funcs = {}
@@ -39,16 +41,30 @@ def collect_functions(verbose=False):
 	# accrue functions over sources sequentially
 	for source in sources:
 		if os.path.isfile(source) or os.path.isdir(source):
-			try: mod = importer(source)
+			try: 
+				if verbose: print('status','importing source %s'%source)
+				mod = importer(source,verbose=verbose)
 			# if importing requires env then it is not ready when we get makefile targets
-			except: funcs.update(**glean_functions(source))
+			except Exception as e:
+				# debug imports during dev with `ortho.get_targets(verbose=True)`
+				if verbose: print('exception',e)
+				if os.path.isdir(source):
+					raise Exception('failed to import %s '%source+
+						'and cannot glean functions because it is not a file')
+				elif not strict: 
+					funcs.update(**glean_functions(source))
+				else:
+					from dev import tracebacker
+					tracebacker(e)
 			else:
 				incoming = dict([(k,v) for k,v in mod.items() if callable(v)])
 				# remove items if they are not in all
 				mod_all = mod.get('__all__',[])
-				if mod_all: incoming_exposed = dict([(k,v) for k,v in incoming.items() if k in mod_all])
+				# also allow __all__ to be temporarily blanked during development
+				if '__all__' in mod or mod_all: 
+					incoming_exposed = dict([(k,v) for k,v in incoming.items() if k in mod_all])
 				else: incoming_exposed = incoming
-				if verbose: print('status','trimming source %s to __all__=%s'%(
+				if verbose: print('status','trimming source %s to __all__ = %s'%(
 					source,incoming_exposed.keys()))
 				funcs.update(**incoming_exposed)
 		else: raise Exception('cannot locate code source %s'%source)
@@ -58,12 +74,21 @@ def collect_functions(verbose=False):
 	# no return because we just refresh funcs in globals
 	return
 
-def get_targets(verbose=False):
+def import_check():
+	"""
+	Utility which simulates debugging via:
+	python -c "import ortho;ortho.get_targets(verbose=True,strict=True)"
+	"""
+	collect_functions(verbose=True,strict=True)
+	print('status','see logs above for import details')
+	print('status','imported functions: %s'%funcs.keys())
+
+def get_targets(verbose=False,strict=False):
 	"""
 	Announce available function names.
 	Note that any printing that happens during the make call to get_targets is hidden by make.
 	"""
-	if not funcs: collect_functions()
+	if not funcs: collect_functions(verbose=verbose,strict=strict)
 	targets = funcs
 	# filter out utility functions from ortho
 	target_names = list(set(targets.keys())-
@@ -143,7 +168,7 @@ def run_program(_do_debug=False):
 	# we must check for ipdb here before we try the target function
 	try: import ipdb as pdb_this
 	except: import pdb as pdb_this
-	try: 
+	try:
 		funcs[funcname](*args,**kwargs)
 	#? catch a TypeError in case the arguments are not formulated properly
 	except Exception as e: 

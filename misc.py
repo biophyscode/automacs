@@ -112,3 +112,24 @@ def say(text,*flags):
 			style,fg,bg = colors[f]
 			text = '\x1b[%sm%s\x1b[0m'%(';'.join([str(style),str(fg),str(bg)]),text)
 	return text
+
+def locate(keyword):
+	"""
+	Locate the source code for a python function which is visible to the controller.
+
+	Parameters
+	----------
+	keyword : string
+		Any part of a function name (including regular expressions)
+
+	Notes
+	-----
+	This controller script is grepped by the makefile in order to expose its python functions to the makefile
+	interface so that users can run e.g. "make program protein" in orer to access the ``program`` function
+	above. The ``makeface`` function routes makefile arguments and keyword arguments into python's functions.
+	The makefile also detects python functions from any scripts located in amx/procedures/extras.
+	The ``locate`` function is useful for finding functions which may be found in many parts of the automacs
+	directory structure.
+	"""
+	# use case insensitive grep with the -i flag below
+	os.system(r'find ./ -name "*.py" | xargs egrep -i --color=always "(def|class) \w*%s\w*"'%keyword)

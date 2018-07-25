@@ -115,3 +115,6 @@ if tee_fn:
 str_types = [str,unicode] if sys.version_info<(3,0) else [str]
 # shorthand for full path even if you use tilde
 def abspath(path): return os.path.abspath(os.path.expanduser(path))
+
+#!? clean up stray variables
+ 

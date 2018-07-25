@@ -27,7 +27,7 @@ def remote_import_script(source,distribute=None):
 	this from the standard library.
 	"""
 	mod = {}
-	#! is this working? if distribute: raise Exception('dev')
+	#! check whether this is working?
 	if distribute: mod.update(**distribute)
 	with open(source) as f:
 		code = compile(f.read(),source,'exec')
@@ -76,7 +76,7 @@ def remote_import_module(source,distribute=None):
 
 def import_strict(fn,dn,verbose=False):
 	"""Standard importer with no exceptions for importing the local script.py."""
-	if verbose: print('note','importing from %s, %s'%(dn,fn))
+	if verbose: print('note','importing (importlib, strict) from %s: %s'%(dn,fn))
 	mod = importlib.import_module(fn,package=dn)
 	if verbose: print('note','successfully imported')
 	return mod
@@ -89,7 +89,7 @@ def importer(source,verbose=False,distribute=None,strict=False):
 	several different uses of importlib.import_module beforehand. The remote script importer makes it possible
 	to include scripts at any location using the commands flag in the config managed by ortho.conf which can
 	be useful in some edge cases.
-	!! Testing notes:
+	!!! Testing notes:
 	- import a local script directly with import_module
 	- import a local script manually using exec
 	- import a local module with import_module
@@ -108,24 +108,27 @@ def importer(source,verbose=False,distribute=None,strict=False):
 	try:
 		if verbose: print('status','standard import for %s'%source)
 		try:
-			if verbose: print('note','importing from %s, %s'%(dn,fn))
+			if verbose: print('note','importing (importlib) from %s: %s'%(dn,fn))
 			mod = importlib.import_module(fn,package=dn)
 			if verbose: print('note','successfully imported')
 		# try import if path is in subdirectory
+		# note that we have to use the fn_alt below if we don't want to perturb paths
 		except Exception as e:
 			rel_dn = os.path.relpath(dn,os.getcwd())
 			# if the path is a subdirectory we try the import with dots
 			if os.path.relpath(dn,os.getcwd())[:2]!='..':
 				fn_alt = '%s.%s'%(re.sub(os.path.sep,'.',rel_dn),fn)
-				if verbose: print('note','importing locally from %s'%(fn_alt))
+				if verbose: 
+					print('note','previous exception was: %s'%e)
+					print('note','importing (local) from %s'%(fn_alt))
 				mod = importlib.import_module(fn_alt,package='./')
-				if verbose: print('note','imported locally via alternate method')
 			else: 
-				print('go up to next try?')
+				#!? print('go up to next try?')
 				raise Exception(e)
 		if distribute: distribute_to_module(mod,distribute)
 		# always return the module as a dictionary
 		return strip_builtins(mod)
+	# fallback methods for importing remotely
 	except Exception as e: 
 		if verbose: 
 			print('warning','standard import failed for "%s" at "%s"'%(fn,dn))
@@ -142,14 +145,21 @@ def importer(source,verbose=False,distribute=None,strict=False):
 
 def glean_functions(source):
 	"""
-	In rare cases we need funciton names before the environment is ready so we parse without executing.
+	In rare cases we need function names before the environment is ready so we parse without executing.
 	Note that this method does not use __all__ to filter out hidden functions.
 	Users who want to use this to get make targets before the environment should just write a single 
 	script with the exposed functions since __all__ is not available.
+	The purpose of this function is to expose functions even if the script cannot be executed.
+	Every time we run make, we check config.json for commands and import those scripts. If some scripts
+	have dependencies not available on one system, but we want to run a less needy script, we can still
+	see the full complement of functions. Hence the available functions do not change even if only
+	a subset can be executed.
 	"""
 	import ast
 	with open(source) as fp:
 		code = fp.read()
 		tree = ast.parse(code)
+	# note that this fails if you import a function because we are using ast
+	#   to avoid that you should wrap the imported function so we can identify it as a function
 	function_gleaned = [i.name for i in tree.body if i.__class__.__name__=='FunctionDef']
 	return dict([(i,str(source)) for i in function_gleaned])
