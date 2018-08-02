@@ -97,7 +97,7 @@ class TestOrthoBasic(unittest.TestCase):
     def test_env_list(self):
         """Simply print the environment list."""
         ortho.bash('make env list text=True')
-    # set, set_hash, setlist, unset
+    # set, set_dict, setlist, unset
     def test_add_command(self):
         """Add a command."""
         test_fn = 'test_commands.py'

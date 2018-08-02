@@ -34,7 +34,7 @@ def jsonify(text):
 	text = re.sub("False","false",text)
 	text = re.sub("None","null",text)
 	# remove whitespace
-	re_whitespace = re.compile('\n\s*\n',flags=re.M)
+	re_whitespace = re.compile(r'\n\s*\n',flags=re.M)
 	text = re_whitespace.sub('\n',text)
 	return text
 
@@ -74,3 +74,25 @@ def check_repeated_keys(text,verbose=False):
 			print('note',controlmsg['json'])
 		return False
 	return True
+
+def delve(o,*k): 
+	"""
+	Return items from a nested dict.
+	"""
+	return delve(o[k[0]],*k[1:]) if len(k)>1 else o[k[0]]
+
+def delveset(o,*k,**kwargs): 
+	"""
+	Utility function for adding a path to a nested dict.
+	"""
+	value = kwargs.pop('value',None)
+	if value==None: raise Exception('delveset needs a value')
+	if kwargs: raise Exception('unprocessed kwargs %s'%str(kwargs))
+	if len(k)==0: raise Exception('deepset needs a path')
+	elif len(k)==1: 
+		try: o[k[0]] = value
+		except:
+			import pdb;pdb.set_trace()
+	else:
+		if k[0] not in o: o[k[0]] = {}
+		delveset(o[k[0]],*k[1:],value=value)

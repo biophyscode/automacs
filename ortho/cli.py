@@ -11,7 +11,7 @@ from __future__ import print_function
 import os,sys,re,importlib,inspect
 from .dev import tracebacker
 from .misc import str_types,locate
-from .config import set_config,setlist,unset,config,set_hash
+from .config import set_config,setlist,set_list,unset,config,set_dict
 from .environments import environ
 from .bootstrap import bootstrap
 from .imports import importer,glean_functions
@@ -19,7 +19,7 @@ from .unittester import unittester
 from .reexec import interact
 
 # any functions from ortho exposed to CLI must be noted here and imported above
-expose_funcs = {'set_config','setlist','unset','set_hash','environ',
+expose_funcs = {'set_config','setlist','set_list','unset','set_dict','environ',
 	'config','bootstrap','interact','unittester','import_check','locate'}
 expose_aliases = {'set_config':'set','environ':'env'}
 
