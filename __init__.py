@@ -3,19 +3,23 @@
 from __future__ import print_function
 import os,sys
 
-# import ortho with wildcard because we control everything here
 # note that CLI functions are set in cli.py
+# import ortho with wildcard because we control everything here
+# or at least the expose functions are elevated to the top level of ortho
+# but you can still get other functions in submodules in the usual wy
+#! cannot do e.g. import ortho.submodule if the submodule is not below
 expose = {
 	'bash':['command_check','bash'],
 	'bootstrap':['bootstrap'],
 	'cli':['get_targets','run_program'],
-	'config':['set_config','setlist','unset','read_config','write_config'],
+	# expose these functions because they use config_fn (not necessarily conf)
+	'config':['set_config','setlist','set_list','set_dict','unset','read_config','write_config'],
 	'data':['check_repeated_keys'],
 	'dev':['tracebacker'],
 	'environments':['environ','env_list','register_extension','load_extension'],
 	'imports':['importer'],
 	'unittester':['unittester'],
-	'misc':['listify','treeview','str_types','say'],
+	'misc':['listify','treeview','str_types','string_types','say'],
 	'reexec':['iteratively_execute','interact']}
 
 # use `python -c "import ortho"` to bootstrap the makefile
@@ -110,9 +114,6 @@ if tee_fn:
 
 ### LEGACY FUNCTIONS
 
-# manual method for checking strings, without six. use `type(a) in str_types`
-# note that it might be better to use six.string_types and isinstance
-str_types = [str,unicode] if sys.version_info<(3,0) else [str]
 # shorthand for full path even if you use tilde
 def abspath(path): return os.path.abspath(os.path.expanduser(path))
 

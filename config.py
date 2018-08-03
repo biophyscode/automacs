@@ -9,6 +9,7 @@ from __future__ import print_function
 import os,json,re,sys
 from .misc import treeview,str_types
 from .bootstrap import bootstrap
+from .data import delve,delveset
 
 # exported in from __init__.py (defined for linting)
 conf = {}
@@ -112,6 +113,10 @@ def setlist(*args):
 	else: conf[key] = list(set(conf[key]+vals))
 	write_config(conf)
 
+def set_list(*args): 
+	"""Alias for setlist."""
+	return setlist(*args)
+
 def unset(*args):
 	"""Remove items from config."""
 	config = read_config()
@@ -125,20 +130,41 @@ def config(text=False):
 	global conf,config_fn # from __init__.py
 	treeview({config_fn:conf},style={False:'unicode',True:'pprint'}[text])
 
-def set_hash(*args,**kwargs):
+def set_dict(*args,**kwargs):
 	"""
 	Add a dictionary hash to the configuration.
-	Note that sending a pythonic hash through makefile otherwise requires the following clumsy syntax:
-		make set env_ready=\""{'CONDA_PREFIX':'/Users/rpb/worker/factory/env/envs/py2'}"\"
-	This method names the hash with the first argument and the rest are key,value pairs.
-	Also accepts kwargs which override any args.
-	Interprets pythonic strings.
+	Note that sending a pythonic hash through makefile otherwise requires the following clumsy syntax
+		which uses escaped quotes and quotes to escape makefile parsing and protect the insides:
+			make set env_ready=\""{'CONDA_PREFIX':'/Users/rpb/worker/factory/env/envs/py2'}"\"
+	The standard method names the hash with the first argument and the rest are key,value pairs.
+	The standard method also accepts kwargs which override any args.
+	We use interpret_command_text to allow Pythonic inputs.
+	Note that the Makefile is extremely limited on incoming data, hence you must be careful to use the double
+		quote escape method described above. The Makefile does not tolerate colons or slashes without this
+		protection. We also cannot necessarily pipe e.g. JSON into Python with the special Makefile. Hence the
+		protected pythonic strings give us full, if not necessarily elegant, control over the config from 
+		BASH. Casual users can still manipulate the config easily. More complicated BASH manipulation should
+		be scripted, or ideally, placed in a Python script which just uses read_config and write_config.
+	The alternative mode allows you to specify a path to the child node (empty nested dicts are created 
+		otherwise) and a value to store there. In combination with the protected Pythonic input trick above,
+		this allows complete control of the arbitrarily nested dict stored in config.json.
+	See ortho/devnotes.txt for more details.
 	"""
-	use_note = '`make set_hash <name> <key_1> <val_1> <key_2> <val_2> key_3=val3 ...`'
+	# alternative mode for deep dives into the nested dictionary
+	if set(kwargs.keys())=={'path','value'} and not args:
+		try: path = eval(str(kwargs['path']))
+		except Exception as e: raise Exception('failed to eval the path, exception: %s'%e)
+		if type(path)!=tuple: raise Exception('path must be Pythonic tuple: %s'%path)
+		delveset(conf,*path,value=kwargs['value'])
+		write_config(conf)
+		return
+	# standard execution mode cannot do a deep dive into the dict
+	use_note = '`make set_dict <name> <key_1> <val_1> <key_2> <val_2> key_3=val3 ...`'
 	if len(args)==0 or len(args)%2!=1: 
 		print('usage',use_note)
 		raise Exception('invalid arguments args=%s kwargs=%s'%(str(args),kwargs))
 	name,pairs = args[0],args[1:]
+	print(pairs)
 	pairwise = dict(zip(pairs[::2],pairs[1::2]))
 	pairwise.update(**kwargs)
 	for key,val in pairwise.items():

@@ -28,39 +28,63 @@ def reader(pipe,queue):
 				queue.put((pipe, line))
 	finally: queue.put(None)
 
-def bash(command,log=None,cwd=None,inpipe=None,show=False,scroll=True):
+def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None):
 	"""
 	Run a bash command.
 	Development note: tee functionality would be useful however you cannot use pipes with subprocess here.
 	"""
+	merge_stdout_stderr = False
 	if not cwd: cwd = './'
-	if log == None and not show: 
-		if inpipe: raise Exception('under development')
+	if log == None: 
+		# no present need to separate stdout and stderr so note the pipe below
+		merge_stdout_stderr = True
 		kwargs = dict(cwd=cwd,shell=True,executable='/bin/bash',
-			stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+			stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+		if input: kwargs['stdin'] = subprocess.PIPE
 		proc = subprocess.Popen(command,**kwargs)
-		stdout,stderr = proc.communicate()
-	elif log == None and show:
-		if inpipe: raise Exception('under development')
-		kwargs = dict(cwd=cwd,shell=True,executable='/bin/bash')
-		proc = subprocess.Popen(command,**kwargs)
-		stdout,stderr = proc.communicate()
+		if inpipe and scroll: raise Exception('cannot use inpipe with scrolling output')
+		if inpipe: 
+			#! note that some solutions can handle input
+			#!   see: https://stackoverflow.com/questions/17411966
+			#!   test with make_ndx at some point
+			stdout,stderr = proc.communicate(input=str(inpipe).encode())
+		# no log and no input pipe
+		else: 
+			# scroll option pipes output to the screen
+			if scroll:
+				empty = '' if sys.version_info<3 else b''
+				#! universal_newlines?
+				for line in iter(proc.stdout.readline,''):
+					sys.stdout.write((tag if tag else '')+line)
+					sys.stdout.flush()
+				proc.wait()
+				if proc.returncode:
+					raise Exception('see above for error. BASH returned %d'%proc.returncode)
+			# no scroll waits for output and then checks it below
+			else: stdout,stderr = proc.communicate()
 	# log to file and print to screen using the reader function above
 	elif log and scroll:
 		# via: https://stackoverflow.com/questions/31833897/
-		# .... python-read-from-subprocess-stdout-and-stderr-separately-while-preserving-order
+		# see alternate without threading: https://stackoverflow.com/questions/18421757
+		# note that this method also works if you remove output to a file
+		#   however I was not able to figure out how to identify which stream was which during iter
+		#! needs tested in Python 3
 		proc = subprocess.Popen(command,cwd=cwd,shell=True,executable='/bin/bash',
 			stdout=subprocess.PIPE,stderr=subprocess.PIPE,bufsize=1)
 		qu = queue.Queue()
 		threading.Thread(target=reader,args=[proc.stdout,qu]).start()
 		threading.Thread(target=reader,args=[proc.stderr,qu]).start()
+		empty = '' if sys.version_info<3 else b''
 		with open(log,'ab') as fp:
 			for _ in range(2):
 				for _,line in iter(qu.get,None):
-					# maybe one-line refresh method in py3: print(u'\r'+'[LOG]','%s: %s'%(log,line),end='')
-					print('[LOG] %s: %s'%(log,line.decode('utf-8')),end='')
+					#! maybe one-line refresh method in py3: print(u'\r'+'[LOG]','%s: %s'%(log,line),end='')
+					#! not sure how this handles flush
+					#! change the below to tag and test with skunkworks
+					print('[LOG] %s: %s'%(log,line.decode('utf-8')),end=empty)
 					fp.write(line)
-	else:
+	# log to file and suppress output
+	elif log and not scroll:
 		output = open(log,'w')
 		kwargs = dict(cwd=cwd,shell=True,executable='/bin/bash',
 			stdout=output,stderr=output)
@@ -68,6 +92,7 @@ def bash(command,log=None,cwd=None,inpipe=None,show=False,scroll=True):
 		proc = subprocess.Popen(command,**kwargs)
 		if not inpipe: stdout,stderr = proc.communicate()
 		else: stdout,stderr = proc.communicate(input=inpipe)
+	else: raise Exception('invalid options')
 	if not scroll and stderr: 
 		if stdout: print('error','stdout: %s'%stdout.decode('utf-8').strip('\n'))
 		if stderr: print('error','stderr: %s'%stderr.decode('utf-8').strip('\n'))
@@ -83,7 +108,7 @@ def bash(command,log=None,cwd=None,inpipe=None,show=False,scroll=True):
 				print(stderr.decode('utf-8').strip('\n'))
 			raise Exception('bash error with returncode %d and stdout/stderr printed above'%proc.returncode)
 	proc.stdout.close()
-	proc.stderr.close()
+	if not merge_stdout_stderr: proc.stderr.close()
 	return None if scroll else {'stdout':stdout,'stderr':stderr}
 
 class TeeMultiplexer:

@@ -124,6 +124,57 @@ problematic debug mode
 		for two reasons: it does not activate the environment so yaml errors
 		and the import messages are really an issue
 	luckily I knew to just change to "from amx.utils import status" but still this is a possible weakness
+	needs! tested somewhere
 
 added a note to glean functions 
 	to explain how it can be useful to have parts of the code that do not require elaborate packages
+
+# 2018.07.28
+
+automacs/ortho short-term development plan
+	generic functionality needs commented
+	docs might facilitate useful comments
+	comments beget unit test ideas
+	gromacs functions from the main branch need to be documented and tested
+	automacs simulations need to be written as tests in factory
+
+recovering documentation from previous automacs
+	previously if you had the inputs/docs module and sphinx installed you could run `make docs`
+		this is a problem because we need to check dependencies more carefully unless we are in a factory or docker or something, and the ortho branch has not implemented modules yet
+
+needs! features
+	asciitree needs a method to limit the width and handle large blocks of text
+
+developing kickstarters (for automacs)
+	previous version of automacs intercepted `make set module` commands which add the module to the config and performed a git clone
+		it would be best to keep the 'set' variables limited to manipulating the config only
+	in the current version the best option is to change the modules in the config and then run a sync step
+	however the immediate problem is that we need a way to address an elaborate data structure from the command line
+	presently you can add nested dictionaries to the config pretty easily
+		see the set_hash docs which provide this example
+			make set env_ready=\""{'CONDA_PREFIX':'/Users/rpb/worker/factory/env/envs/py2'}"\"
+		the syntax is clumsy but it allows you to set nested dictionary items
+		to make this work for a modules dict inside the config we also need the ability to remove the items
+		the example above uses `make set` natively but you can also adjust the top level hashes by name with e.g. `make set_hash top_key key1 val1 key2=val2` which is also a nice solution
+	working on a unset_hash method
+		testing by clearing config and make to regenerate it
+		make set modules=\""{'this_mod':{1:{2:3}}}"\"
+		this method should work on arbitrary dictionaries so we really just want to send a long a list for the child node to remove
+		the above set command worked only to set the entire dictionary below the top node
+		development of the next few days addressed this
+		
+# 2018.08.02
+
+recent development notes
+	automacs kickstarter method necessitated updates to set_hash 
+		which now allows you to send in pythonic dictionaries
+		which depends on using a special escape double quote-double quote method to get past makefile
+			which does not like colons anywhere or slashes in arguments
+		the new set_dict can handle paths as a sequence in python
+		the result is clumsy but allows scripts if not users to manipulate the config.json with any path to a possibly new child node in an arbitrarily nested dictionary
+	also updated the bash function so we can see output without a log file
+		with copious notes about different ways of catching streams
+		unable to distinguish stdout and stderr which tend to get mixed up timewise anyway
+		but otherwise now we can execute bash, pipe to log, and watch it
+		note there is a wide variety of ways to do this
+
