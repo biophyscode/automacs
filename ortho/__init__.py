@@ -19,8 +19,7 @@ expose = {
 	'environments':['environ','env_list','register_extension','load_extension'],
 	'imports':['importer'],
 	'unittester':['unittester'],
-	'misc':['listify','treeview','str_types','say'],
-	#'modules':[],
+	'misc':['listify','treeview','str_types','string_types','say'],
 	'reexec':['iteratively_execute','interact']}
 
 # use `python -c "import ortho"` to bootstrap the makefile
@@ -115,9 +114,6 @@ if tee_fn:
 
 ### LEGACY FUNCTIONS
 
-# manual method for checking strings, without six. use `type(a) in str_types`
-# note that it might be better to use six.string_types and isinstance
-str_types = [str,unicode] if sys.version_info<(3,0) else [str]
 # shorthand for full path even if you use tilde
 def abspath(path): return os.path.abspath(os.path.expanduser(path))
 

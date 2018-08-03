@@ -86,6 +86,11 @@ def unittester(name='basic',save_config=False):
     # collect items from unit tests
     for target in targets:
         print('status','importing %s'%target)
+        #! you must be very careful not to use files like tests.py in ortho which contain unit tests
+        #!   because a name collision with site-packages in e.g. a conda environment will cause no 
+        #!   tests to be returned. this error is fairly opaque. it could be avoided with a call to
+        #!   importlib that uses the dot notation e.g. importlib.import_module('ortho.tests')
+        #! this might reflect a problem with the import scheme. collisions can be difficult to debug
         mod = ortho.importer(target) # pylint: disable=no-member
         for key,val in mod.items():
             if key in mods: 

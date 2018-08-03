@@ -11,10 +11,13 @@ or alternately make everything else temporary?
     ...
 """
 
+# note that unicode_literals is good for backporting to 2 because it presumes u'string' everywhere
 from __future__ import print_function,unicode_literals
 import unittest
 import os,sys,copy,re,json
 import ortho
+# multiple ways to check strings but recommended methid is isinstance(u'string',string_types)
+from ortho.misc import str_types,string_types,basestring
 
 #! via: https://stackoverflow.com/questions/3223604
 import contextlib,shutil,tempfile
@@ -61,19 +64,33 @@ class TestOrthoBasicPython2(unittest.TestCase):
     @unittest.expectedFailure
     def test_1(self):
         zip(*[(1,2),(3,4)])[0]
+        self.assertTrue(isinstance(b'a'.decode(),str))
+        self.assertTrue(isinstance(u'a',str))
     def test_2(self): self.assertTrue(b'1'==u'1')
+    def test_3(self):
+        self.assertTrue(isinstance(u'a',unicode))
+        self.assertTrue(type(u'a') in str_types)
+        self.assertTrue(type(b'a') in str_types)
 
 class TestOrthoBasicPython3(unittest.TestCase):
     def setUp(self): 
         if sys.version_info[0]<3: self.skipTest('This test is for Python 3.')
     @unittest.expectedFailure
     def test_1(self):
-        """ Python 3 syntax examples
+        """ Python 3 syntax examples excluded here or the test will not run.
+        #! note that you could put the tests in separate files and rely on the imports to ignore invalid ones
         a,b,*rest = range(10)
         def f(a, b, *args, option=True) # no more accidental argument swallowing
         def extendto(value, *, shorter=None, longer=None) # force kwargs for clarity
         """
         self.assertTrue(b'1'==u'1')
+        self.assertTrue(type(b'a') in str_types)
+    def test_2(self):
+        # note u'a' and 'a' are both str in python 3
+        self.assertTrue(isinstance(b'a'.decode(),str))
+        self.assertTrue(isinstance(u'a',str))
+        self.assertTrue(type(u'a') in str_types)
+        self.assertTrue(type(str('a')) in str_types)
 
 ### ORTHO TESTS
 
@@ -156,7 +173,7 @@ class SpecialTestOrthoBasic(unittest.TestCase):
         # ensure that we have a config.json
         ortho.bash('make')
         # make sure the config.json has the environments
-        self.prepare_environs()        
+        self.prepare_environs()
         # setUp is done here
         # get the configuration and prepare unit tests for each environment
         conf = ortho.read_config()

@@ -4,8 +4,14 @@ from __future__ import print_function
 from __future__ import unicode_literals
 import os,sys,re,json
 
-# adjucate string types between versions
-str_types = [str,unicode] if sys.version_info<(3,0) else [str]
+# adjucate string types between versions. use `type(a) in str_types` for light scripting
+# this is a legacy solution consistent with basestring or six.string_types
+# we skip six.string_types because it has the same role as the following
+# recommended string checking is via isinstance(u'string',basestring)
+basestring = string_types = str_types = (str,unicode) if sys.version_info<(3,0) else (str,)
+
+#! use of str_types expects list. resolve later in unittester.py
+str_types = list(string_types)
 
 def listify(x): 
 	"""Turn a string or a list into a list."""
