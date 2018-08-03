@@ -58,6 +58,8 @@ def intepret_experiment_file_yaml(fn,toc,sources):
 	"""
 	with open(fn) as fp: spec = yaml.load(fp)
 	for key,val in spec.items():
+		if 'cwd' in val: raise Exception('file %s has key %s with cwd already defined'%(fn,key))
+		val['cwd'] = os.path.dirname(fn)
 		if key in toc: raise Exception('input file %s contains a key "%s" that we already found!'%(fn,key))
 		else: toc[key],sources[key] = val,fn
 	return
