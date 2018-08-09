@@ -35,7 +35,7 @@ RUN_ARGS:=$(filter-out $(protected_targets),$(RUN_ARGS_UNFILTER))
 #! getting targets requires one full loop with imports
 #? speed things up by using a header of some kind, or ast?
 SHELL_CHECK_TARGETS:=$(python) $(python_flags) -c "import ortho;ortho.get_targets()"
-#! probably avoid making an "env" function because problems
+ENV_EXCLUDES:=set unset
 TARGETS:=$(shell ${SHELL_CHECK_TARGETS} | \
 	perl -ne 'print $$1 if /^.*?make targets\:\s*(.+)/')
 
@@ -70,12 +70,18 @@ default: $(checkfile)
 
 # route to targets
 $(TARGETS): $(checkfile)
+# if the target is in a special exclude list then we skip the environment and run directly
+ifneq ($(filter $(word 1,$(RUN_ARGS)),$(ENV_EXCLUDES)),)
+	@/bin/echo "[STATUS] executing special function $(word 1,$(RUN_ARGS)) without environment"
+	@env $(python) $(python_flags) -c "$$MAKEFACE_BACKEND" ${RUN_ARGS} ${MAKEFLAGS}
+else
 ifeq ($(ENV_CMD),)
 	@env $(python) $(python_flags) -c "$$MAKEFACE_BACKEND" ${RUN_ARGS} ${MAKEFLAGS}
 else
 	@/bin/echo "[STATUS] environment: \"source $(ENV_CMD)\""
 	( source $(ENV_CMD) && ENV_CMD="$(ENV_CMD)" env $(python) \
 	$(python_flags) -c "$$MAKEFACE_BACKEND" ${RUN_ARGS} ${MAKEFLAGS} )
+endif
 endif
 
 # ignore run arguments
