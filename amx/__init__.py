@@ -20,8 +20,6 @@ except: do_debug_env = False
 if ortho.conf.get('debug',do_debug_env)==True: sys.excepthook = ortho.dev.debug_in_place
 else: sys.excepthook = ortho.dev.tracebacker
 
-# load experiment and state
-if not os.path.isfile('expt.json'): raise Exception('cannot import automacs without expt.json')
 _has_state = os.path.isfile('state.json')
 if _has_state: print('status','found a previous state at state.json')
 
@@ -41,7 +39,10 @@ settings = AMXState(me='settings')
 state = AMXState(settings,me='state',upnames={0:'settings'})
 # import of the amx package depends on expt.json and any functions that do not require special importing
 #   which occurs outside of the main import e.g. amx/gromacs/configurator.py: gromacs_config
-with open('expt.json') as fp: incoming = json.load(fp)
+blank_expt = {'settings':{}}
+if not os.path.isfile('expt.json'): incoming = blank_expt
+else:
+	with open('expt.json') as fp: incoming = json.load(fp)
 meta = incoming.pop('meta',{})
 # the expt variable has strict attribute lookups
 expt = AMXState(me='expt',strict=True,base=incoming)

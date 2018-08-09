@@ -6,16 +6,16 @@ import json,shutil,os
 ### CLASSIFY EXPERIMENTS
 
 # use keys to classify experiment styles
-experiment_classifier = {
-	('settings','params','tags','script'):'run'}
+experiment_classifier = [
+	({'settings','params','tags','script','cwd'},'run'),]
 
 def classify_experiment(expt):
 	"""
 	Use keys to classify the experiment.
 	"""
 	matches = []
-	for keys,name in experiment_classifier.items():
-		if set(keys)==set(expt.keys()): matches.append(name)
+	for keys,name in experiment_classifier:
+		if keys==set(expt.keys()): matches.append(name)
 	matches = list(set(matches))
 	if len(matches)==0: raise Exception('failed to classify experiment %s'%expt)
 	elif len(matches)>1: raise Exception('matched experiment %s to multiple styles %s'%(expt,matches))

@@ -8,3 +8,5 @@ Supervise execution.
 """
 
 from chooser import prep,go,clean
+
+def avail(): return prep()

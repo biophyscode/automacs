@@ -7,6 +7,7 @@ try: import yaml
 except: pass #! exception waits until later. raise Exception('missing yaml at experiments.py')
 ##! import yaml #! protect against no yaml?
 from ortho import listify,str_types,check_repeated_keys
+from ortho.requires import requires_python
 
 controlmsg = {
 	'json':'found either (a) repeated keys or (b) JSON error in a string. '+
@@ -52,10 +53,12 @@ def intepret_experiment_file_python(fn,toc,sources):
 		else: toc[key],sources[key] = val,fn
 	return
 
+@requires_python('yaml')
 def intepret_experiment_file_yaml(fn,toc,sources):
 	"""
 	Interpret a YAML experiment file.
 	"""
+	import yaml
 	with open(fn) as fp: spec = yaml.load(fp)
 	for key,val in spec.items():
 		if 'cwd' in val: raise Exception('file %s has key %s with cwd already defined'%(fn,key))
