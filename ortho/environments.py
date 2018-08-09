@@ -177,12 +177,16 @@ def environ(*args,**kwargs):
 	elif args==('list',): env_list(**kwargs)
 	else: Factory(*args,**kwargs)
 
-def env_list(text=False):
+def env_list(text=False,detail=False):
 	from .misc import treeview
 	conf_this = conf # pylint: disable=undefined-variable
-	treeview(conf_this.get('envs',default_envs),style={False:'unicode',True:'pprint'}[text])
+	envs = conf_this.get('envs',default_envs)
+	style = {False:'unicode',True:'pprint'}[text]
+	if not detail: treeview(dict(environments=sorted(envs.keys())),style=style)
+	else: treeview(envs,style=style)
 	print('note','The following dictionaries are instructions for building environments. '
-		'You can build a new environment by running `make env <name>`. See environments.py for more docs.')
+		'You can build a new environment by running `make env <name>`. See environments.py for more docs. '
+		'For more information about the envirnment, try `make env list detail=True`')
 
 extension_styles = {
 	'distutils':{'spot'},}

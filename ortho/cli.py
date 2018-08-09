@@ -10,7 +10,7 @@ from __future__ import print_function
 
 import os,sys,re,importlib,inspect
 from .dev import tracebacker
-from .misc import str_types,locate
+from .misc import str_types,locate,treeview
 from .config import set_config,setlist,set_list,unset,config,set_dict
 from .environments import environ
 from .bootstrap import bootstrap
@@ -20,7 +20,7 @@ from .reexec import interact
 
 # any functions from ortho exposed to CLI must be noted here and imported above
 expose_funcs = {'set_config','setlist','set_list','unset','set_dict','environ',
-	'config','bootstrap','interact','unittester','import_check','locate'}
+	'config','bootstrap','interact','unittester','import_check','locate','targets'}
 expose_aliases = {'set_config':'set','environ':'env'}
 
 # collect functions once
@@ -83,7 +83,7 @@ def import_check():
 	print('status','see logs above for import details')
 	print('status','imported functions: %s'%funcs.keys())
 
-def get_targets(verbose=False,strict=False):
+def get_targets(verbose=False,strict=False,silent=False):
 	"""
 	Announce available function names.
 	Note that any printing that happens during the make call to get_targets is hidden by make.
@@ -93,7 +93,8 @@ def get_targets(verbose=False,strict=False):
 	# filter out utility functions from ortho
 	target_names = list(set(targets.keys())-
 		(set(_ortho_keys)-_ortho_keys_exposed))  # pylint: disable=undefined-variable
-	print("make targets: %s"%(' '.join(sorted(target_names))))
+	if not silent: print("make targets: %s"%(' '.join(sorted(target_names))))
+	return target_names
 
 def run_program(_do_debug=False):
 	"""
@@ -180,3 +181,8 @@ def run_program(_do_debug=False):
 	except KeyboardInterrupt:
 		print('warning','caught KeyboardInterrupt during traceback')
 		sys.exit(1)
+
+def targets():
+	"""Print the make  targets."""
+	targets = get_targets(silent=True)
+	treeview(dict(targets=sorted(targets)))
