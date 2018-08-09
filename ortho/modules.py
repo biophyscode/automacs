@@ -3,9 +3,9 @@
 from __future__ import print_function
 import os
 from .bash import bash
-from .requires import requires
+from .requires import requires_program
 
-@requires('git')
+@requires_program('git')
 def sync(**kwargs):
 	"""
 	Ensure modules are fresh.
@@ -31,7 +31,10 @@ def sync(**kwargs):
 			this_branch = branch_result['stdout'].strip()
 			print('status','module %s is on branch %s'%(spot,this_branch))
 			if this_branch!=branch:
-				bash('git -C %s checkout %s'%(spot,branch))
-				#raise Exception('module %s is not on branch %s. DEV. need to switch'%(spot,branch))
+				# if we need a new branch we first fetch it before checkout
+				cmd = 'git -C %s fetch origin %s'%(spot,branch)
+				print('bash',cmd)
+				bash(cmd)
+				cmd = 'git -C %s checkout %s'%(spot,branch)
 			else: pass
 		if mod: raise Exception('unprocessed module methods: %s'%str(mod))

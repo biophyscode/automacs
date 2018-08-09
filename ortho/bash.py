@@ -59,7 +59,7 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None):
 					sys.stdout.flush()
 				proc.wait()
 				if proc.returncode:
-					raise Exception('see above for error. BASH returned %d'%proc.returncode)
+					raise Exception('see above for error. bash return code %d'%proc.returncode)
 			# no scroll waits for output and then checks it below
 			else: stdout,stderr = proc.communicate()
 	# log to file and print to screen using the reader function above
