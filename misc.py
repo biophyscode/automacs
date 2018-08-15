@@ -9,9 +9,7 @@ import os,sys,re,json
 # we skip six.string_types because it has the same role as the following
 # recommended string checking is via isinstance(u'string',basestring)
 basestring = string_types = str_types = (str,unicode) if sys.version_info<(3,0) else (str,)
-
-#! use of str_types expects list. resolve later in unittester.py
-str_types = list(string_types)
+str_types_list = list(str_types)
 
 def listify(x): 
 	"""Turn a string or a list into a list."""
@@ -36,7 +34,7 @@ def asciitree(obj,depth=0,wide=2,last=[],recursed=False):
 		' '*wide for d in range(1,depth)]))+c+horizo*wide) 
 		for (k,c) in [('mid',corner),('end',corner_end)]])
 	spacer = spacer_both['mid']
-	if type(obj) in [float,int,bool]+str_types:
+	if type(obj) in [float,int,bool]+str_types_list:
 		if depth == 0: print(spacer+str(obj)+'\n'+horizo*len(obj))
 		else: print(spacer+str(obj))
 	elif type(obj) == dict and all([type(i) in [str,float,int,bool] for i in obj.values()]) and depth==0:
@@ -44,7 +42,7 @@ def asciitree(obj,depth=0,wide=2,last=[],recursed=False):
 	elif type(obj) in [list,tuple]:
 		for ind,item in enumerate(obj):
 			spacer_this = spacer_both['end'] if ind==len(obj)-1 else spacer
-			if type(item) in [float,int,bool]+str_types: print(spacer_this+str(item))
+			if type(item) in [float,int,bool]+str_types_list: print(spacer_this+str(item))
 			elif item != {}:
 				print(spacer_this+'('+str(ind)+')')
 				asciitree(item,depth=depth+1,
@@ -54,7 +52,7 @@ def asciitree(obj,depth=0,wide=2,last=[],recursed=False):
 	elif type(obj) == dict and obj != {}:
 		for ind,key in enumerate(obj.keys()):
 			spacer_this = spacer_both['end'] if ind==len(obj)-1 else spacer
-			if type(obj[key]) in [float,int,bool]+str_types: print(spacer_this+key+' = '+str(obj[key]))
+			if type(obj[key]) in [float,int,bool]+str_types_list: print(spacer_this+key+' = '+str(obj[key]))
 			# special: print single-item lists of strings on the same line as the key
 			elif type(obj[key])==list and len(obj[key])==1 and type(obj[key][0]) in [str,float,int,bool]:
 				print(spacer_this+key+' = '+str(obj[key]))
