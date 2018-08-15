@@ -14,17 +14,12 @@ _init_keys = globals().keys()
 # but you can still get other functions in submodules in the usual wy
 #! cannot do e.g. import ortho.submodule if the submodule is not below
 expose = {
-	#! remove command check and replace with `requires_` decorators
 	'bash':['command_check','bash'],
-	#! no need to expose: 'bootstrap':['bootstrap'],
 	'cli':['get_targets','run_program'],
-	# expose these functions because they use config_fn (not necessarily conf)
 	'config':['set_config','setlist','set_list','set_dict','unset','read_config','write_config'],
 	'dev':['tracebacker'],
-	#! 'docs':['build_docs'],
-	#! 'environments':['environ','env_list','register_extension','load_extension'],
+	'data':['check_repeated_keys'],
 	'imports':['importer'],
-	#! 'unit_tester':['unit_tester'],
 	'misc':['listify','treeview','str_types','string_types','say'],
 	'reexec':['iteratively_execute','interact']}
 
@@ -129,7 +124,7 @@ def abspath(path):
 	return os.path.abspath(os.path.expanduser(path))
 
 # clean up the namespace
-retain_keys = set(['prepare_print','abspath'])
+retain_keys = set(['prepare_print','abspath','conf'])
 added = (set(globals().keys())-set(_init_keys)
 	-set([i for j in expose.values() for i in j])
 	-set(expose.keys())
