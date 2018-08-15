@@ -86,8 +86,8 @@ def write_mdp(param_file=None,rootdir='./',outdir='',extras=None,verbose=False):
 	#---check target MDP names
 	target_mdps = mdpspecs.get('mdps',None)
 	if not target_mdps: raise Exception('cannot find any mdps in mdp_specs')
-	mdps_misnamed = [i for i in target_mdps if not re.match('.+\.mdp$',i)]
-	if any([i for i in target_mdps if not re.match('.+\.mdp$',i)]):
+	mdps_misnamed = [i for i in target_mdps if not re.match(r'.+\.mdp$',i)]
+	if any([i for i in target_mdps if not re.match(r'.+\.mdp$',i)]):
 		raise Exception('all mdp files must have the mdp file extension: %s'%str(mdps_misnamed))
 
 	for mdpname in target_mdps:
@@ -102,7 +102,7 @@ def write_mdp(param_file=None,rootdir='./',outdir='',extras=None,verbose=False):
 		if mdpspecs['mdps'][mdpname] != None:
 			#---all refinements should be a list of strings and dictionaries so we promote a dict to list
 			refine_loop = mdpspecs['mdps'][mdpname]
-			refine_loop = [refine_loop] if type(refine_loop) in [dict]+str_types else refine_loop
+			refine_loop = (refine_loop,) if type(refine_loop) in (dict,)+str_types else refine_loop
 			for refinecode in refine_loop:
 				#---if the refinement code in the list given at mdpspecs[mdpname] is a string then we
 				#---...navigate to mdpdefs[refinecode] and use its children to override settings_this[key] 
