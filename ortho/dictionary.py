@@ -143,6 +143,14 @@ class MultiDict(DotDict):
 		"""Special sauce to ensure backups work."""
 		if k in self.__dict__: return super(MultiDict,self).get(k,d)
 		else: return self._get(k,d=d)
+	def update(self,*args,**kwargs):
+		"""If underscores ensure that we replace spaces with underscores."""
+		if self._underscores:
+			#! cheap answer here is to make a temporary dictionary
+			this = dict(*args,**kwargs)
+			self._key_map_checker(this)
+			dict.update(self,**this)
+		else: dict.update(self,*args,**kwargs)
 
 class TestMultiDict(unittest.TestCase):
 	"""
