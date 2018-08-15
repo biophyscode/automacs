@@ -35,7 +35,7 @@ needs:
 - magic imports i.e. acme submodulator
 """
 
-settings = AMXState(me='settings')
+settings = AMXState(me='settings',underscores=True)
 state = AMXState(settings,me='state',upnames={0:'settings'})
 # import of the amx package depends on expt.json and any functions that do not require special importing
 #   which occurs outside of the main import e.g. amx/gromacs/configurator.py: gromacs_config
