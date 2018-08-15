@@ -35,7 +35,7 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,announce=Fal
 	"""
 	if announce: 
 		print('status',
-			'ortho.bash%s runs command: %s'%(' (at cwd %s)'%cwd if cwd else '',str(command)))
+			'ortho.bash%s runs command: %s'%(' (at %s)'%cwd if cwd else '',str(command)))
 	merge_stdout_stderr = False
 	if not cwd: cwd = './'
 	if log == None: 
@@ -57,8 +57,8 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,announce=Fal
 			if scroll:
 				empty = '' if sys.version_info<3 else b''
 				#! universal_newlines?
-				for line in iter(proc.stdout.readline,''):
-					sys.stdout.write((tag if tag else '')+line)
+				for line in iter(proc.stdout.readline,empty):
+					sys.stdout.write((tag if tag else '')+line.decode('utf-8'))
 					sys.stdout.flush()
 				proc.wait()
 				if proc.returncode:

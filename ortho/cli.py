@@ -3,7 +3,7 @@
 """
 ORTHO
 Makefile interFACE (makeface) command-line interface
-Note that you should debug with `python -c "import ortho;ortho.get_targets(verbose=True,strict=True)"`
+Note that you should debug with `python -uBttc "import ortho;ortho.get_targets(verbose=True,strict=True)"`
 """
 
 from __future__ import print_function
@@ -15,17 +15,20 @@ from .config import set_config,setlist,set_list,unset,config,set_dict
 from .environments import environ
 from .bootstrap import bootstrap
 from .imports import importer,glean_functions
-from .unittester import unittester
+from .unit_tester import unit_tester
 from .reexec import interact
+from .docs import build_docs
 
 # any functions from ortho exposed to CLI must be noted here and imported above
 expose_funcs = {'set_config','setlist','set_list','unset','set_dict','environ',
-	'config','bootstrap','interact','unittester','import_check','locate','targets'}
+	'config','bootstrap','interact','unit_tester','import_check','locate','targets','build_docs'}
 expose_aliases = {'set_config':'set','environ':'env'}
 
 # collect functions once
 global funcs,_ortho_keys_exposed
 funcs = None
+
+message_debug_suggestion =  'python -uBttc "import ortho;ortho.get_targets(verbose=True,strict=True)"'
 
 def collect_functions(verbose=False,strict=False):
 	"""
@@ -126,7 +129,12 @@ def run_program(_do_debug=False):
 			kwargs[parname] = parval
 		else:
 			if sys.version_info<(3,3): 
-				#! the following will be removed by python 3.6
+				#! the following getargspec will be removed by python 3.6
+				if isinstance(funcs[funcname],str_types):
+					raise Exception('run_program received a string instead of a function, indicating that '+
+						'we have gleaned function without importing them. this indicates an error in that '+
+						'script. the script is: "%s". try the following command to debug:\n%s'%(
+							funcs[funcname],message_debug_suggestion))
 				argspec = inspect.getargspec(funcs[funcname])
 				argspec_args = argspec.args
 			else:
