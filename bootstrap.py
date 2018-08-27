@@ -33,8 +33,6 @@ kickstarters = {
 
 'all':r"""
 make set_dict path=\""('modules','inputs/proteins',)"\" value=\""{'address':'%(github)s%(docs)s/amx-proteins.git','branch':'ortho'}"\"
-make set_dict path=\""('modules','inputs/docs',)"\" value=\""{'address':'%(github)s%(docs)s/amx-docs.git','branch':'ortho'}"\"
-make set_list commands inputs/docs/docs.py
 """%git_addresses,
 
 }
