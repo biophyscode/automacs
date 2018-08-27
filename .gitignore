@@ -5,6 +5,7 @@ config.py
 /s*-*
 /*.json
 /*.py
+!/bootstrap.py
 /*.sh
 /log-back
 /inputs
