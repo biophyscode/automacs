@@ -70,7 +70,7 @@ def prep(procname=None):
 	if procname==None: 
 		experiments = collect_experiments(conf=ortho.conf)
 		#! visualizer 
-		ortho.treeview(experiments)
+		ortho.treeview(dict(experiments=experiments))
 	else: experiment(procname=procname,run=False)
 
 def go(procname,clean=False): 
