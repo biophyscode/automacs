@@ -34,7 +34,9 @@ def sync(**kwargs):
 				# if we need a new branch we first fetch it before checkout
 				cmd = 'git -C %s fetch origin %s'%(spot,branch)
 				print('bash',cmd)
-				bash(cmd)
+				bash(cmd,tag='[BASH] | ')
 				cmd = 'git -C %s checkout %s'%(spot,branch)
+				print('bash',cmd)
+				bash(cmd,tag='[BASH] | ')
 			else: pass
 		if mod: raise Exception('unprocessed module methods: %s'%str(mod))

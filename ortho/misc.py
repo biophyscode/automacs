@@ -71,6 +71,7 @@ def asciitree(obj,depth=0,wide=2,last=[],recursed=False):
 					recursed=True)
 			elif type(obj[key])==list and obj[key]==[]:
 				print(spacer_this+'(empty)')
+			elif obj[key]=={}: print(spacer_this+'%s = {}'%key)
 			else: print('unhandled tree object %s'%key)
 	else: print('unhandled tree object %s'%obj)
 	if not recursed: print('\n')
