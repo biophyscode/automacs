@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-import json,shutil,os
+import sys,json,shutil,os
 
 ### CLASSIFY EXPERIMENTS
 
@@ -42,7 +42,7 @@ def prep_run(expt,meta):
 def prep_metarun(expt,meta):
 	"""
 	"""
-	import ipdb;ipdb.set_trace()
+	raise Exception('development')
 
 ### RUN EXPERIMENTS
 
@@ -50,10 +50,15 @@ def execute(steps):
 	"""Call the execution routines."""
 	#! developing standard running now and then later supervised execution
 	if steps==[None]: 
+		# arriving at the execute function via `make go` means that we used a single python execution loop
+		#   to write an experiment and then import the script below to run it. this means that amx is imported
+		#   only once, and without the experiment. we delete the module here to ensure that it is imported
+		#   from scratch at the beginning of script.py below to ensure this mimics the usual execution of
+		#   the script from python at the terminal. note that os.system would work equally well
+		del sys.modules['amx']
 		#! when we import amx it needs to get the experiment and state so we move the files
 		#! ... when there is only one step expt.json should exist but it would be good to handle except here
 		#! previously started by running directly: os.system('python script.py')
-		# run the script by importing it
 		import ortho
 		# this is the entire point at which the script is executed, and it is nearly identical to running it 
 		# ... at the terminal. the only difference is that we get the environment, and conf from ortho

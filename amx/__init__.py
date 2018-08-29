@@ -7,7 +7,6 @@ reads an experiment and imports necessary codes
 
 from __future__ import print_function
 import os,sys,json
-#! relative imports fail here
 import automacs,utils,importer
 from legacy import init
 from state import AMXState
@@ -20,73 +19,25 @@ except: do_debug_env = False
 if ortho.conf.get('debug',do_debug_env)==True: sys.excepthook = ortho.dev.debug_in_place
 else: sys.excepthook = ortho.dev.tracebacker
 
-_has_state = os.path.isfile('state.json')
-if _has_state: print('status','found a previous state at state.json')
-
 """
-DEV NOTES!!!
-previous method moved expt_1.json to expt.json so it would be read 
-	and automatically read state.json if available
-since we have no information on why automacs was imported we have to do some inference
-the run functions in execution.py should handle the exceptions so that we always have the right files here
-use ortho to direct automacs?
-needs:
-- tracebacker?
-- magic imports i.e. acme submodulator
+external function refreshes globals
+note that this was designed so that we could reload the experiment
+  however that would require extra code in a simulation script
+  so loading a recently-written experiment when amx was already imported
+  was solved by deleting the amx module in the go function, which calls
+  the simulation script during supervised execution (i.e. `make go` versus non-supervised 
+  execution via `python script.py`). the module deletion is the only way to simulate
+  a fresh import of amx, and in this sense helps us to sidestep the convenient feature of 
+  python whereby one-loop execution of the prep and execution steps retains amx in memory
+  when we really want to simply supervise the script which should run as a standalone.
+  see ryan for more details
 """
 
-settings = AMXState(me='settings',underscores=True)
-state = AMXState(settings,me='state',upnames={0:'settings'})
-# import of the amx package depends on expt.json and any functions that do not require special importing
-#   which occurs outside of the main import e.g. amx/gromacs/configurator.py: gromacs_config
-blank_expt = {'settings':{}}
-if not os.path.isfile('expt.json'): incoming = blank_expt
-else:
-	with open('expt.json') as fp: incoming = json.load(fp)
-meta = incoming.pop('meta',{})
-# the expt variable has strict attribute lookups
-expt = AMXState(me='expt',strict=True,base=incoming)
-expt.meta = AMXState(me='expt.meta',strict=True,base=meta)
-settings.update(**expt.get('settings',{}))
-if _has_state: print('dev','get the state here!')
-
-#! automacs-general imports happen with `import automacs` above
-#! export manually
-#! this should be replaced with an automacs.py entry in the import router
-automacs.state = state
-automacs.settings = settings
-make_step = automacs.make_step
-copy_file = automacs.copy_file
-status = utils.status
-importer.state = state
-
-#!!! deprecated module routing
-_import_instruct = {
-	'special_import_targets':[('top',['automacs.py','cli.py','utils.py']),
-		('gromacs',['gromacs%s%s'%(os.path.sep,i) for i in 
-		#! rename common and other generic names or conflict when you develop lammps
-		'generic.py','common.py','calls.py','gromacs_commands.py','mdp.py',
-		'topology_tools.py','structure_tools.py','continue_script.py','postprocess.py',
-		'restraints.py','force_field_tools.py']),
-		('lammps',['lammps/lammps.py'])
-		,][:-1], #! lammps is on a branch for now
-	'import_rules':[('top','gromacs'),('top','lammps')][:-1], #! lammps is on a branch for now
-	'import_rules_explicit':[
-		{'source':'calls.py','target':'continue_script.py','name':'gmx_get_paths'},
-		{'source':'calls.py','target':'cli.py','name':'gmx_get_machine_config'},
-		{'source':'continue_script.py','target':'cli.py','name':'write_continue_script_master'},
-		{'source':'calls.py','target':'automacs.py','name':'gmx_get_paths'},
-		{'source':'gromacs_commands.py','target':'automacs.py','name':'gmx_commands_interpret'},
-		{'source':'gromacs_commands.py','target':'postprocess.py','name':'gmx_commands_interpret'},
-		{'source':'calls.py','target':'postprocess.py','name':'gmx'},
-		{'source':'gromacs_commands.py','target':'calls.py','name':'gmx_convert_template_to_call'},
-		{'source':'gromacs_commands.py','target':'postprocess.py','name':'gmx_get_last_call'},
-		#! move the machine configuration to amx and generalize it?
-		{'source':'calls.py','target':'lammps.py','name':'gmx_get_machine_config'},][:-1],
-	#! need more central handling of the command templates
-	'coda':"exec(open('amx/gromacs/command_templates.py','r').read(),subs['automacs.py'].__dict__)"}
+from automacs import automacs_refresh
+globals().update(**automacs_refresh())
 
 # module routing
+#! see retired imports from previous automacs
 _import_instruct = {
 	'modules':['gromacs'],
 	'decorate':{'functions':['gmx'],'subs':[('gromacs.calls','gmx_run')]},
@@ -94,6 +45,11 @@ _import_instruct = {
 
 # allow conf to override the import instructions
 _import_instruct = ortho.conf.get('_import_instruct',_import_instruct)
+
+# generic imports from amx.automacs
+from automacs import make_step,copy_file
+# generic exports to automacs core
+automacs.state = importer.state = state
 
 """
 MAGIC IMPORTS

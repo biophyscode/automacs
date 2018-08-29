@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os,shutil
+import os,shutil,json
 
 def make_step(name):
 	"""
@@ -60,3 +60,43 @@ def move_file(src,dest,**kwargs):
 	"""Wrapper for moving files."""
 	cwd = os.path.join(kwargs.get('cwd',state.here),'')
 	shutil.move(cwd+src,cwd+dest)
+
+def automacs_refresh():
+	"""
+	Get the experiment for amx/__init__.py.
+	Note that moving this to a separate function was designed to make it easier to reload the experiment.
+	However, this is better achieved by reimporting (deleting and importing) amx when necessary. This occurs
+	when the go function runs the script.py directly in the same python call. See runner.execution.execute.
+	"""
+	_has_state = os.path.isfile('state.json')
+	if _has_state: print('status','found a previous state at state.json')
+
+	"""
+	DEV NOTES!!!
+	previous method moved expt_1.json to expt.json so it would be read 
+		and automatically read state.json if available
+	since we have no information on why automacs was imported we have to do some inference
+	the run functions in execution.py should handle the exceptions so that we always have the right files here
+	use ortho to direct automacs?
+	needs:
+	- tracebacker?
+	- magic imports i.e. acme submodulator
+	"""
+
+	from .state import AMXState
+	settings = AMXState(me='settings',underscores=True)
+	state = AMXState(settings,me='state',upnames={0:'settings'})
+	# import of the amx package depends on expt.json and any functions that do not require special importing
+	#   which occurs outside of the main import e.g. amx/gromacs/configurator.py: gromacs_config
+	blank_expt = {'settings':{}}
+	if not os.path.isfile('expt.json'): incoming = blank_expt
+	else:
+		with open('expt.json') as fp: incoming = json.load(fp)
+	meta = incoming.pop('meta',{})
+	# the expt variable has strict attribute lookups
+	expt = AMXState(me='expt',strict=True,base=incoming)
+	expt.meta = AMXState(me='expt.meta',strict=True,base=meta)
+	settings.update(**expt.get('settings',{}))
+	if _has_state: print('dev','get the state here!')
+
+	return dict(_has_state=_has_state,settings=settings,state=state,expt=expt)
