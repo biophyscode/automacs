@@ -657,13 +657,17 @@ def write_structure_pdb(structure,pdb):
 
 ###---EQUILIBRATE + MINIMIZE
 
-def minimize(name,method='steep',top=None):
+def minimize(name,method='steep',top=None,restraints=False):
 	"""
 	Standard minimization procedure.
 	"""
 	log_base = 'grompp-%s-%s'%(name,method)
-	gmx('grompp',base='em-%s-%s'%(name,method),top=name if not top else re.sub('^(.+)\.top$',r'\1',top),
-		structure=name,log=log_base,mdp='input-em-%s-in'%method,nonessential=True)
+	grompp_kwargs = {}
+	if restraints==True: grompp_kwargs['r'] = '%s.gro'%name
+	elif restraints: grompp_kwargs['r'] = restraints
+	gmx('grompp',base='em-%s-%s'%(name,method),top=name if not top else re.sub(r'^(.+)\.top$',r'\1',top),
+		structure=name,log=log_base,mdp='input-em-%s-in'%method,nonessential=True,
+		maxwarn=state.q('maxwarn',0),**grompp_kwargs)
 	tpr = state.here+'em-%s-%s.tpr'%(name,method)
 	if not os.path.isfile(tpr): 
 		try:
