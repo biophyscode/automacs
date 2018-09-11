@@ -72,6 +72,7 @@ if 'initializers' in imported:
 if decorate_calls: from reporter import call_reporter
 for funcname in decorate_calls.get('functions',[]):
 	globals()[funcname] = call_reporter(func=globals()[funcname],state=state)
+	
 # special deep-dive call reporters for internal functions not called from the automacs script
 #! note that we cannot easily replace these functions without sys.modules
 for base,funcname in decorate_calls.get('subs',[]):

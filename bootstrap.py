@@ -13,6 +13,7 @@ default_configuration = {
 		'expt*.json','script*.py','log-*','*.log','v*-*','*.ipynb'],
 	'inputs': '@regex^.*?_expts\\.(yaml)$',
 	'install_check':'make gromacs_config',
+	'experiment_hooks':[('amx.gromacs.experiment_hooks','hook_experiment_modules')],
 	}
 
 # directory for current locations of popular modules
@@ -33,6 +34,8 @@ kickstarters = {
 
 'all':r"""
 make set_dict path=\""('modules','inputs/proteins',)"\" value=\""{'address':'%(github)s%(docs)s/amx-proteins.git','branch':'ortho'}"\"
+make set_dict path=\""('modules','inputs/bilayers',)"\" value=\""{'address':'%(github)s%(docs)s/amx-bilayers.git'}"\"
+make set_dict path=\""('modules','inputs/charmm',)"\" value=\""{'address':'%(github)s%(docs)s/amx-charmm.git'}"\"
 """%git_addresses,
 
 }

@@ -6,7 +6,7 @@ import re,os
 try: import yaml
 except: pass #! exception waits until later. raise Exception('missing yaml at experiments.py')
 ##! import yaml #! protect against no yaml?
-from ortho import listify,str_types,check_repeated_keys
+from ortho import listify,str_types,check_repeated_keys,read_config
 from ortho.requires import requires_python
 
 controlmsg = {
@@ -35,11 +35,27 @@ def collect_experiment_files(finder):
 	else: input_sources = listify(finder)
 	return input_sources
 
+def apply_hooks(raw):
+	"""..."""
+	config = read_config()
+	experiment_hooks = config.get('experiment_hooks',False)
+	if experiment_hooks:
+		from ortho import imports
+		for spot,name in experiment_hooks:
+			this_hook = imports.importer(spot)[name]
+			raw = this_hook(raw,config=config)
+	return raw
+
 def intepret_experiment_file_python(fn,toc,sources):
 	"""
 	Interpret a python experiment file.
 	"""
-	with open(fn) as fp: text_spec = fp.read()
+	config = read_config()
+	experiment_hooks = config.get('experiment_hooks',False)
+	with open(fn) as fp: 
+		text_spec = fp.read()
+	if experiment_hooks:
+		import pdb;pdb.set_trace()
 	if not check_repeated_keys(text_spec):
 		raise Exception(controlmsg['json']+' error is located in: %s'%fn)
 	inputlib_ins = eval(text_spec)
@@ -59,7 +75,9 @@ def intepret_experiment_file_yaml(fn,toc,sources):
 	Interpret a YAML experiment file.
 	"""
 	import yaml
-	with open(fn) as fp: spec = yaml.load(fp)
+	with open(fn) as fp: raw = fp.read()
+	raw = apply_hooks(raw)
+	spec = yaml.load(raw)
 	for key,val in spec.items():
 		if 'cwd' in val: raise Exception('file %s has key %s with cwd already defined'%(fn,key))
 		val['cwd'] = os.path.dirname(fn)

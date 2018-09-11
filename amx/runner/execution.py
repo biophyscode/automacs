@@ -7,7 +7,8 @@ import sys,json,shutil,os
 
 # use keys to classify experiment styles
 experiment_classifier = [
-	({'settings','params','tags','script','cwd'},'run'),]
+	({'settings','params','tags','script','cwd'},'run'),
+	({'settings','quick','params','tags','extensions'},'run'),]
 
 def classify_experiment(expt):
 	"""

@@ -15,7 +15,9 @@ def call_reporter(func,state):
 		# write to a log file
 		if state.step_log_file:
 			with open(state['step_log_file'],'a') as fp: fp.write(noted+'\n')
-		else: print('[NOTE] the following command is not logged to the step log')
+		else: 
+			print('note',('the following command (%s) is not '+
+				'logged to the step log')%func.__name__)
 		# accrue a history in the state
 		if 'history' not in state: state.history = []
 		state.history.append(noted)
