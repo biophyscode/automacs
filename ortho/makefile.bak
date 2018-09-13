@@ -1,0 +1,92 @@
+
+### makeface (MAKEfile interFACE)
+### by Ryan Bradley, distributed under copyleft
+### a crude but convenient way of making CLIs for python
+### this file requires a minimal makeface.py and the ortho library
+
+# set the shell (sh lacks source)
+SHELL:=/bin/bash
+# unbuffered output is best. exclude bytecode
+# add the "-tt" flag here for python3 errors
+python_flags = "-ttuB"
+# remove protected standalone args
+protected_targets=
+# you can set the python executable before or after make
+python?=python
+
+# write makeface backend
+# try _do_debug=True for run_program to debug in-place
+define MAKEFACE_BACKEND
+#!/bin/bash
+"exec" "python" "-B" "$0" "$@"
+from __future__ import print_function
+import ortho
+ortho.run_program()
+endef
+# to shell to python
+export MAKEFACE_BACKEND
+
+# unpack
+MAKEFLAGS+=-s
+RUN_ARGS_UNFILTER:=$(wordlist 1,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+RUN_ARGS:=$(filter-out $(protected_targets),$(RUN_ARGS_UNFILTER))
+
+# request targets from python
+#! getting targets requires one full loop with imports
+#? speed things up by using a header of some kind, or ast?
+SHELL_CHECK_TARGETS:=$(python) $(python_flags) -c "import ortho;ortho.get_targets()"
+ENV_EXCLUDES:=set unset
+TARGETS:=$(shell ${SHELL_CHECK_TARGETS} | \
+	perl -ne 'print $$1 if /^.*?make targets\:\s*(.+)/')
+
+# request env from config
+SHELL_CHECK_ENV:=(ENV_PROBE=True $(python) $(python_flags) -c "import ortho")
+ENV_CMD:=$(shell ${SHELL_CHECK_ENV} | \
+	perl -ne 'print $$1 if /^.*?environment\:\s*(.+)/')
+
+# exit if target not found
+controller_function = $(word 1,$(RUN_ARGS))
+ifneq ($(controller_function),)
+ifeq ($(filter $(controller_function),$(TARGETS)),)
+    $(info [ERROR] invalid make target `$(controller_function)`)
+    $(info [NOTE] expose python functions to make via `make setlist commands path/to/script.py`)
+    $(info [NOTE] alternately check your setup routine to make sure config.json is correct)
+    $(info [NOTE] make targets="$(TARGETS)")
+    $(error missing target)
+endif
+endif
+
+# dummy file for always executing
+checkfile=.pipeline_up_to_date
+touchup:
+ifeq ($(RUN_ARGS),)
+	@echo "[STATUS] makefile targets: \"$(TARGETS)\""
+	@touch $(checkfile)
+endif
+$(checkfile): touchup
+
+# make without arguments
+default: $(checkfile)
+
+# route (only) the controller function to checkfile so it runs
+$(controller_function): $(checkfile)
+# if the target is in a special exclude list then we skip the environment and run directly
+ifneq ($(filter $(word 1,$(RUN_ARGS)),$(ENV_EXCLUDES)),)
+	@/bin/echo "[STATUS] executing special function $(word 1,$(RUN_ARGS)) without environment"
+	@env $(python) $(python_flags) -c "$$MAKEFACE_BACKEND" ${RUN_ARGS} ${MAKEFLAGS}
+else
+ifeq ($(ENV_CMD),)
+	@env $(python) $(python_flags) -c "$$MAKEFACE_BACKEND" ${RUN_ARGS} ${MAKEFLAGS}
+else
+	@/bin/echo "[STATUS] environment: \"source $(ENV_CMD)\""
+	( source $(ENV_CMD) && ENV_CMD="$(ENV_CMD)" env $(python) \
+	$(python_flags) -c "$$MAKEFACE_BACKEND" ${RUN_ARGS} ${MAKEFLAGS} )
+endif
+endif
+
+# ignore run arguments
+$(RUN_ARGS): 
+
+# forget flags for recursive make calls
+unexport MAKEFLAGS
+unexport RUN_ARGS
