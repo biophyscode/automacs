@@ -24,7 +24,7 @@ expose = {
 	'environments':['environ','env_list','register_extension','load_extension'],
 	'data':['check_repeated_keys'],
 	'imports':['importer'],
-	'queue':['qbasic'],
+	#'queue':['qbasic'],
 	'unit_tester':['unit_tester'],
 	'misc':['listify','treeview','str_types','string_types','say'],
 	'reexec':['iteratively_execute','interact']}
