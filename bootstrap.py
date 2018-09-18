@@ -34,9 +34,9 @@ kickstarters = {
 
 'all':r"""
 make set_dict path=\""('modules','inputs/proteins',)"\" value=\""{'address':'%(github)s%(proteins)s/amx-proteins.git','branch':'ortho'}"\"
-make set_dict path=\""('modules','inputs/bilayers',)"\" value=\""{'address':'%(github)s%(bilayers)s/amx-bilayers.git'}"\"
+make set_dict path=\""('modules','inputs/bilayers',)"\" value=\""{'address':'%(github)s%(bilayers)s/amx-bilayers.git','branch':'ortho'}"\"
+make set_dict path=\""('modules','inputs/extras',)"\" value=\""{'address':'%(github)s%(extras)s/amx-extras.git','branch':'ortho'}"\"
 make set_dict path=\""('modules','inputs/charmm',)"\" value=\""{'address':'%(github)s%(charmm)s/amx-charmm.git'}"\"
-make set_dict path=\""('modules','inputs/extras',)"\" value=\""{'address':'%(github)s%(extras)s/amx-extras.git'}"\"
 make set_dict path=\""('modules','inputs/structure-repo',)"\" value=\""{'address':'%(github)s%(structures)s/amx-structures.git'}"\"
 """%git_addresses,
 
