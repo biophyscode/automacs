@@ -2,6 +2,8 @@
 
 import os,shutil,json
 
+_shared_extensions = ['make_step','copy_file','copy_files','move_file']
+
 def make_step(name):
 	"""
 	Make a new step, with folder.

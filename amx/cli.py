@@ -12,6 +12,7 @@ import ortho
 # use importer to import any functions which cannot import the entire amx
 from ortho.imports import importer
 from ortho import conf,bash
+from ortho.requires import requires_program
 import ortho.modules
 
 def gromacs_config(*args,**kwargs):
@@ -49,3 +50,13 @@ def help():
 	treeview(dict(commands=funcs.keys()))
 	treeview(dict(commands=dict([(i,j.__module__) for i,j in funcs.items() if hasattr(j,'__module__')])))
 	import pdb;pdb.set_trace()
+
+def watch():
+	"""
+	Wrapper for a command which tails the oldest mdrun command.
+	"""
+	#! reformulate this to use the bash watch function to watch the most current file
+	#!   and try using @requires_program('watch')
+	# original command works well for watching the last mdrun but doesn't monitor the files
+	cmd = 'find ./ -name "log-mdrun*" | xargs ls -ltrh | tail -n 1 | awk \'{print $9}\' | xargs tail -f'
+	os.system(cmd)

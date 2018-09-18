@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-import re,os,glob,json,shutil,copy
+import re,os,sys,glob,json,shutil,copy
+#! hack to get the state in a script in a module. distribute methods needs checked and improved!
+state = sys.modules['amx'].state
 from force_field_tools import Landscape
 from topology_tools import GMXTopology
 
@@ -89,7 +91,7 @@ def transform_itp(itp,specs):
 	restraints = specs.pop('restraints')
 	naming = specs.pop('naming')
 	target_type = specs.pop('which')
-	if specs: raise Exception('unprocessed specs')
+	if specs: raise Exception('unprocessed specs: %s'%specs)
 	#---we apply the transformation to the valid molecules
 	for mol in list(itp.molecules.keys()):
 		mol_spec = itp.molecules[mol]
@@ -105,6 +107,8 @@ def transform_itp(itp,specs):
 				elif restraint_type=='charmm_glycerol':
 					#---the glycerol group in charmm is named C1, C2, C3
 					atom_names_targets = ['C1']
+				elif restraint_type=='heavy':
+					atom_names_targets = [i for i in atom_names if not re.match('^H',i)]
 				else: raise Exception('unclear restraint type: %s'%restraint_type)
 				#---once we select the atom names for this target, we apply the restraints
 				kwargs = dict([('fc%s'%k,v) for k,v in rspec.items()])
@@ -129,6 +133,7 @@ def restraint_maker():
 	"""
 	#---settings
 	base_ff = state.base_force_field
+	if not base_ff: raise Exception('add base_force_field to the settings')
 	if not os.path.isdir(base_ff): raise Exception('base force field must be a directory: %s'%base_ff)
 	if not os.path.isfile(os.path.join(base_ff,'meta.json')): 
 		raise Exception('base force field requires a meta.json file: %s'%base_ff)
@@ -142,6 +147,8 @@ def restraint_maker():
 
 		#---we deposit the new force field in the deposit site
 		out_ff_dn = os.path.join(state.deposit_site,out_ff)
+		if os.path.isdir(out_ff_dn):
+			raise Exception('%s exists. clear it and rerun to replace it'%out_ff_dn)
 
 		#---! minor hack whereby we copy the whole force field and just overwrite parts of it
 		#---! ...note that this might be dangerous
@@ -161,8 +168,11 @@ def restraint_maker():
 				#---next make sure that at least one of the restrain specs is a type e.g. lipids
 				#---...that is also in the list of tags for this itp file
 				#---! this seems clumsy
-				if any([i in [i['which'] for i in specs_listing] for i in meta[key]]):
-					valid_target_itps.append(key)
+				try:
+					if any([i in [i['which'] for i in specs_listing] for i in meta[key]]):
+						valid_target_itps.append(key)
+				except:
+					import pdb;pdb.set_trace()
 		#---apply rules to all itps
 		for itp_name in valid_target_itps:
 			#---each value in "wants" is a list of restraint items that must be applied so that we can 

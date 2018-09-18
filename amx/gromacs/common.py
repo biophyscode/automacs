@@ -19,12 +19,12 @@ from ortho import str_types
 from gromacs_commands import gmx_get_last_call
 #! note if we can do these automacs imports why can't we also get the call_reporter?
 from ..utils import status
-from ..automacs import copy_file
+from ..automacs import copy_file,move_file
 
 #---hide some functions from logging because they are verbose
 _not_reported = ['write_gro','dotplace','unique']
 #---extensions shared throughout the codes
-_shared_extensions = ['dotplace','unique']
+#! moved up to module _shared_extensions = ['dotplace','unique']
 
 #---write a float in a format favorable to GRO to ensure the dot is always in the right place
 dotplace = lambda n: re.compile(r'(\d)0+$').sub(r'\1',"%8.3f"%float(n)).ljust(8)
@@ -591,7 +591,8 @@ def solvate(structure,gro,edges=None,center=False):
 	state.bilayer_dimensions_solvate = boxdims_old
 	state.water_without_ions = nwaters
 
-def counterions(structure,top=None,includes=None,ff_includes=None,gro='counterions'):
+def counterions(structure,top=None,includes=None,ff_includes=None,gro='counterions',
+	restraints=False):
 	"""
 	Standard procedure for adding counterions.
 	The resname must be understandable by "r RESNAME" in make_ndx and writes to the top file.
@@ -608,9 +609,13 @@ def counterions(structure,top=None,includes=None,ff_includes=None,gro='counterio
 		component(resname,count=state.water_without_ions)
 	#---write the topology file as of the solvate step instead of copying them (genion overwrites top)
 	write_top('counterions.top')
+	# bilayers have restraints during genion step so we pass that along here
+	grompp_kwargs = {}
+	if restraints==True: grompp_kwargs['r'] = '%s.gro'%structure
+	elif restraints: grompp_kwargs['r'] = restraints
 	gmx('grompp',base='genion',structure=structure,
 		top='counterions',mdp='input-em-steep-in',
-		log='grompp-genion',maxwarn=state.get('maxwarn',0))
+		log='grompp-genion',maxwarn=state.get('maxwarn',0),**grompp_kwargs)
 	gmx('make_ndx',structure=structure,ndx='solvate-waters',
 		inpipe='keep 0\nr %s\nkeep 1\nq\n'%resname,
 		log='make-ndx-counterions-check')
@@ -659,14 +664,17 @@ def write_structure_pdb(structure,pdb):
 
 ###---EQUILIBRATE + MINIMIZE
 
-def minimize(name,method='steep',top=None):
+def minimize(name,method='steep',top=None,restraints=False):
 	"""
 	Standard minimization procedure.
 	"""
 	log_base = 'grompp-%s-%s'%(name,method)
+	grompp_kwargs = {}
+	if restraints==True: grompp_kwargs['r'] = '%s.gro'%name
+	elif restraints: grompp_kwargs['r'] = restraints
 	gmx('grompp',base='em-%s-%s'%(name,method),top=name if not top else re.sub('^(.+)\.top$',r'\1',top),
 		structure=name,log=log_base,mdp='input-em-%s-in'%method,nonessential=True,
-		maxwarn=state.q('maxwarn',0))
+		maxwarn=state.q('maxwarn',0),**grompp_kwargs)
 	tpr = state.here+'em-%s-%s.tpr'%(name,method)
 	if not os.path.isfile(tpr): 
 		try:
@@ -698,7 +706,8 @@ def equilibrate_check(name):
 		found = True
 	return found
 
-def equilibrate(groups=None,structure='system',top='system',stages_only=False,seq=None):
+def equilibrate(groups=None,structure='system',top='system',
+	stages_only=False,seq=None,restraints=False):
 	"""
 	Standard equilibration procedure.
 	"""
@@ -715,10 +724,15 @@ def equilibrate(groups=None,structure='system',top='system',stages_only=False,se
 	#---sequential equilibration stages
 	for eqnum,name in enumerate(seq):
 		if not equilibrate_check(name):
+			structure_this = structure if eqnum == 0 else 'md-%s'%seq[eqnum-1]
+			grompp_kwargs = {}
+			if restraints==True: grompp_kwargs['r'] = '%s.gro'%structure_this
+			elif restraints: grompp_kwargs['r'] = restraints
+			if groups: grompp_kwargs['n'] = groups
 			gmx('grompp',base='md-%s'%name,top=top,
-				structure=structure if eqnum == 0 else 'md-%s'%seq[eqnum-1],
+				structure=structure_this,
 				log='grompp-%s'%name,mdp='input-md-%s-eq-in'%name,
-				maxwarn=state.get('maxwarn',0),**({'n':groups} if groups else {}))
+				maxwarn=state.get('maxwarn',0),**grompp_kwargs)
 			gmx('mdrun',base='md-%s'%name,log='mdrun-%s'%name,nonessential=True)
 			if not os.path.isfile(state.here+'md-%s.gro'%name): 
 				raise Exception('mdrun failure at %s'%name)
@@ -727,10 +741,15 @@ def equilibrate(groups=None,structure='system',top='system',stages_only=False,se
 		#---first part of the equilibration/production run
 		name = 'md.part0001'
 		if not equilibrate_check(name) or seq == []:
+			structure_this = 'md-%s'%seq[-1] if seq else structure,
+			grompp_kwargs = {}
+			if restraints==True: grompp_kwargs['r'] = '%s.gro'%structure_this
+			elif restraints: grompp_kwargs['r'] = restraints
+			if groups: grompp_kwargs['n'] = groups
 			gmx('grompp',base=name,top=top,
-				structure='md-%s'%seq[-1] if seq else structure,
+				structure=structure_this,
 				log='grompp-0001',mdp='input-md-in',
-				maxwarn=state.get('maxwarn',0),**({'n':groups} if groups else {}))
+				maxwarn=state.get('maxwarn',0),**grompp_kwargs)
 			gmx('mdrun',base=name,log='mdrun-0001')
 
 def restart_clean(part,structure,groups,posres_coords=None,mdp='input-md-in'):
@@ -752,9 +771,9 @@ def atomistic_or_coarse():
 	"""
 	We rely on tags to identify atomistic and coarse-grained simulations rather than settings.
 	"""
-	if not 'cgmd' in state.expt['tags'] and not 'aamd' in state.expt['tags']:
+	if not 'cgmd' in expt['tags'] and not 'aamd' in expt['tags']:
 		raise Exception('neither `aamd` nor `cgmd` can be found in your `tags` key in your experiment')
-	return 'cgmd' if 'cgmd' in state.expt['tags'] else 'aamd'
+	return 'cgmd' if 'cgmd' in expt['tags'] else 'aamd'
 
 def grouper(ndx='system-groups',protein=True,lipids=True):
 	"""

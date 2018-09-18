@@ -3,7 +3,7 @@
 import re
 
 def hook_experiment_modules(raw,config):
-	"""..."""
+	"""Handle the @-syntax on experiment modules by looking them up in config.json."""
 	subs = {}
 	for spot,_ in config.get('modules',{}).items():
 		key,val = spot.split('/')[-1],spot

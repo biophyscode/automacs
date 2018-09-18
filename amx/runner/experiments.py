@@ -61,8 +61,6 @@ def intepret_experiment_file_python(fn,toc,sources):
 	inputlib_ins = eval(text_spec)
 	# attach location to each incoming hash
 	for key,val in inputlib_ins.items():
-		if 'cwd' in val: raise Exception('file %s has key %s with cwd already defined'%(fn,key))
-		val['cwd'] = os.path.dirname(fn)
 		# populate the master inputlib
 		# sequential overwriting happens here
 		if key in toc: raise Exception('input file %s contains a key "%s" that we already found!'%(fn,key))
@@ -79,8 +77,6 @@ def intepret_experiment_file_yaml(fn,toc,sources):
 	raw = apply_hooks(raw)
 	spec = yaml.load(raw)
 	for key,val in spec.items():
-		if 'cwd' in val: raise Exception('file %s has key %s with cwd already defined'%(fn,key))
-		val['cwd'] = os.path.dirname(fn)
 		if key in toc: raise Exception('input file %s contains a key "%s" that we already found!'%(fn,key))
 		else: toc[key],sources[key] = val,fn
 	return

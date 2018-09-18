@@ -35,6 +35,7 @@ def cleanup(sure=False):
 	"""
 	Clean files from the current directory.
 	"""
+	print('status','cleaning this simulation')
 	config = ortho.conf
 	if 'cleanup' not in config: raise Exception('configuration is missing cleanup instructions')
 	fns = []
@@ -65,12 +66,15 @@ def experiment(procname,run=False):
 	# send the experiment to the runner
 	runner(experiment,meta=metadata,run=run)
 
-def prep(procname=None):
+def prep(procname=None,terse=False):
 	"""Prepare an experiment or show the list."""
 	if procname==None: 
 		experiments = collect_experiments(conf=ortho.conf)
-		#! visualizer 
-		ortho.treeview(dict(experiments=experiments))
+		if terse: ortho.treeview(
+			dict(experiments=experiments['experiments'].keys()))
+		else:
+			#! visualizer 
+			ortho.treeview(dict(experiments=experiments))
 	else: experiment(procname=procname,run=False)
 
 def go(procname,clean=False): 

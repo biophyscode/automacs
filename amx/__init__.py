@@ -33,21 +33,20 @@ note that this was designed so that we could reload the experiment
   see ryan for more details
 """
 
+# state and settings are loaded here
 from automacs import automacs_refresh
 globals().update(**automacs_refresh())
 
 # module routing
 #! see retired imports from previous automacs
 _import_instruct = {
-	'modules':['gromacs'],
+	'modules':['amx/gromacs','amx/utils','amx/automacs'],
 	'decorate':{'functions':['gmx'],'subs':[('gromacs.calls','gmx_run')]},
 	'initializers':['gromacs_initializer']}
 
 # allow conf to override the import instructions
 _import_instruct = ortho.conf.get('_import_instruct',_import_instruct)
 
-# generic imports from amx.automacs
-from automacs import make_step,copy_file
 # generic exports to automacs core
 automacs.state = importer.state = state
 
@@ -72,7 +71,7 @@ if 'initializers' in imported:
 if decorate_calls: from reporter import call_reporter
 for funcname in decorate_calls.get('functions',[]):
 	globals()[funcname] = call_reporter(func=globals()[funcname],state=state)
-	
+
 # special deep-dive call reporters for internal functions not called from the automacs script
 #! note that we cannot easily replace these functions without sys.modules
 for base,funcname in decorate_calls.get('subs',[]):

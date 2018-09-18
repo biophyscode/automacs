@@ -3,6 +3,7 @@
 import sys,subprocess
 
 _not_reported = ['status']
+_shared_extensions = ['status']
 
 #---you can use six.string_types or a try to locate basestring (but this fails on python 3 before 3.5)
 #---...however the simplest solution is to check if the type is in a list that depends on the system version
