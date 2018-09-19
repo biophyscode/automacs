@@ -741,7 +741,7 @@ def equilibrate(groups=None,structure='system',top='system',
 		#---first part of the equilibration/production run
 		name = 'md.part0001'
 		if not equilibrate_check(name) or seq == []:
-			structure_this = 'md-%s'%seq[-1] if seq else structure,
+			structure_this = 'md-%s'%seq[-1] if seq else structure
 			grompp_kwargs = {}
 			if restraints==True: grompp_kwargs['r'] = '%s.gro'%structure_this
 			elif restraints: grompp_kwargs['r'] = restraints
