@@ -562,9 +562,9 @@ def solvate(structure,gro,edges=None,center=False):
 		structure = structure_new
 	#---if no solvent argument we go and fetch it
 	solvent = state.q('solvent','spc216')
-	#if solvent=='spc216' and not os.path.isfile(state.here+'spc216.gro'):
-	#	share_dn = gmx_get_share()
-	#	shutil.copyfile(os.path.join(share_dn,'spc216.gro'),state.here+'spc216.gro')
+	if solvent=='spc216' and not os.path.isfile(state.here+'spc216.gro'):
+		share_dn = gmx_get_share()
+		shutil.copyfile(os.path.join(share_dn,'spc216.gro'),state.here+'spc216.gro')
 	#---! solvent must be centered. for some reason spc216 is not in the box entirely.
 	if solvent=='spc216':
 		_,boxdims_spc216 = get_box_vectors('spc216')
