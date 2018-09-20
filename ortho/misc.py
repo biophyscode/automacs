@@ -13,9 +13,21 @@ str_types_list = list(str_types)
 
 def listify(x): 
 	"""Turn a string or a list into a list."""
-	if type(x)==str: return [x]
-	elif type(x)==list: return x
-	else: raise Exception('listify expects a string or a list')
+	if isinstance(x,basestring): return [x]
+	elif isinstance(x,list): return x
+	elif isinstance(x,tuple): return x
+	else: raise Exception(
+		'listify takes a string, list, tuple but got: %s'%type(x))
+
+def unique(items):
+	"""
+	Enforce uniqueness on a list.
+	"""
+	try: (element,) = items
+	except ValueError: 
+		raise Exception('expecting only one item in this list: %s'%str(items))
+	return element
+
 
 def asciitree(obj,depth=0,wide=2,last=[],recursed=False):
 	"""

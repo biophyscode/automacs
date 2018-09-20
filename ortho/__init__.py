@@ -26,7 +26,7 @@ expose = {
 	'imports':['importer'],
 	#'queue':['qbasic'],
 	'unit_tester':['unit_tester'],
-	'misc':['listify','treeview','str_types','string_types','say'],
+	'misc':['listify','unique','treeview','str_types','string_types','say'],
 	'reexec':['iteratively_execute','interact']}
 
 # use `python -c "import ortho"` to bootstrap the makefile
