@@ -34,7 +34,7 @@ class ExperimentHandler(Handler):
 	# note that the meta keywrord is routed separately in the handler
 	# hence the taxonomy keys match the yaml file exactly
 	taxonomy = {
-		'run':{'base':{'settings','script'},'opts':{'extensions','tags','params'}},
+		'run':{'base':{'settings','script'},'opts':{'extensions','tags','params','extends'}},
 		'quick':{'base':{'settings','quick'},'opts':{'params','tags','extensions'}},}
 	def prep_step(self,expt,meta,no=None):
 		"""
@@ -52,6 +52,24 @@ class ExperimentHandler(Handler):
 			'script_%d.py'%no if no!=None else 'script.py')
 	def run(self,**kwargs):
 		"""Prepare a single run without numbering."""
+		extends = kwargs.pop('extends',None)
+		# use settings from one experiment as a base for the other
+		if extends:
+			import ortho
+			from .chooser import collect_experiments
+			expts = collect_experiments(ortho.conf)
+			if extends not in expts['experiments']:
+				raise Exception(
+					'cannot find experiment %s which extends this one: %s'%(
+						extends,self.meta['experiment_name']))
+			new_settings = expts['experiments'][extends]['settings']
+			new_settings.update(**kwargs['settings'])
+			kwargs['settings'] = new_settings
+			# inherit some items from the parent
+			for key in ['params','extensions']:
+				if (key not in kwargs 
+					and key in expts['experiments'][extends]):
+					kwargs[key] = expts['experiments'][extends][key]
 		self.prep_step(expt=kwargs,meta=self.meta,no=None)
 		return [None]
 	def quick(self,**kwargs): 

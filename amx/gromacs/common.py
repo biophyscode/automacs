@@ -11,6 +11,7 @@ Generic extensions used by: proteins, bilayers
 from __future__ import print_function
 import os,sys,re,glob,shutil,subprocess,json
 #!!! removing because more honest import scheme! import numpy as np
+import numpy as np
 
 from calls import gmx,gmx_get_share
 from generic import component,include
@@ -825,3 +826,21 @@ def protein_laden(structure='system'):
 	struct = GMXStructure(state.here+'%s.gro'%structure)
 	land = Landscape()
 	return np.any(np.in1d(struct.residue_names,land.protein_residues))
+
+def water_solvate_exact(input,output):
+	"""..."""
+	struct = GMXStructure(state.here+input)
+	inds_water = np.where(struct.residue_names=='SOL')[0]
+	residues_water = np.unique(struct.residue_indices[inds_water])
+	n_waters = len(residues_water)
+	if n_waters-state.water<0:
+		raise Exception('requested %d waters but there are only %d'%(state.water,n_waters,))
+	reorder = range(n_waters)
+	np.random.shuffle(reorder)
+	removes = reorder[:-state.water]
+	removes_residues = np.sort(residues_water[removes])
+	keep = np.where(False==np.in1d(struct.residue_indices,removes_residues))[0]
+	for key in ['atom_names','residue_names','residue_indices','points']:
+		struct.__dict__[key] = struct.__dict__[key][keep]
+	struct.write(state.here+output)
+	

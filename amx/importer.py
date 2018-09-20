@@ -81,6 +81,7 @@ def magic_importer(expt,instruct,**kwargs):
 	# decorate outgoing functions
 	for key,val in outgoing.items():
 		if key not in reported_functions: continue
+		#! cannot report class instantiation
 		outgoing[key] = call_reporter(func=val,state=state)
 	imported['functions'] = outgoing
 	return imported

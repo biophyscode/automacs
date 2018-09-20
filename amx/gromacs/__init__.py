@@ -30,5 +30,6 @@ else:
 	from .initializer import gromacs_initializer
 	from .restraints import restraint_maker
 	from .generic import *
+	from .structure_tools import *
 	# distribute everything imported here as a shared extension
 	_shared_extensions = [i for i in list(set(globals().keys())-before_keys) if callable(globals()[i])]

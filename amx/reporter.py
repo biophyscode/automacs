@@ -5,6 +5,10 @@ from __future__ import print_function
 def call_reporter(func,state):
 	"""Every function reports itself."""
 	def loud(*args,**kwargs):
+		if not hasattr(func,'__code__'):
+			#! classes need developed
+			print('status','calling non-function: %s'%str(func))
+			return func(*args,**kwargs)	
 		argnames = func.__code__.co_varnames[:func.__code__.co_argcount]
 		noted = func.__name__+"("+','.join('%s=%r' % entry
 			for entry in list(zip(argnames,args[:len(argnames)]))+
