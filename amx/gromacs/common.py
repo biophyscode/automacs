@@ -593,7 +593,7 @@ def solvate(structure,gro,edges=None,center=False):
 	state.water_without_ions = nwaters
 
 def counterions(structure,top=None,includes=None,ff_includes=None,gro='counterions',
-	restraints=False):
+	restraints=False,counts=None):
 	"""
 	Standard procedure for adding counterions.
 	The resname must be understandable by "r RESNAME" in make_ndx and writes to the top file.
@@ -602,7 +602,7 @@ def counterions(structure,top=None,includes=None,ff_includes=None,gro='counterio
 	#---we store the water resname in the wordspace as "sol"
 	resname =  state.q('sol','SOL')
 	#---! the following section fails on the helix-0 test set which tracks water accurately
-	if True:
+	if state.get('counterions_header',True):
 		#---clean up the composition in case this is a restart
 		for key in ['cation','anion',resname]:
 			try: state.composition.pop(list(zip(*state.composition))[0].index(state.q(key)))
@@ -623,10 +623,10 @@ def counterions(structure,top=None,includes=None,ff_includes=None,gro='counterio
 	if not state.ionic_strength: raise Exception('specify ionic strength in the settings (in mol/L)')
 	for key in ['cation','anion']:
 		if not state.q(key,None): raise Exception('you must specify %s in settings'%key)
+	counts = dict(conc='%f'%state.q('ionic_strength'),neutral=True) if not counts else counts
 	gmx('genion',base='genion',gro=gro,ndx='solvate-waters',
 		cation=state.cation,anion=state.anion,
-		conc='%f'%state.q('ionic_strength'),neutral=True,
-		log='genion')
+		log='genion',**counts)
 	with open(state.here+'log-genion','r') as fp: lines = fp.readlines()
 	declare_ions = list(filter(lambda x:re.search('Will try',x)!=None,lines)).pop()
 	ion_counts = re.findall(
