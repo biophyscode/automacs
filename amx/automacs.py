@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os,shutil,json
+from ortho.misc import listify
 
 _shared_extensions = ['make_step','copy_file','copy_files','move_file']
 
@@ -35,7 +36,7 @@ def make_step(name):
 	#! ... by attaching the amx module itself to state and the hook by string from amx globals
 	# note that files are not recopied on re-run because if make-step only runs once during iterative execute
 	# special: copy all files
-	for fn in state.get('files',[]):
+	for fn in listify(state.get('files',[])):
 		if not os.path.isfile(fn): raise Exception('cannot find an item requested in files: %s'%fn)
 		shutil.copyfile(fn,os.path.join(state.here,os.path.basename(fn)))
 	# special: copy all sources
