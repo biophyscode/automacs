@@ -7,7 +7,7 @@ note that amx/runner is included in the config.py commands list to supply prep,c
 
 from __future__ import print_function
 
-import os
+import os,subprocess
 import ortho
 # use importer to import any functions which cannot import the entire amx
 from ortho.imports import importer
@@ -60,3 +60,16 @@ def watch():
 	# original command works well for watching the last mdrun but doesn't monitor the files
 	cmd = 'find ./ -name "log-mdrun*" | xargs ls -ltrh | tail -n 1 | awk \'{print $9}\' | xargs tail -f'
 	os.system(cmd)
+
+def gitcheck():
+	"""
+	Check all git repos for changes.
+	"""
+	from ortho import ctext
+	# loop over modules and check the status
+	#for far,near in [('.','.')]+conf['modules']:
+	for spot,mod in conf.get('modules',{}).items()+[('.','.')]:
+		print('status','checking `git status` of %s'%ctext(
+			'automacs root (.)' if spot=='.' else spot,'angry'))
+		subprocess.check_call('git status',cwd=spot,shell=True)
+	print('status','the above messages will tell you if you are up to date')
