@@ -150,3 +150,57 @@ def locate(keyword):
 	"""
 	os.system((r'find . -name "*.py" -not -path "./env/*" '+
 		r'| xargs egrep -i --color=always "(def|class) \w*%s\w*"')%keyword)
+
+class ColorPrinter:
+	"""
+	Write colorful text to terminal.
+	To use ColorPrinter in a script, include:
+		out = ColorPrinter().print
+	Arguments can be builtins, schemes, or integers:
+		out('plain')
+		out('this is angry i.e. red and bold','angry')
+		out('this is just red','red')
+		out('this message is ansi',91)
+	"""
+	#! systematic way to load this with all the colors?
+	defs_colors = dict(
+		red=91,purple=95,cyan=96,dark_cyan=36,blue=94,green=92,
+		bold=1,underline=4,blink=5,gray=123,
+		b_black=40)
+	schemes = dict(angry=('red','bold'),
+		red_black=('red','b_black'),cyan_black=('cyan','b_black'))
+	def _syntax(self,text,how=None): 
+		return b'\033[%sm%s\033[0m'%(
+			';'.join([str(i) for i in how]) if how else '',
+			text if not self.tag else '%s%s'%(self.tag,text))
+	def __init__(self,scheme=None,tag=None,back=False):
+		self.back = back
+		self.scheme = scheme
+		self.name_to_colors = dict((i,(j,)) for i,j in self.defs_colors.items())
+		self.name_to_colors.update(**dict([(i,tuple([
+			m for n in (self.name_to_colors[k] for k in j) for m in n]))
+			for i,j in self.schemes.items()]))
+		self.tag = tag
+	def printer(self,text,*how,**kwargs):
+		#! is it clumsy to do kwargs this way? slow
+		back = kwargs.pop('back',self.back)
+		if kwargs: raise Exception
+		scheme = how if how else self.scheme
+		if not scheme: this = text if not self.tag else '%s%s'%(self.tag,text)
+		else: 
+			spec = list(set([i for j in [
+				self.name_to_colors.get(h,(h,)) for h in how] for i in j]))
+			invalid_codes = [s for s in spec if not isinstance(s,int)]
+			if any(invalid_codes): 
+				raise Exception('Invalid ANSI codes: %s'%str(invalid_codes))
+			this = self._syntax(text=text,how=spec)
+		if back: return this
+		else: print(this)
+
+def ctext(*args,**kwargs):
+	"""
+	Wrap the color printer so you can get 
+	color text back with ctext('error','angry').
+	"""
+	printer = ColorPrinter(back=True).printer
+	return printer(*args,**kwargs)
