@@ -66,7 +66,7 @@ class ExperimentHandler(Handler):
 			new_settings.update(**kwargs['settings'])
 			kwargs['settings'] = new_settings
 			# inherit some items from the parent
-			for key in ['params','extensions']:
+			for key in ['params','extensions','tags']:
 				if (key not in kwargs 
 					and key in expts['experiments'][extends]):
 					kwargs[key] = expts['experiments'][extends][key]
