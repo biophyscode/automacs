@@ -220,6 +220,7 @@ def gmx_get_paths(override=False,gmx_series=False,hostname=None):
 		if gmx_series == 5:
 			for key,val in gmxpaths.items():
 				gmxpaths[key] = re.sub('gmx ','gmx%s '%suffix,val)
+				if key=='gmx': gmxpaths[key] = 'gmx%s'%suffix
 		else: gmxpaths = dict([(key,val+suffix) for key,val in gmxpaths.items()])
 	if 'nprocs' in machine_config and machine_config['nprocs'] != None: 
 		gmxpaths['mdrun'] += ' -nt %d'%machine_config['nprocs']
