@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-import os,sys,re,importlib
+import os,sys,re,importlib,glob
 
 def strip_builtins(mod):
 	"""
@@ -113,7 +113,7 @@ def importer(source,verbose=False,distribute=None,strict=False):
 			if verbose: print('note','successfully imported')
 		# try import if path is in subdirectory
 		# note that we have to use the fn_alt below if we don't want to perturb paths
-		except Exception as e:
+		except Exception as e1:
 			rel_dn = os.path.relpath(dn,os.getcwd())
 			# if the path is a subdirectory we try the import with dots
 			if os.path.relpath(dn,os.getcwd())[:2]!='..':
@@ -124,15 +124,15 @@ def importer(source,verbose=False,distribute=None,strict=False):
 				mod = importlib.import_module(fn_alt,package='./')
 			else: 
 				#!? print('go up to next try?')
-				raise Exception(e)
+				raise Exception(e1)
 		if distribute: distribute_to_module(mod,distribute)
 		# always return the module as a dictionary
 		return strip_builtins(mod)
 	# fallback methods for importing remotely
-	except Exception as e: 
+	except Exception as e2: 
 		if verbose: 
 			print('warning','standard import failed for "%s" at "%s"'%(fn,dn))
-			print('exception',e)
+			print('exception',e2)
 		# import the script remotely if import_module fails above
 		if os.path.isfile(source_full): 
 			if verbose: print('status','remote_import_script for %s'%source)
@@ -141,7 +141,11 @@ def importer(source,verbose=False,distribute=None,strict=False):
 		elif os.path.isdir(source_full): 
 			if verbose: print('status','remote_import_module for %s'%source)
 			return remote_import_module(source_full,distribute=distribute)
-		else: raise Exception('cannot find %s'%source)
+		else: 
+			# note that you get this exception if you have a syntax error 
+			#   in amx core functionality for various reasons
+			#   and it is often useful to check exceptions e1,e2 above
+			raise Exception('cannot find %s'%source)
 
 def glean_functions(source):
 	"""

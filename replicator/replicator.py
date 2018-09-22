@@ -4,6 +4,7 @@
 from ortho.requires import requires_python
 from ortho.dictionary import MultiDict
 from ortho.bash import bash_basic
+from ortho.handler import Handler
 import re,tempfile,os,copy
 import datetime as dt
 import uuid
@@ -45,30 +46,6 @@ class Runner:
 		if self.script:
 			with open(self.path_full,'w') as fp: fp.write(self.script)
 		bash_basic(self.cmd,cwd=self.cwd,log=self.log)
-
-class Handler:
-	taxonomy = {}
-	def classify(self,*args):
-		matches = [name for name,keys in self.taxonomy.items() if (
-			(isinstance(keys,set) and keys==set(args)) or 
-			(isinstance(keys,dict) and set(keys.keys())=={'base','opts'} 
-				and set(args)>=keys['base']
-				and set(args)-keys['base']<=keys['opts']))]
-		if len(matches)==0: 
-			raise Exception('cannot classify instructions with keys: %s'%list(args))
-		elif len(matches)>1: 
-			raise Exception('redundant matches: %s'%matches)
-		else: return matches[0]
-	def __init__(self,name=None,meta=None,**kwargs):
-		if not name: self.name = "UnNamed"
-		self.meta = meta if meta else {}
-		fname = self.classify(*kwargs.keys())
-		if not hasattr(self,fname): 
-			raise Exception(
-				'development error: taxonomy name "%s" is not a member'%fname)
-		# introspect on the function to make sure the keys 
-		#   in the taxonomy match the available keys in the function?
-		getattr(self,fname)(**kwargs)
 
 class ReplicatorSpecial(Handler):
 	taxonomy = {

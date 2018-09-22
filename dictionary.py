@@ -80,7 +80,7 @@ class MultiDict(DotDict):
 		base = kwargs.pop('base',{})
 		self._upnames = kwargs.pop('upnames',{})
 		self._underscores = kwargs.pop('underscores',False)
-		self._silent = kwargs.pop('silent',False)
+		self._silent = kwargs.pop('silent',True)
 		if kwargs: raise Exception('unprocessed kwargs: %s'%str(kwargs))
 		# we check keys in place so that upstream dicts are referenced by pointer
 		if self._underscores: self._key_map_checker(base)
@@ -120,7 +120,7 @@ class MultiDict(DotDict):
 	def __setitem__(self,key,val):
 		"""Handle underscores."""
 		DotDict.__setattr__(self,key if not self._underscores else re.sub(' ','_',key),val)
-	def _get(self,k,d=None):
+	def _get(self,k,d=None,get=False):
 		"""
 		Nested dictionary lookups that consult backup dictionaries (up) on missing key.
 		Note that this is the purpose of MultiDict, namely to keep sets of keys in categories for later,
@@ -132,17 +132,17 @@ class MultiDict(DotDict):
 		else:
 			for unum,up in enumerate(self.__dict__.get('_up',[])):
 				if k in up:
-					if self._upnames and unum in self._upnames:
+					if self._upnames and unum in self._upnames and not self._silent:
 						print('note','using upstream dictionary %s for key %s'%(self._upnames[unum],k))
 					return up[k]
-		if self._strict: raise KeyError('missing key %s'%k)
+		if self._strict and not get: raise KeyError('missing key %s'%k)
 		else: return d
 	__getattr__ = _get
 	def __getitem__(self,k): return self._get(k)
 	def get(self,k,d=None):
 		"""Special sauce to ensure backups work."""
 		if k in self.__dict__: return super(MultiDict,self).get(k,d)
-		else: return self._get(k,d=d)
+		else: return self._get(k,d=d,get=True)
 	def update(self,*args,**kwargs):
 		"""If underscores ensure that we replace spaces with underscores."""
 		if self._underscores:
@@ -194,7 +194,6 @@ class TestMultiDict(unittest.TestCase):
 			sys.stdout = capture
 			this_named['z']
 			sys.stdout = sys.__stdout__
-			# upstream dicts with names get a message on lookup (unless you set silent)
 			message = '[NOTE] found key "z" in upstream dictionary "final" in "MyMultiDict (MultiDict)"\n'
 			self.assertTrue(capture.getvalue()==message)
 		# dictionaries are pointers
