@@ -120,6 +120,8 @@ def transform_itp(itp,specs):
 					atom_names_targets = {'CHL1':['C3']}[mol]
 				elif restraint_type=='sterol_in':
 					atom_names_targets = {'CHL1':['C26']}[mol]
+				elif restraint_type=='heavy':
+					atom_names_targets = [i for i in atom_names if not re.match('^H',i)]
 				else: raise Exception('unclear restraint type: %s'%restraint_type)
 				#---once we select the atom names for this target, we apply the restraints
 				kwargs = dict([('fc%s'%k,v) for k,v in rspec.items()])

@@ -35,7 +35,7 @@ class ExperimentHandler(Handler):
 	# hence the taxonomy keys match the yaml file exactly
 	taxonomy = {
 		'run':{'base':{'settings','script'},'opts':{'extensions','tags','params','extends'}},
-		'quick':{'base':{'settings','quick'},'opts':{'params','tags','extensions'}},}
+		'quick':{'base':{'quick'},'opts':{'params','tags','extensions','settings'}},}
 	def prep_step(self,expt,meta,no=None):
 		"""
 		Prepare a single step in an experiment.
@@ -80,7 +80,7 @@ class ExperimentHandler(Handler):
 		from amx.state import AMXState
 		settings = amx.AMXState(me='settings',underscores=True)
 		state = AMXState(settings,me='state',upnames={0:'settings'})
-		settings.update(**kwargs['settings'])
+		if 'settings' in kwargs: settings.update(**kwargs['settings'])
 		amx.state = state
 		return state
 
