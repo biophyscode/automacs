@@ -23,11 +23,11 @@ expose = {
 	'dev':['tracebacker'],
 	# environments must get conf hence it must be here
 	'environments':['environ','env_list','register_extension','load_extension'],
-	'data':['check_repeated_keys'],
+	'data':['check_repeated_keys','delve','catalog'],
 	'imports':['importer'],
 	#'queue':['qbasic'],
 	'unit_tester':['unit_tester'],
-	'misc':['listify','unique','treeview','str_types','string_types','say','ctext'],
+	'misc':['listify','unique','treeview','str_types','string_types','say','ctext','confirm'],
 	'reexec':['iteratively_execute','interact']}
 
 # use `python -c "import ortho"` to bootstrap the makefile
@@ -62,7 +62,8 @@ def prepare_print(override=False):
 		def print_stylized(*args,**kwargs):
 			"""Custom print function."""
 			key_leads = ['status','warning','error','note','usage',
-				'exception','except','question','run','tail','watch','bash']
+				'exception','except','question','run','tail','watch',
+				'bash','debug']
 			if len(args)>0 and args[0] in key_leads:
 				return _print('[%s]'%args[0].upper(),*args[1:])
 			else: return _print(*args,**kwargs)

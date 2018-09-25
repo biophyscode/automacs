@@ -96,3 +96,15 @@ def delveset(o,*k,**kwargs):
 	else:
 		if k[0] not in o: o[k[0]] = {}
 		delveset(o[k[0]],*k[1:],value=value)
+
+def catalog(base,path=None):
+	"""
+	Traverse all paths in a nested dictionary. Returns a list of pairs: paths and values.
+	Note that lists can be a child item; catalog does not expand the indices.
+	"""
+	if not path: path=[]
+	if isinstance(base,dict):
+		for x in base.keys():
+			local_path = path[:]+[x]
+			for b in catalog(base[x],local_path): yield b
+	else: yield path,base

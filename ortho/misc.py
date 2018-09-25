@@ -204,3 +204,9 @@ def ctext(*args,**kwargs):
 	"""
 	printer = ColorPrinter(back=True).printer
 	return printer(*args,**kwargs)
+
+def confirm(sure=False,*msgs):
+	"""Check with the user."""
+	return sure or all(
+		re.match('^(y|Y)',(input if sys.version_info>(3,0) else raw_input)
+		('[QUESTION] %s (y/N)? '%msg))!=None for msg in msgs)
