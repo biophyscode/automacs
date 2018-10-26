@@ -1,0 +1,135 @@
+--- !gromacs_reverse_api
+pdb2gmx: !bash_gromacs
+  arguments:
+    structure: !structure
+      required: true
+      flag: f
+    force_field: #!force_field
+      flag: ff
+    water:
+      default: tip3p
+      required: true
+    posre: # itp tag?
+      required: true
+      flag: i
+    out: !structure
+      required: true
+      flag: o
+    top:
+      flag: p
+    ignh: 
+      bool: true
+      default: true
+      required: true
+editconf: !bash_gromacs
+  arguments:
+    structure: !structure
+      required: true
+      flag: f
+    out: !structure
+      required: true
+      flag: o
+    center:
+      bool: true
+      flag: c
+    distance:
+      flag: d
+    resnr: {}
+grompp: !bash_gromacs
+  arguments:
+    out: # counterintuitive: this is a "run input" file for mdrun
+      flag: o
+      required: true
+    parameters:
+      flag: f
+      required: true
+    parameters_out:
+      flag: po
+      required: true
+    structure:
+      flag: c
+      required: true
+    topology:
+      flag: p
+      required: true
+    maxwarn:
+      required: true
+      default: 1
+  base:
+    out: '%s.tpr'
+    parameters_out: '%s.mdp'
+mdrun: !bash_gromacs
+  arguments:
+    input:
+      flag: s
+      required: true
+    checkpoint:
+      flag: cpo
+      required: true
+    trajectory:
+      flag: o
+    compressed:
+      flag: x
+    energy:
+      flag: e
+    logfile:
+      flag: g
+    structure: 
+      flag: c
+      required: true
+    verbose:
+      flag: v
+      bool: true
+      required: true
+      default: true
+  base:
+    energy: '%s.edr'
+    logfile: '%s.log'
+    compressed: '%s.xtc'
+    trajectory: '%s.trr'
+    checkpoint: '%s.cpt'
+    structure: '%s.gro'
+    input: '%s.tpr'
+solvate: !bash_gromacs
+  arguments:
+    structure:
+      flag: cp
+    solvent:
+      flag: cs
+    out:
+      flag: o
+make_ndx: !bash_gromacs
+  arguments: 
+    structure:
+      flag: f
+    out:
+      flag: o
+genion: !bash_gromacs
+  arguments:
+    input:
+      flag: s
+    out:
+      flag: o
+    index:
+      flag: n
+    anion:
+      flag: nname
+    cation:
+      flag: pname
+    neutral:
+      bool: true
+    concentration:
+      flag: conc
+trjconv: !bash_gromacs
+  arguments:
+    structure:
+      flag: f
+    index:
+      flag: n
+    center:
+      bool: true
+    input:
+      flag: s
+    out:
+      flag: o
+#! duplicate keys are not given an error!

@@ -8,13 +8,22 @@ BOOTSTRAP the AUTOMACS configuration
 
 # default configuration is written to config.json on first make
 default_configuration = {
+	#! of of the commands loads gromacs by default?
 	'commands':['amx/runner','amx/cli.py'],
 	'cleanup': ['exec.py','s*-*','state*.json',
 		'expt*.json','script*.py','log-*','*.log','v*-*','*.ipynb'],
 	'inputs': '@regex^.*?_expts\\.(yaml)$',
 	'install_check':'make gromacs_config',
 	'experiment_hooks':[('amx.gromacs.experiment_hooks','hook_experiment_modules')],
-	}
+	'frameworks':{
+		'automacs':{'modules':['amx/automacs']},
+		'gromacs':{
+			'modules':['amx/gromacs'],
+			#! 'decorate':{'functions':[],'subs':[('gromacs.calls','gmx_run'),('gromacs.calls','gmx')]},
+			#! 'decorate':{'functions':['gmx'],'subs':[('gromacs.calls','gmx_run')]},
+			#! note that decoration is failing on gmx calls inside functions in common
+			'decorate':{'functions':['gmx'],'subs':[('gromacs.api','gmx')]},
+			'initializers':['gromacs_initializer'],},},}
 
 # directory for current locations of popular modules
 git_addresses = {

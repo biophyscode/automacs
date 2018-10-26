@@ -11,25 +11,40 @@ within this package should be performed in the usual way below.
 """
 
 import os,sys
-# protect against makefile inquiries
+# protect against makefile inquiries. whenever amx is loaded, this module may be loaded
 if os.environ.get('ORTHO_GET_TARGETS',False): pass
 else: 
+
+	# IMPORT GROMACS
 	before_keys = set(globals().keys())
+	from .api import gmx
+	from .initializer import gromacs_initializer
+	from .mdp import write_mdp #!!! needs refactored
+	from .fetch import get_pdb # used by @proteins/protein.py
+	from .pdb_tools import remove_hetero_atoms # used by @proteins/protein.py
+	from .gmx_tools import extract_itp,write_top,write_structure_pdb # used by @proteins/protein.py
+	from .bash import write_continue_script # used by @proteins/protein.py
+	from .generic import get_start_structure  # used by @proteins/protein.py
+	from .common import minimize,equilibrate
+	from .common import solvate_protein,counterions #! legacy needs updated
+
 	# import GROMACS functions for automacs 
-	from .mdp import write_mdp
-	from .calls import gmx,gmx_run
+	#! from .mdp import write_mdp
+	#!!!!from .calls import gmx,gmx_run
+	#! from .api import gmx
 	#from .common import get_pdb,remove_hetero_atoms,extract_itp,write_top,minimize,equilibrate
 	#from .common import solvate_protein,counterions,write_structure_pdb,read_gro,dotplace,get_box_vectors
 	#from .common import restuff,get_last,
 	#from .common import gro_combinator,protein_laden,grouper,atomistic_or_coarse,restart_clean,equilibrate,equilibrate_check,minimize,write_structure_pdb,
 	#! if you do this: from .common import *
 	#!   then the unique function somehow gets attached to numpy! actually it's not really a mystery why ...
-	from .common import *
-	del unique #! hacking around this numpy name collision
-	from .continue_script import write_continue_script
-	from .initializer import gromacs_initializer
-	from .restraints import restraint_maker
-	from .generic import *
-	from .structure_tools import *
+	#!from .common import *
+	#! del unique #! hacking around this numpy name collision
+	#! from .continue_script import write_continue_script
+	#! from .initializer import gromacs_initializer
+	#! from .restraints import restraint_maker
+	#! from .generic import *
+	#!from .structure_tools import *
 	# distribute everything imported here as a shared extension
 	_shared_extensions = [i for i in list(set(globals().keys())-before_keys) if callable(globals()[i])]
+
