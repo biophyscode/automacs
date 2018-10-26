@@ -2,9 +2,12 @@
 
 from __future__ import print_function
 import sys,json,shutil,os,glob
+import ortho
 from ortho.handler import Handler
 from ortho.imports import importer
-from ortho.misc import listify
+from ortho.misc import listify,str_types
+from .chooser import collect_experiments
+
 
 ### CLASSIFY EXPERIMENTS
 
@@ -30,12 +33,73 @@ def execute(steps):
 		import pdb;pdb.set_trace()
 		raise Exception('dev')
 
+def populate_experiment(extends,details,meta):
+	"""
+	When one experiment extends another, as a single run or a metarun, 
+	we get the other experiment here.
+	"""
+	expts = collect_experiments(ortho.conf)
+	if extends not in expts['experiments']:
+		raise Exception(
+			'cannot find experiment %s which extends this one: %s'%(
+				extends,meta['experiment_name']))
+	new_settings = expts['experiments'][extends]['settings']
+	new_settings.update(**details.get('settings',{}))
+	details['settings'] = new_settings
+	# inherit some items from the parent
+	for key in ['params','extensions','tags']:
+		if (key not in details 
+			and key in expts['experiments'][extends]):
+			details[key] = expts['experiments'][extends][key]
+	# note that details is populated in-place above
+	return
+
+def standardize_metarun(seq,namer=None,sorter=None):
+	"""
+	Given a YAML object for a metarun, we standardize several formats.
+	"""
+	# the default namer below uses two digits but can overflow
+	if not namer: namer = lambda number,name: 's%02d-%s'%(number+1,name)
+	# note that all metarun items must be valid experiments for the handler
+	#   except for the inclusion of a name key for naming if desired
+	reseq = []
+	# list items are assigned numbers in order
+	if isinstance(seq,list):
+		order = []
+		for ss,s in enumerate(seq):
+			if 'extends' not in s: 
+				raise Exception('each metarun item needs at least an "extends" key. we got: %s'%s)
+			name = s.pop('name',s['extends'])
+			order.append(namer(number=ss,name=name))
+			reseq.append(s)
+	elif isinstance(seq,dict):
+		if sorter: raise Exception('dev')
+		# if the user supplies a dictionary we sort by the keys
+		#   which is perfectly fine if you send along integers
+		else: sorter = sorted
+		keys = sorter(seq.keys())
+		reseq = []
+		for key in keys:
+			val = seq[key]
+			if isinstance(val,dict): raise Exception('dev')
+			elif isinstance(val,str_types): reseq.append({'extends':val})
+			else: raise Exception('format error in the metarun: %s'%seq)
+		order = [namer(number=ss,name=reseq[ss]) 
+			for ss,key in enumerate(keys)]
+		reseq = [seq[key] for key in keys]
+	else: raise Exception('cannot interpret metarun: %s'%seq)
+	# the order here provides the name for the metarun, which does not respect
+	#   the name in the settings name key for each extended run that comprises
+	#   a single metarun
+	return order,reseq
+
 class ExperimentHandler(Handler):
 	# note that the meta keywrord is routed separately in the handler
 	# hence the taxonomy keys match the yaml file exactly
 	taxonomy = {
 		'run':{'base':{'settings','script'},'opts':{'extensions','tags','params','extends'}},
-		'quick':{'base':{'quick'},'opts':{'params','tags','extensions','settings'}},}
+		'quick':{'base':{'quick'},'opts':{'params','tags','extensions','settings'}},
+		'metarun':{'base':{'metarun'},'opts':{'random'}}}
 	def prep_step(self,expt,meta,no=None):
 		"""
 		Prepare a single step in an experiment.
@@ -54,22 +118,7 @@ class ExperimentHandler(Handler):
 		"""Prepare a single run without numbering."""
 		extends = kwargs.pop('extends',None)
 		# use settings from one experiment as a base for the other
-		if extends:
-			import ortho
-			from .chooser import collect_experiments
-			expts = collect_experiments(ortho.conf)
-			if extends not in expts['experiments']:
-				raise Exception(
-					'cannot find experiment %s which extends this one: %s'%(
-						extends,self.meta['experiment_name']))
-			new_settings = expts['experiments'][extends]['settings']
-			new_settings.update(**kwargs['settings'])
-			kwargs['settings'] = new_settings
-			# inherit some items from the parent
-			for key in ['params','extensions','tags']:
-				if (key not in kwargs 
-					and key in expts['experiments'][extends]):
-					kwargs[key] = expts['experiments'][extends][key]
+		if extends: populate_experiment(extends,kwargs,self.meta)
 		self.prep_step(expt=kwargs,meta=self.meta,no=None)
 		return [None]
 	def quick(self,**kwargs): 
@@ -83,6 +132,27 @@ class ExperimentHandler(Handler):
 		if 'settings' in kwargs: settings.update(**kwargs['settings'])
 		amx.state = state
 		return state
+	def metarun(self,**kwargs):
+		"""Handle metaruns i.e. a sequence of runs."""
+		order,seq = standardize_metarun(kwargs.pop('metarun'))
+		seq_out = []
+		if kwargs: raise Exception('unprocessed kwargs: %s'%kwargs)
+		expts = [{} for s in seq]
+		import pdb;pdb.set_trace()
+		for ss,s in enumerate(seq):
+			populate_experiment(s['extends'],expts[ss],self.meta)
+		import pdb;pdb.set_trace()
+		handlers = [ExperimentHandler(meta=self.meta,classify_fail=
+			'cannot find an experiment handler that accepts these keys: %(args)s',
+			**expt_this) for expt_this in expts]
+		import pdb;pdb.set_trace()
+		if False:
+			for num,(key,expt) in enumerate(seq.items()):
+				if not expt: expt = {}
+				populate_experiment(key,expt)
+				seq_out.append(expt)
+				self.prep_step(expt=expt,meta=self.meta,no=num)
+			import pdb;pdb.set_trace()
 
 def runner(expt,meta,run=True):
 	"""
@@ -95,14 +165,10 @@ def runner(expt,meta,run=True):
 	steps = handler.solve
 	# after preparation we may run directly
 	if run:
-		if handler.style=='run': execute(steps)
-		elif handler.style=='quick':
+		if handler.style=='quick':
 			outgoing = sys.modules['amx'].__dict__
-			from amx.importer import magic_importer
-			_import_instruct = {
-				'modules':['amx/gromacs','amx/utils','amx/automacs'],
-				'decorate':{'functions':['gmx'],'subs':[('gromacs.calls','gmx_run')]},
-				'initializers':['gromacs_initializer']}
+			from amx.importer import magic_importer,get_import_instructions
+			_import_instruct = get_import_instructions(config=ortho.conf)
 			import amx
 			state = amx.state
 			settings = amx.state._up[0]
@@ -110,3 +176,8 @@ def runner(expt,meta,run=True):
 				distribute=dict(state=state,settings=settings,expt=expt))
 			outgoing.update(**imported['functions'])
 			exec(handler.kwargs['quick'],outgoing,outgoing)
+		elif handler.style=='run': 
+			execute(steps)
+		elif handler.style=='metarun':
+			for step in steps:
+				execute(steps)

@@ -41,8 +41,8 @@ def cleanup(sure=False):
 	fns = []
 	for pat in config['cleanup']: fns.extend(glob.glob(pat))
 	if not sure: print('note','cleaning: %s'%', '.join(fns))
-	if sure or all(re.match('^(y|Y)',(input if sys.version_info>(3,0) else raw_input)
-		('[QUESTION] %s (y/N)? '%msg))!=None for msg in ['okay to remove','confirm']):
+	from ortho import confirm
+	if confirm('okay to remove','confirm'):
 		for fn in fns: 
 			if os.path.isfile(fn): os.remove(fn)
 			else: shutil.rmtree(fn)

@@ -2,10 +2,7 @@
 
 from __future__ import print_function
 import re,os
-# entrypoint for yaml
-try: import yaml
-except: pass #! exception waits until later. raise Exception('missing yaml at experiments.py')
-##! import yaml #! protect against no yaml?
+import ortho
 from ortho import listify,str_types,check_repeated_keys,read_config
 from ortho.requires import requires_python
 
@@ -40,9 +37,8 @@ def apply_hooks(raw):
 	config = read_config()
 	experiment_hooks = config.get('experiment_hooks',False)
 	if experiment_hooks:
-		from ortho import imports
 		for spot,name in experiment_hooks:
-			this_hook = imports.importer(spot)[name]
+			this_hook = ortho.importer(spot)[name]
 			raw = this_hook(raw,config=config)
 	return raw
 
