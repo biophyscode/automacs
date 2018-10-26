@@ -129,7 +129,7 @@ class TestOrthoBasic(unittest.TestCase):
         os.remove(test_fn)
     @unittest.expectedFailure
     def test_compatibility_python2(self):
-        if sys.version_info>=3: raise Exception
+        if sys.version_info[0]>=3: raise Exception
         zip(*[(1,2),(3,4)])[0]
     def tearDown(self):
         """Clean up tests, on failure."""

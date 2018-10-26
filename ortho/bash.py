@@ -62,7 +62,7 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 		else: 
 			# scroll option pipes output to the screen
 			if scroll:
-				empty = '' if sys.version_info<3 else b''
+				empty = '' if sys.version_info<(3,0) else b''
 				#! universal_newlines?
 				for line in iter(proc.stdout.readline,empty):
 					sys.stdout.write((tag if tag else '')+line.decode('utf-8'))
@@ -96,14 +96,15 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 		qu = queue.Queue()
 		threading.Thread(target=reader,args=[proc.stdout,qu]).start()
 		threading.Thread(target=reader,args=[proc.stderr,qu]).start()
-		empty = '' if sys.version_info<3 else b''
+		empty = '' if sys.version_info<(3,0) else b''
 		with open(log,'ab') as fp:
 			for _ in range(2):
 				for _,line in iter(qu.get,None):
 					#! maybe one-line refresh method in py3: print(u'\r'+'[LOG]','%s: %s'%(log,line),end='')
 					#! not sure how this handles flush
 					#! change the below to tag and test with skunkworks
-					print('[LOG] %s: %s'%(log,line.decode('utf-8')),end=empty)
+					#!!! when scrolling fast, some of the lines do not get [LOG] prepended! in python 3
+					print('[LOG] %s: %s'%(log,line.decode('utf-8')),end=empty.decode('utf-8'))
 					fp.write(line)
 	# log to file and suppress output
 	elif log and not scroll:

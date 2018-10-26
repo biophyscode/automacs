@@ -177,6 +177,7 @@ def config_fold(fn,key):
 
 def look(at='config.json'):
 	"""Drop into a debugger with the conf available."""
+	#! replace this with code.interact?
 	if at and not os.path.isfile(at): raise Exception('cannot find %s'%at)
 	elif at:
 		name = re.sub(r'\.','_',re.match(r'^(.*?)\.json',at).group(1))
@@ -190,4 +191,4 @@ def look(at='config.json'):
 	try:
 		import pdb
 		pdb.set_trace()
-	except: raise Exception('cannot find ipdb or pdbed')
+	except: raise Exception('cannot find ipdb or pdb')

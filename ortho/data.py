@@ -75,6 +75,8 @@ def check_repeated_keys(text,verbose=False):
 		return False
 	return True
 
+#!!! need a yaml repeated key checker because this is not native
+
 def delve(o,*k): 
 	"""
 	Return items from a nested dict.
