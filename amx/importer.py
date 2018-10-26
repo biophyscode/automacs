@@ -81,7 +81,22 @@ def magic_importer(expt,instruct,**kwargs):
 	# decorate outgoing functions
 	for key,val in outgoing.items():
 		if key not in reported_functions: continue
+		if val.__name__=='<lambda>': continue
 		#! cannot report class instantiation
 		outgoing[key] = call_reporter(func=val,state=state)
 	imported['functions'] = outgoing
 	return imported
+
+def get_import_instructions(config):
+	"""Read import instructions for frameworks from config for amx init."""
+	# template for instructions
+	instruct = {'modules':[],'decorate':{
+		'functions':[],'subs':[]},'initializers':[]}
+	frameworks = config.get('frameworks',{})
+	for name,frame in frameworks.items():
+		for i in ['modules','initializers']:
+			instruct[i].extend(frame.get(i,[]))
+		decorate = frame.get('decorate',{})
+		for i in ['functions','subs']:
+			instruct['decorate'][i].extend(decorate.get(i,[]))
+	return instruct

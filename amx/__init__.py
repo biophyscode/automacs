@@ -6,18 +6,27 @@ reads an experiment and imports necessary codes
 """
 
 from __future__ import print_function
-import os,sys,json
-import automacs,utils,importer
-from legacy import init
-from state import AMXState
-from importer import magic_importer
+import os,sys,json,ast
 import ortho
+# python 3 requires relative imports and python 2 needs amx in the path
+#   hence we require both sets of imports below
+#! figure out why adding amx to the path does not work?
+try:
+	from . import automacs,utils,importer
+	from .legacy import init
+	from .state import AMXState
+	from .importer import magic_importer,get_import_instructions
+	from .reporter import call_reporter
+except:
+	import automacs,utils,importer
+	from legacy import init
+	from state import AMXState
+	from importer import magic_importer,get_import_instructions
+	from reporter import call_reporter
 
-# debugger via flag from environment or from conf
-try: do_debug_env = eval(os.environ.get('DEBUG','False')) 
-except: do_debug_env = False
-if ortho.conf.get('debug',do_debug_env)==True: sys.excepthook = ortho.dev.debug_in_place
-else: sys.excepthook = ortho.dev.tracebacker
+# previously set excepthook to ortho.dev.debug_in_place
+# debug in-place by setting config "auto_debug" for ortho.cli
+sys.excepthook = ortho.dev.tracebacker
 
 """
 external function refreshes globals
@@ -34,18 +43,11 @@ note that this was designed so that we could reload the experiment
 """
 
 # state and settings are loaded here
-from automacs import automacs_refresh
+from .automacs import automacs_refresh
 globals().update(**automacs_refresh())
 
-# module routing
-#! see retired imports from previous automacs
-_import_instruct = {
-	'modules':['amx/gromacs','amx/utils','amx/automacs'],
-	'decorate':{'functions':['gmx'],'subs':[('gromacs.calls','gmx_run')]},
-	'initializers':['gromacs_initializer']}
-
-# allow conf to override the import instructions
-_import_instruct = ortho.conf.get('_import_instruct',_import_instruct)
+# get import instructions from the config
+_import_instruct = get_import_instructions(config=ortho.conf)
 
 # generic exports to automacs core
 automacs.state = importer.state = state
@@ -68,7 +70,6 @@ if 'initializers' in imported:
 		imported['initializers'][initializer_name](state=state)
 
 # decorate specific functions with the call_reporter after we have the state
-if decorate_calls: from reporter import call_reporter
 for funcname in decorate_calls.get('functions',[]):
 	globals()[funcname] = call_reporter(func=globals()[funcname],state=state)
 
@@ -77,3 +78,6 @@ for funcname in decorate_calls.get('functions',[]):
 for base,funcname in decorate_calls.get('subs',[]):
 	sys.modules['amx.%s'%base].__dict__[funcname] = call_reporter(
 		func=sys.modules['amx.%s'%base].__dict__[funcname],state=state)
+
+from .automacs import automacs_execution_handler
+automacs_execution_handler(namespace=globals())
