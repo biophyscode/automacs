@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 import json,re
+from .misc import str_types
 
 # check keys via check_repeated_keys function below
 
@@ -99,14 +100,39 @@ def delveset(o,*k,**kwargs):
 		if k[0] not in o: o[k[0]] = {}
 		delveset(o[k[0]],*k[1:],value=value)
 
+def dictsub(subset,superset): 
+	"""See if one dictionary is contained in another."""
+	return all(item in superset.items() for item in subset.items())
+
+def dictsub_strict(subset,superset): 
+	"""See if one dictionary is contained in another."""
+	return all(item in superset.items() for item in subset.items())
+
+def dictsub_sparse(small,big): 
+	"""See if the routes in one dictionary are contained in another (hence less strict than dictsub)."""
+	return all([(r,v) in catalog(big) for r,v in catalog(small)])
+
+def json_type_fixer(series):
+	"""Cast integer strings as integers, recursively. We also fix 'None'."""
+	for k,v in series.items():
+		if type(v) == dict: json_type_fixer(v)
+		elif type(v)in str_types and v.isdigit(): series[k] = int(v)
+		elif type(v)in str_types and v=='None': series[k] = None
+
 def catalog(base,path=None):
 	"""
 	Traverse all paths in a nested dictionary. Returns a list of pairs: paths and values.
 	Note that lists can be a child item; catalog does not expand the indices.
 	"""
-	if not path: path=[]
+	#! should this return a tuple as the path in case it gets routed to delve?
+	if not path: path = []
 	if isinstance(base,dict):
 		for x in base.keys():
 			local_path = path[:]+[x]
 			for b in catalog(base[x],local_path): yield b
 	else: yield path,base
+
+def unique_ordered(seq):
+	"""Return unique items maintaining the order."""
+	vals = set()
+	return [x for x in seq if not (x in vals or vals.add(x))]

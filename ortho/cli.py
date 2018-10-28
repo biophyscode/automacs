@@ -18,13 +18,14 @@ from .imports import importer,glean_functions
 from .unit_tester import unit_tester
 from .reexec import interact
 from .documentation import build_docs
-#from .queue import qbasic
-#from .backrun import backrun,screen_background
+from .queue import qbasic
+from .backrun import backrun,screen_background
 
 # any functions from ortho exposed to CLI must be noted here and imported above
 expose_funcs = {'set_config','setlist','set_list','unset','set_dict','environ',
-	'config','bootstrap','interact','unit_tester','import_check','locate','targets','build_docs','look',
-	'config_fold','set_hook'} #'backrun','screen_background'}
+	'config','bootstrap','interact','unit_tester','import_check','locate',
+	'targets','build_docs','look',
+	'config_fold','debug_imports'} #'backrun','screen_background'}
 expose_aliases = {'set_config':'set','environ':'env'}
 
 # collect functions once
@@ -102,7 +103,7 @@ def get_targets(verbose=False,strict=False,silent=False):
 	if not silent: print("make targets: %s"%(' '.join(sorted(target_names))))
 	return target_names
 
-def run_program(_do_debug=False):
+def run_program(_do_debug=False,_no_run=False):
 	"""
 	Interpret the command-line arguments.
 	"""
@@ -163,6 +164,7 @@ def run_program(_do_debug=False):
 	print('status','calling "%s"%s'%(funcname,call_text))
 	if funcname not in funcs:
 		raise Exception('function `%s` is missing? %s'%(funcname,funcs.keys()))
+	if _no_run: return dict(funcname=funcname,args=args,kwargs=kwargs)
 	# detect ghosted functions and try to import
 	if type(funcs[funcname]) in str_types:
 		print('error','the function `%s` from `%s` was only inferred and not imported. '
@@ -197,3 +199,7 @@ def targets():
 	"""Print the make  targets."""
 	targets = get_targets(silent=True)
 	treeview(dict(targets=sorted(targets)))
+
+def debug_imports():
+	"""Check imports."""
+	os.system('python -uBttc "import ortho;ortho.get_targets(verbose=True,strict=True)"')

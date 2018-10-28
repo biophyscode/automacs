@@ -6,7 +6,7 @@ def bootstrap(post=True,refresh=False):
 	"""
 	This function runs setup commands from `bootstrap.py`.
 	It is automatically interpreted from read_config if config.json is absent. If `config.json` is missing
-	and we find bootstrap.py and it supplies a function called `bootstrap_default` then that function's 
+	and we find bootstrap.py and it supplies a function called `bootstrap_default()` then that function's 
 	return value serves as the default configuration. 
 	After writing the default configuration, we run `bootstrap_post()` if it is available. This function also
 	runs on any repeated execution of `make bootstrap` from the command line. 
