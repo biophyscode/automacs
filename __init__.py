@@ -13,23 +13,31 @@ _init_keys = globals().keys()
 # or at least the expose functions are elevated to the top level of ortho
 # but you can still get other functions in submodules in the usual way
 # note that the expose table also sends conf there hence the empties
-#! cannot do e.g. import ortho.submodule if the submodule is not below
+# cannot do e.g. import ortho.submodule if the submodule is not below
+# any submodule that needs to get the conf should also be on this list
 expose = {
 	'bash':['command_check','bash'],
 	'bootstrap':[],
 	'cli':['get_targets','run_program'],
-	'config':['set_config','setlist','set_list','set_dict','unset','read_config','write_config',
-		'config_fold'],
-	'dev':['tracebacker'],
-	# environments must get conf hence it must be here
+	'config':['set_config','setlist','set_list','set_dict','unset',
+		'read_config','write_config','config_fold'],
+	'data':['check_repeated_keys','delve','delveset','catalog',
+		'json_type_fixer','dictsub','dictsub_strict','dictsub_sparse',
+		'unique_ordered'],
+	'dev':['tracebacker','debugger'],
 	'environments':['environ','env_list','register_extension','load_extension'],
-	'data':['check_repeated_keys'],
+	'handler':['Handler'],
+	# note that you cannot have identical names for the module and a function
+	'hypos':['hypothesis','sweeper'],
 	'imports':['importer'],
-	#'queue':['qbasic'],
 	'unit_tester':['unit_tester'],
-	'misc':['listify','treeview','str_types','string_types','say'],
-	'reexec':['iteratively_execute','interact']}
-
+	'misc':['listify','unique','uniform','treeview','str_types',
+		'string_types','say','ctext','confirm','status','Observer',
+		'compare_dicts','Hook','mkdirs'],
+	'reexec':['iteratively_execute','interact'],
+	'requires':['requires_program','requires_python','requires_python_check'],
+	'timer':['time_limit','TimeoutException'],}
+	
 # use `python -c "import ortho"` to bootstrap the makefile
 if (os.path.splitext(os.path.basename(__file__))[0]!='__init__' or not os.path.isdir('ortho')): 
 	if not os.path.isdir('ortho'):
@@ -62,7 +70,8 @@ def prepare_print(override=False):
 		def print_stylized(*args,**kwargs):
 			"""Custom print function."""
 			key_leads = ['status','warning','error','note','usage',
-				'exception','except','question','run','tail','watch','bash']
+				'exception','except','question','run','tail','watch',
+				'bash','debug']
 			if len(args)>0 and args[0] in key_leads:
 				return _print('[%s]'%args[0].upper(),*args[1:])
 			else: return _print(*args,**kwargs)
@@ -111,7 +120,10 @@ _ortho_keys = list(set([i for j in [v for k,v in expose.items()] for i in j]))
 for mod,ups in expose.items():
 	# note the utility functions for screening later
 	globals()[mod].__dict__['_ortho_keys'] = _ortho_keys
-	for up in ups: globals()[up] = globals()[mod].__dict__[up]
+	for up in ups: 
+		try: globals()[up] = globals()[mod].__dict__[up]
+		except:
+			import pdb;pdb.set_trace()
 
 # if the tee flag is set then we dump stdout and stderr to a file
 tee_fn = conf.get('tee',False)

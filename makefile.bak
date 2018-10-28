@@ -8,7 +8,7 @@
 SHELL:=/bin/bash
 # unbuffered output is best. exclude bytecode
 # add the "-tt" flag here for python3 errors
-python_flags = "-ttuB"
+python_flags = "-uB"
 # remove protected standalone args
 protected_targets=
 # you can set the python executable before or after make

@@ -28,7 +28,7 @@ def read_config(source=None,default=None):
 	if not found and default==None: raise Exception('cannot find file "%s"'%source)
 	elif not found and default!=None: 
 		# when new users run make for the first time and create the config.json it also runs bootstrap.py
-		# ... to set up any other paths from the dependent module
+		#   to set up any other paths from the dependent module
 		# a minimal bootstrap.py might be: def bootstrap_default(): return {'commands':['path/to/code.py']}
 		boot = bootstrap(post=False)
 		if type(boot)==dict:
@@ -175,8 +175,14 @@ def config_fold(fn,key):
 	delveset(conf,key,value=incoming[key])
 	write_config(conf)
 
-def look():
+def look(at='config.json'):
 	"""Drop into a debugger with the conf available."""
+	if at and not os.path.isfile(at): raise Exception('cannot find %s'%at)
+	elif at:
+		name = re.sub(r'\.','_',re.match(r'^(.*?)\.json',at).group(1))
+		with open(at) as fp: globals()[name] = json.load(fp)
+		print('status','looking at %s as %s'%(at,name))
+	else: pass
 	try: 
 		import ipdb
 		ipdb.set_trace()

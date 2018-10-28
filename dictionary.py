@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-import sys,re
+import sys,re,copy,json
 import unittest,io
 from .misc import str_types
 
@@ -84,7 +84,8 @@ class MultiDict(DotDict):
 		if kwargs: raise Exception('unprocessed kwargs: %s'%str(kwargs))
 		# we check keys in place so that upstream dicts are referenced by pointer
 		if self._underscores: self._key_map_checker(base)
-		protected_keys = ['_name','_strict','_upnames','_underscores','_silent','_up','_check_dict']
+		protected_keys = ['_name','_strict','_upnames','_underscores',
+			'_silent','_up','_check_dict','_dump']
 		super(MultiDict,self).__init__(base,protected_keys=protected_keys)
 		self._check_dict(*args)
 		# send arguments to protected _up attribute
@@ -157,6 +158,29 @@ class MultiDict(DotDict):
 			if not isinstance(i,str_types) or not i.startswith('_')]
 	def keys(self): return self.__dir__()
 	def __len__(self): return len(self.__dir__())
+	def _dump(self,fn,overwrite=False):
+		"""Write a multidict to JSON."""
+		if not overwrite and os.path.isfile(fn): 
+			raise Exception('cannot overwrite %s'%fn)
+		out = dict([(k,self[k]) for k in self.keys()])
+		# note that each upstream dict is an AMXState and hence has its own
+		#   dict _upnames key for naming its own upstream dicts however
+		#   the upstream dicts are typically only expt or settings and we
+		#   should not recurse any more than that, hence we remove the
+		#   dict _upnames here
+		# basically you cannot dump a MultiDict with upstream dicts that are also MultiDicts with names
+		#   although you can use MultiDict as the upstream dicts because we duck type
+		out['_up'] = [dict(i.items()) for i in self._up]
+		out['_upnames'] = self.get('_upnames',{})
+		for o in out['_up']: 
+			upnames = o.pop('_upnames')
+			if upnames: 
+				raise Exception(
+					'cannot discard upnames %s at  this point. probably a recursion.'%upnames)
+			# remove and discard the other MultiDict keys if the up is that type
+			for key in ['_up','_underscores','_strict','_silent','_name']: o.pop(key)
+		for i in out['_up']: del i['_protect']
+		with open(fn,'w') as fp: fp.write(json.dumps(out))
 
 class TestMultiDict(unittest.TestCase):
 	"""

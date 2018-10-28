@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 import os,sys,re,importlib,glob
+from ortho.dev import tracebacker
 
 def strip_builtins(mod):
 	"""
@@ -119,10 +120,11 @@ def importer(source,verbose=False,distribute=None,strict=False):
 			if os.path.relpath(dn,os.getcwd())[:2]!='..':
 				fn_alt = '%s.%s'%(re.sub(os.path.sep,'.',rel_dn),fn)
 				if verbose: 
-					print('note','previous exception was: %s'%e)
+					print('note','previous exception was: %s'%e1)
 					print('note','importing (local) from %s'%(fn_alt))
 				mod = importlib.import_module(fn_alt,package='./')
 			else: 
+				#! tracebacker(e1)
 				#!? print('go up to next try?')
 				raise Exception(e1)
 		if distribute: distribute_to_module(mod,distribute)
@@ -133,6 +135,7 @@ def importer(source,verbose=False,distribute=None,strict=False):
 		if verbose: 
 			print('warning','standard import failed for "%s" at "%s"'%(fn,dn))
 			print('exception',e2)
+			#! tracebacker(e2)
 		# import the script remotely if import_module fails above
 		if os.path.isfile(source_full): 
 			if verbose: print('status','remote_import_script for %s'%source)

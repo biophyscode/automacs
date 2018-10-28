@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-class Handler:
+class Handler(object):
 	taxonomy = {}
 	def classify(self,*args):
 		matches = [name for name,keys in self.taxonomy.items() if (
