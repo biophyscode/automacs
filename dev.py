@@ -24,6 +24,7 @@ def tracebacker_base(exc_type,exc_obj,exc_tb,debug=False):
 		print(say(tracetext))	
 		print(say('[ERROR]','red_black')+' '+say('%s'%exc_obj,'cyan_black'))
 		print(say('[DEBUG] entering the debugger','mag_gray'))
+		import ipdb;ipdb.set_trace()
 		pdb_this.pm()
 
 def tracebacker(*args,**kwargs):

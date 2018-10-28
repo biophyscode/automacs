@@ -11,7 +11,7 @@ from __future__ import print_function
 import os,sys,re,importlib,inspect
 from .dev import tracebacker
 from .misc import str_types,locate,treeview
-from .config import set_config,setlist,set_list,unset,config,set_dict,look,config_fold
+from .config import set_config,setlist,set_list,unset,config,set_dict,look,config_fold,set_hook
 from .environments import environ
 from .bootstrap import bootstrap
 from .imports import importer,glean_functions
@@ -25,7 +25,7 @@ from .backrun import backrun,screen_background
 expose_funcs = {'set_config','setlist','set_list','unset','set_dict','environ',
 	'config','bootstrap','interact','unit_tester','import_check','locate',
 	'targets','build_docs','look',
-	'config_fold','debug_imports'}#'backrun','screen_background'}
+	'config_fold','debug_imports'} #'backrun','screen_background'}
 expose_aliases = {'set_config':'set','environ':'env'}
 
 # collect functions once
