@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 from __future__ import unicode_literals
-import os,sys,subprocess,io,time
+import os,sys,subprocess,io,time,re
 # queue and threading for reader for bash function with scrolling
 import threading
 if (sys.version_info > (3, 0)): import queue  # pylint: disable=import-error
@@ -29,7 +29,7 @@ def reader(pipe,queue):
 	finally: queue.put(None)
 
 def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
-	announce=False,local=False):
+	announce=False,local=False,scroll_log=True):
 	"""
 	Run a bash command.
 	Development note: tee functionality would be useful however you cannot use pipes with subprocess here.
@@ -86,26 +86,40 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 	elif log and scroll:
 		# via: https://stackoverflow.com/questions/31833897/
 		# note that this method also works if you remove output to a file
-		#   however I was not able to figure out how to identify which stream was which during iter
-		#! needs tested in Python 3
-		#! note that this was failing with `make go protein` in automacs inside
-		#!   the replicator. it worked with `make prep protein && python -u ./script.py`
-		#!   and without the unbuffered output it just dumps it at the end
+		#   however I was not able to figure out how to identify which stream 
+		#   was which during iter, for obvious reasons
 		proc = subprocess.Popen(command,cwd=cwd,shell=True,executable='/bin/bash',
 			stdout=subprocess.PIPE,stderr=subprocess.PIPE,bufsize=1)
 		qu = queue.Queue()
 		threading.Thread(target=reader,args=[proc.stdout,qu]).start()
 		threading.Thread(target=reader,args=[proc.stderr,qu]).start()
-		empty = '' if sys.version_info<(3,0) else b''
+		#empty = '' if sys.version_info<(3,0) else b''
+		empty = ''
 		with open(log,'ab') as fp:
 			for _ in range(2):
 				for _,line in iter(qu.get,None):
-					#! maybe one-line refresh method in py3: print(u'\r'+'[LOG]','%s: %s'%(log,line),end='')
-					#! not sure how this handles flush
-					#! change the below to tag and test with skunkworks
-					#!!! when scrolling fast, some of the lines do not get [LOG] prepended! in python 3
-					print('[LOG] %s: %s'%(log,line.decode('utf-8')),end=empty.decode('utf-8'))
-					fp.write(line)
+					# decode early, encode late
+					line_decode = line.decode('utf-8')
+					# note that sometimes we get a "\r\n" or "^M"-style newline
+					#   which makes the output appear inconsistent (some lines are prefixed) so we 
+					#   replace newlines, but only if we are also reporting the log file on the line next
+					#   to the output. this can get cluttered so you can turn off scroll_log if you want
+					if scroll_log:
+						line = re.sub('\r\n?',r'\n',line_decode)
+						line_subs = ['[LOG] %s | %s'%(log,l.strip(' ')) 
+							for l in line.strip('\n').splitlines() if l] 
+						if not line_subs: continue
+						line_here = ('\n'.join(line_subs)+'\n')
+					else: line_here = re.sub('\r\n?',r'\n',line_decode)
+					# encode on the way out to the file, otherwise print
+					# note that the encode/decode events in this loop work for ascii and unicode in both
+					#   python 2 and 3, however python 2 (where we recommend importing unicode_literals) will
+					#   behave weird if you print from a script called through ortho.bash due to locale issues
+					#   described here: https://pythonhosted.org/kitchen/unicode-frustrations.html
+					#   so just port your unicode-printing python 2 code or use a codecs.getwriter
+					print(line_here,end='')
+					# do not write the log file in the final line
+					fp.write(line.encode('utf-8'))
 	# log to file and suppress output
 	elif log and not scroll:
 		output = open(log,'w')

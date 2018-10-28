@@ -149,7 +149,6 @@ def write_structure_pdb(structure,pdb):
 		for name in ['System','Protein']]
 	groupdict = dict([(j[1],int(j[0])) for j in 
 		[re.findall(r'^\s*([0-9]+)\s(\w+)',x[0])[0] for x in relevant]])
-	import ipdb;ipdb.set_trace()
 	gmx('trjconv',
 		inpipe='%d\n%d\n'%(groupdict['Protein'],groupdict['System']),
 		center=True,

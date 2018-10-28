@@ -5,7 +5,7 @@ ORTHO MODULE DOCSTRING
 """
 
 from __future__ import print_function
-import os,sys
+import os,sys,re
 _init_keys = globals().keys()
 
 # note that CLI functions are set in cli.py
@@ -19,7 +19,7 @@ expose = {
 	'bootstrap':[],
 	'cli':['get_targets','run_program'],
 	'config':['set_config','setlist','set_list','set_dict','unset','read_config','write_config',
-		'config_fold'],
+		'config_fold','set_hook'],
 	'dev':['tracebacker'],
 	'dictionary':['DotDict'],
 	# environments must get conf hence it must be here
@@ -30,6 +30,10 @@ expose = {
 	'unit_tester':['unit_tester'],
 	'misc':['listify','unique','treeview','str_types','string_types','say','ctext','confirm'],
 	'reexec':['iteratively_execute','interact']}
+
+# note that packages which use ortho can just import the items above directly
+#   however ortho submodules have to import from the correct submodule `e.g. from .misc import str_types`
+#   which means that we have to update these internal imports if we later move around some of the functions
 
 # use `python -c "import ortho"` to bootstrap the makefile
 if (os.path.splitext(os.path.basename(__file__))[0]!='__init__' or not os.path.isdir('ortho')): 
@@ -50,7 +54,14 @@ def prepare_print(override=False):
 	This decorator stylizes print statements so that printing a tuple that begins with words like `status` 
 	will cause print to prepend `[STATUS]` to each line. This makes the output somewhat more readable but
 	otherwise does not affect printing. We use builtins to distribute the function. Any code which imports
-	`print_function` from `__future__` gets the stylized print function.
+	`print_function` from `__future__` gets the stylized print function. Any code which does not will use the 
+	standard print, however many ortho-inflected codes will then be printing tuples. This is the only way 
+	to get the stylized output without a special function (e.g. status, used in omnicalc) or regexing part of
+	every string running to standard out. Perhaps the regex would be the same cost as the clause which 
+	makes the uppercase happen (``if args[0] in key_leads``). Basically, printing commands like this: 
+	``print('status','something happened')`` is awkward without the handler, which might be a problem if you
+	decide to remove it, but it works really well, so no need to remove. 
+	!!! DECIDE TO USE REGEX after doing some timings?
 	"""
 	# python 2/3 builtins
 	try: import __builtin__ as builtins
@@ -100,9 +111,14 @@ config_fn = 'config.json'
 # hardcoded default
 default_config = {}
 
-# read the configuration here
 # pylint: disable=undefined-variable
 conf = config.read_config(config_fn,default=default_config)
+# configuration keys starting with the "@" sign are special hooks
+#   which can either include a direct value or a function to get them
+from .hooks import hook_handler
+#! exception in case this doesn't work, during development
+try: hook_handler(conf)
+except: pass
 
 # distribute configuration to submodules
 for key in ['conf','config_fn']:

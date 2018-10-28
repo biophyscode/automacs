@@ -60,6 +60,7 @@ modules, performs any backwashing or side-washing, and then returns exposed func
 """
 
 decorate_calls = _import_instruct.pop('decorate',[])
+#! gromacs api is imported twice here!?
 imported = magic_importer(expt=expt,instruct=_import_instruct,
 	distribute=dict(state=state,settings=settings,expt=expt))
 globals().update(**imported['functions'])

@@ -39,6 +39,8 @@ def read_config(source=None,default=None):
 		write_config(config=default,source=locations[0])
 		return default
 	else: 
+		# catch hooks
+		#import ipdb;ipdb.set_trace()
 		with open(found,'r') as fp: 
 			return json.load(fp)
 
@@ -72,7 +74,7 @@ def interpret_command_text(raw):
 
 def set_config(*args,**kwargs):
 	"""
-	Update the configuration in a local configuration file (typically ``config.py``).
+	Update the configuration in a local configuration file (typically ``config.json``).
 	This function routes ``make set` calls so they update flags using a couple different syntaxes.
 	We make a couple of design choices to ensure a clear grammar: a
 	1. a single argument sets a boolean True (use unset to remove the parameter and as a style convention, 
@@ -92,6 +94,15 @@ def set_config(*args,**kwargs):
 	# write the config
 	conf.update(**outgoing)
 	write_config(conf)
+
+def set_hook(*args,**kwargs):
+	"""
+	Hooks get the "@" prepended to keys but the makefile interface does 
+	not allow this easily so we provide this function.
+	"""
+	args = [m for n in [('@%s'%args[2*i],args[2*i+1]) for i in range(int(len(args)/2))] for m in n]
+	kwargs = dict([('@%s'%i,j) for i,j in kwargs.items()])
+	set_config(*args,**kwargs)
 
 def setlist(*args):
 	"""

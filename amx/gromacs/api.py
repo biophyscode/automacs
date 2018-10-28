@@ -23,6 +23,7 @@ clarification on this design choice.
 """
 
 from __future__ import print_function
+import ortho
 from ortho import read_config,bash,DotDict
 from amx.reporter import call_reporter
 import yaml,re
@@ -32,8 +33,9 @@ class GMXShellMaster(object):
 	Formulate a call to GROMACS. Used by GMXReverseAPI to make the call.
 	"""
 	def __init__(self):
-		#! get this from somewhere else
-		self.gmx = 'gmx'
+		#! make set @gmx_call_handler="get_something"
+		#! directly set gmx call with `make set gmx_call_handler="gmx"`
+		self.gmx = ortho.conf.get('gmx_call_handler','gmx')
 	def call(self,name,tail):
 		"""The master call only sends subcommands to a single command."""
 		# +++ a command is a master subcommand and arguments
@@ -60,11 +62,12 @@ class GMXReverseAPI(yaml.YAMLObject):
 		flags, which is the typical approach for the Handler method
 	"""
 	yaml_tag = '!gromacs_reverse_api'
+	# a single class attribute provides the shell master, which gives you "gmx"
 	master_call = GMXShellMaster()
-	#! the gmx function is reported a little weirdly
 	def gmx(self,name,**kwargs):
 		"""
-		Get a BASH command for a GROMACS event.
+		Get a BASH command for a GROMACS event. This method is exposed to
+		globals and distributed throughout the gromacs module.
 		"""
 		# the name of this functions shows up in the call reporter
 		# the magic_importer always provides the state but we check here
@@ -91,8 +94,8 @@ class GMXReverseAPI(yaml.YAMLObject):
 
 class GMXShellCall(yaml.YAMLObject):
 	yaml_tag = '!bash_gromacs'
-	# all shell calls use the same master
-	master_call = GMXShellMaster()
+	# all shell calls use the same master, a class attribute
+	master_call = GMXReverseAPI.master_call
 	# note that init is not used by YAMLObject and we found that it is far
 	#   more clumsy to make instances of GMXShellCall have their own information
 	#   about the master call. much more elegant to have a single GMXShellMaster
@@ -235,7 +238,8 @@ def gmx_get_paths():
 
 # the main API is really a gromacs function from above
 # use the gmx name so that the call_reporter makes sense
-gmx_interface = yaml.load(open(read_config().get(
+gmx_interface = yaml.load(
+	open(read_config().get(
 	'gromacs_command_templates',
 	'amx/gromacs/commands.yaml')).read()).gmx
 
@@ -245,8 +249,7 @@ def gmx(name,**kwargs):
 	"""
 	global gmx_interface
 	# wrap the main interface function so the call_reporter output is elegant
-	#try: 
-	return gmx_interface(name,**kwargs)
-	#except Exception as e:
-	#	raise Exception(('failed to prepare gromacs command: "%s" with '
-	#		'kwargs: %s and exception: %s')%(name,kwargs,e))
+	try: return gmx_interface(name,**kwargs)
+	except Exception as e:
+		raise Exception(('failed to prepare gromacs command: "%s" with '
+			'kwargs: %s and exception: %s')%(name,kwargs,e))

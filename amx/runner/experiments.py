@@ -25,6 +25,7 @@ def collect_experiment_files(finder):
 	# read all of the dictionaries in the scripts pointed to by inputs into a single space
 	# the inputs argument can be a string with a glob, a list of globs, or a special regex
 	if type(finder) in str_types and re.match('^@',finder):
+		#! the @-syntax here on the value is a proto-hook, could possibly be updated by hook_handler
 		regex_rule = re.match('^@regex(.+)$',finder).group(1)
 		input_sources = []
 		for root_dn,dns,fns in os.walk('./'):
