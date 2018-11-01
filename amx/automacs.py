@@ -225,7 +225,6 @@ def automacs_execution_handler(namespace):
 					'recovered':True,
 					'previous_last_completed_line':last_completed_lineno,
 					'script_code':script_code}
-			import ipdb;ipdb.set_trace()
 			# note that state.json will persist for reading by the next step
 			#   while state_1.json will serve as a checkpoint
 			#!!! DEVELOPMENT: need a hook for state names! need to recover metarun!
