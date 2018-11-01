@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os,shutil,sys
+import os,shutil,sys,glob
 
 def get_start_structure(path):
 	"""
