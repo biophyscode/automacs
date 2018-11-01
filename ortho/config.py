@@ -10,6 +10,7 @@ import os,json,re,sys
 from .misc import treeview,str_types
 from .bootstrap import bootstrap
 from .data import delve,delveset
+from .hooks import hook_handler
 
 # exported in from __init__.py (defined for linting)
 conf = {}
@@ -19,7 +20,7 @@ def abspath(path):
 	"""Get the right path."""
 	return os.path.abspath(os.path.expanduser(path))
 
-def read_config(source=None,default=None):
+def read_config(source=None,default=None,hooks=False):
 	"""Read the configuration."""
 	global config_fn
 	source = source if source else config_fn
@@ -39,10 +40,11 @@ def read_config(source=None,default=None):
 		write_config(config=default,source=locations[0])
 		return default
 	else: 
-		# catch hooks
-		#import ipdb;ipdb.set_trace()
-		with open(found,'r') as fp: 
-			return json.load(fp)
+		with open(found,'r') as fp: result = json.load(fp)
+		# configuration keys starting with the "@" sign are special hooks
+		#   which can either include a direct value or a function to get them
+		if hooks: hook_handler(result)
+		return result
 
 def write_config(config,source=None):
 	"""Write the configuration."""
@@ -102,6 +104,15 @@ def set_hook(*args,**kwargs):
 	"""
 	args = [m for n in [('@%s'%args[2*i],args[2*i+1]) for i in range(int(len(args)/2))] for m in n]
 	kwargs = dict([('@%s'%i,j) for i,j in kwargs.items()])
+	# note that we typically use set_dict to set dictionary items but many hooks will use dictionary
+	#   forms, so we try an eval here in case it's a dict. set_dict does more than this to set children
+	#   without obliterating the other leaves of t he t ree
+	for k,v in kwargs.items():
+		#! dangerous?
+		try: kwargs[k] = eval(v)
+		except: pass
+	# note that since conf requires a read, and read would substitute @key with key, setting a hook
+	#   will displace the non-hook keys automatically
 	set_config(*args,**kwargs)
 
 def setlist(*args):
@@ -127,7 +138,9 @@ def unset(*args):
 	config = read_config()
 	for arg in args: 
 		if arg in config: del config[arg]
-		else: print('[WARNING] cannot unset %s because it is absent'%arg)
+		else: 
+			import ipdb;ipdb.set_trace()
+			print('[WARNING] cannot unset %s because it is absent'%arg)
 	write_config(config)
 
 def config(text=False):
