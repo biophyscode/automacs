@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-import sys,json,shutil,os,glob
+import sys,json,shutil,os,glob,re
 import ortho
 from ortho.handler import Handler
 from ortho.imports import importer
@@ -10,7 +10,6 @@ from .chooser import collect_experiments
 
 
 ### CLASSIFY EXPERIMENTS
-
 
 def execute(steps):
 	"""Call the execution routines."""
@@ -21,7 +20,9 @@ def execute(steps):
 		#   only once, and without the experiment. we delete the module here to ensure that it is imported
 		#   from scratch at the beginning of script.py below to ensure this mimics the usual execution of
 		#   the script from python at the terminal. note that execution by os.system would work equally well
-		del sys.modules['amx']
+		#! amx not currently exported to sys.modules because not necessary
+		#! del_keys = ['amx']
+		#! for key in del_keys: del sys.modules[key]
 		#! when we import amx it needs to get the experiment and state so we move the files
 		#! ... when there is only one step expt.json should exist but it would be good to handle except here
 		#! previously started by running directly: os.system('python script.py')
@@ -30,7 +31,6 @@ def execute(steps):
 		# ... at the terminal. the only difference is that we get the environment, and conf from ortho
 		mod = ortho.importer('script.py',strict=True)
 	else: 
-		import pdb;pdb.set_trace()
 		raise Exception('dev')
 
 def populate_experiment(extends,details,meta):
@@ -126,7 +126,7 @@ class ExperimentHandler(Handler):
 		# write the settings directly to the experiment
 		# as with the magic importer, we know amx is in modules at this point
 		import amx
-		from amx.state import AMXState
+		from amx.amxstate import AMXState
 		settings = amx.AMXState(me='settings',underscores=True)
 		state = AMXState(settings,me='state',upnames={0:'settings'})
 		if 'settings' in kwargs: settings.update(**kwargs['settings'])

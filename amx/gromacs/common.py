@@ -6,8 +6,6 @@ import os,shutil,re
 from amx.utils import status
 from .gmx_tools import component,include
 
-#!!! make a hook for the minimize naming conventions stuff
-
 def minimize(name,structure=None,method='steep',top=None,restraints=False):
 	"""
 	Standard minimization procedure.

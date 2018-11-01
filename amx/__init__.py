@@ -8,21 +8,28 @@ reads an experiment and imports necessary codes
 from __future__ import print_function
 import os,sys,json,ast
 import ortho
+
+from .automacs import automacs_refresh
+result = automacs_refresh()
+# add the state,settings,expt variables here
+globals().update(**result)
+
 # python 3 requires relative imports and python 2 needs amx in the path
 #   hence we require both sets of imports below
-#! figure out why adding amx to the path does not work?
 try:
-	from . import automacs,utils,importer
-	from .legacy import init
-	from .state import AMXState
+	from . import automacs,utils,importer,reporter
+	#! from .legacy import init
+	from .amxstate import AMXState
 	from .importer import magic_importer,get_import_instructions
 	from .reporter import call_reporter
 except:
-	import automacs,utils,importer
-	from legacy import init
+	import automacs,utils,importer,reporter
+	#! from legacy import init
 	from state import AMXState
 	from importer import magic_importer,get_import_instructions
-	from reporter import call_reporter
+
+# see amx.reporter.call_reporter for an explanation of why we must export this
+reporter.state = state
 
 # previously set excepthook to ortho.dev.debug_in_place
 # debug in-place by setting config "auto_debug" for ortho.cli
@@ -42,15 +49,9 @@ note that this was designed so that we could reload the experiment
   see ryan for more details
 """
 
-# state and settings are loaded here
-from .automacs import automacs_refresh
-globals().update(**automacs_refresh())
-
 # get import instructions from the config
+# previously we exported the state after this line. now it is imported
 _import_instruct = get_import_instructions(config=ortho.conf)
-
-# generic exports to automacs core
-automacs.state = importer.state = state
 
 """
 MAGIC IMPORTS
@@ -63,22 +64,17 @@ decorate_calls = _import_instruct.pop('decorate',[])
 #! gromacs api is imported twice here!?
 imported = magic_importer(expt=expt,instruct=_import_instruct,
 	distribute=dict(state=state,settings=settings,expt=expt))
-globals().update(**imported['functions'])
+print('status note that the magic importer distributes functions to all submodules: %s'%
+	', '.join(imported['functions'].keys()))
+print('status note that the magic importer also distributes state,settings,expt')
+#! globals().update(**imported['functions'])
+for key,val in imported['functions'].items(): globals()[key] = val
 
 # run initializer functions on the state
 if 'initializers' in imported: 
 	for initializer_name in imported['initializers']: 
 		imported['initializers'][initializer_name](state=state)
 
-# decorate specific functions with the call_reporter after we have the state
-for funcname in decorate_calls.get('functions',[]):
-	globals()[funcname] = call_reporter(func=globals()[funcname],state=state)
-
-# special deep-dive call reporters for internal functions not called from the automacs script
-#! note that we cannot easily replace these functions without sys.modules
-for base,funcname in decorate_calls.get('subs',[]):
-	sys.modules['amx.%s'%base].__dict__[funcname] = call_reporter(
-		func=sys.modules['amx.%s'%base].__dict__[funcname],state=state)
-
+# supervised execution interrupts here
 from .automacs import automacs_execution_handler
 automacs_execution_handler(namespace=globals())

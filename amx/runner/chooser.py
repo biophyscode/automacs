@@ -10,7 +10,7 @@ from __future__ import print_function
 
 __all__ = ['prep','go','clean']
 
-import os
+import os,sys
 import ortho
 
 ### MODULE ROUTING
@@ -46,6 +46,9 @@ def cleanup(sure=False):
 		for fn in fns: 
 			if os.path.isfile(fn): os.remove(fn)
 			else: shutil.rmtree(fn)
+	# we have to remove amx to reload the state in case we just cleaned it and it lingers in memory
+	import amx
+	del sys.modules['amx']
 
 def clean(sure=False): cleanup(sure=sure)
 

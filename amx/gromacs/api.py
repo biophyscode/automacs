@@ -26,16 +26,27 @@ from __future__ import print_function
 import ortho
 from ortho import read_config,bash,DotDict
 from amx.reporter import call_reporter
-import yaml,re
+import yaml
+import re,sys
 
 class GMXShellMaster(object):
 	"""
 	Formulate a call to GROMACS. Used by GMXReverseAPI to make the call.
 	"""
 	def __init__(self):
-		#! make set @gmx_call_handler="get_something"
-		#! directly set gmx call with `make set gmx_call_handler="gmx"`
-		self.gmx = ortho.conf.get('gmx_call_handler','gmx')
+		# set the call explicitly with `make set @gmx_call="path/to/executable"`
+		#   or use the syntax described in hooks.hook_handler to set
+		#   a function to serve as the hook
+		# note that we allow GROMACS to be missing since this constructor
+		#   runs every time amx is loaded, since it always loads the gromacs
+		#   submodule. 
+		#! import ipdb;ipdb.set_trace()
+		try: 
+			conf = ortho.read_config(hooks=True)
+			self.gmx = conf['gmx_call']
+		except: 
+			self.gmx = 'gmx'
+			print('warning','gromacs could not be located.')
 	def call(self,name,tail):
 		"""The master call only sends subcommands to a single command."""
 		# +++ a command is a master subcommand and arguments
@@ -87,7 +98,9 @@ class GMXReverseAPI(yaml.YAMLObject):
 		cmd = GMXReverseAPI.master_call.call(
 			name=name,tail=subcommand.formulate(**kwargs))
 		# logs are relative to cwd
-		kwargs_bash = {}
+		# note that the special scroll method works better with weird newlines
+		#   whereas scroll=True and scroll_log=True prints log file names
+		kwargs_bash = {'scroll':'special','scroll_log':True}
 		if inpipe!=None: kwargs_bash.update(scroll=False,inpipe=inpipe)
 		bash(cmd,log=state.here+log_fn,cwd=here,**kwargs_bash)
 		return cmd
@@ -183,8 +196,7 @@ class GMXShellCall(yaml.YAMLObject):
 				#! repeat argument building here
 				flag_this = flags[kwargs_to_flag[key]]
 				# +++ base strings are applied to other arguments 
-				try:val = base[key]%base['base']
-				except: import ipdb;ipdb.set_trace()
+				val = base[key]%base['base']
 				sub = self.build_argument(flag_this,val)
 				arguments.append(sub)
 			else: 
@@ -220,28 +232,21 @@ class ForceField(CommandTemplateTag):
 	yaml_tag = '!force_field'
 	#! opportunity for special handling
 
-class GMXMDRUNBase(CommandTemplateTag):
-	yaml_tag = '!bash_gromacs_mdrun_base'
-	def validate(self,name,value):
-		import ipdb;ipdb.set_trace()
-
-def gmx_get_share():
-	raise Exception('DEV PLACEHOLDER')
-
-def gmx_get_machine_config():
-	raise Exception('DEV PLACEHOLDER')
-
-def gmx_get_paths():
-	raise Exception('DEV PLACEHOLDER')
+"""
+functions need ported:
+	gmx_get_share
+	gmx_get_machine_config
+	gmx_get_paths
+"""
 
 ### MAIN
 
 # the main API is really a gromacs function from above
-# use the gmx name so that the call_reporter makes sense
+# wrap in a function called gmx for traceback and clarity in the log file
 gmx_interface = yaml.load(
 	open(read_config().get(
 	'gromacs_command_templates',
-	'amx/gromacs/commands.yaml')).read()).gmx
+	'amx/gromacs/commands.yaml')).read())
 
 def gmx(name,**kwargs):
 	"""
@@ -249,7 +254,11 @@ def gmx(name,**kwargs):
 	"""
 	global gmx_interface
 	# wrap the main interface function so the call_reporter output is elegant
-	try: return gmx_interface(name,**kwargs)
+	try: return gmx_interface.gmx(name,**kwargs)
 	except Exception as e:
-		raise Exception(('failed to prepare gromacs command: "%s" with '
-			'kwargs: %s and exception: %s')%(name,kwargs,e))
+		from ortho import tracebacker
+		# we traceback manually here or else the exception is irrelevant
+		tracebacker(e)
+		print('[ERROR] failed to prepare gromacs command: "%s" with '
+			'kwargs: %s. see exception above. exiting.'%(name,kwargs))
+		sys.exit(0)

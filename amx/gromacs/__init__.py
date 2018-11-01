@@ -17,7 +17,21 @@ else:
 
 	# IMPORT GROMACS
 	before_keys = set(globals().keys())
-	from .api import gmx
+	
+	from ortho import requires_python_check
+	# the gromacs.api module inherits from members of YAML so we check the 
+	#   module here so you get only a warning on `make` (which runs 
+	#   collect_functions) and an error when you try to use GROMACS. note that
+	#   any improvement on this would require more careful control of the amx
+	#   execution loop because we need to do lots of imports to expose 
+	#   command functions via config.json/commands and we need yaml in globals
+	#   in modules like gromacs.api and we want to give helpful warnings when
+	#   yaml is absent
+	try:
+		requires_python_check('yaml')
+		from .api import gmx
+	except: print('warning','GROMACS unavailable until YAML is loaded')
+
 	from .initializer import gromacs_initializer
 	from .mdp import write_mdp #!!! needs refactored
 	from .fetch import get_pdb # used by @proteins/protein.py
@@ -30,7 +44,7 @@ else:
 
 	# import GROMACS functions for automacs 
 	#! from .mdp import write_mdp
-	#!!!!from .calls import gmx,gmx_run
+	#! from .calls import gmx,gmx_run
 	#! from .api import gmx
 	#from .common import get_pdb,remove_hetero_atoms,extract_itp,write_top,minimize,equilibrate
 	#from .common import solvate_protein,counterions,write_structure_pdb,read_gro,dotplace,get_box_vectors

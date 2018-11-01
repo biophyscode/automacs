@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 import importlib,sys,re,os
+from collections import OrderedDict as odict
 import ortho
 from ortho.misc import listify
 from .reporter import call_reporter
@@ -17,13 +18,13 @@ def magic_importer(expt,instruct,**kwargs):
 	distribute = kwargs.pop('distribute',{})
 	distribute_down = kwargs.pop('distribute_down',True)
 	if kwargs: raise Exception('unprocessed kwargs %s'%kwargs)
-	outgoing,imported = {},{}
+	outgoing,imported = odict(),{}
 	# process standard imports
 	modules = instruct.pop('modules',[])
 	# append extensions to modules
 	modules += listify(expt.get('extensions',[]))
 	placehelds = []
-	reported_functions = []
+	reported_functions,already_reported = [],[]
 	listing = {}
 	for mod_name in modules:
 		# use ortho for top-level imports note that this excludes __all__ as desired
@@ -58,7 +59,7 @@ def magic_importer(expt,instruct,**kwargs):
 					raise Exception('asked for something that no exit: %s'%key)
 				distribute[key] = outgoing[key]
 		# manual method to distribute variables down to all submodules. note that importer distribute flag 
-		# ... does top level. if ortho ever gets recursive variable distribution that would supercede this
+		#   does top level. if ortho ever gets recursive variable distribution that would supercede this
 		if distribute_down and distribute:
 			# the module name will always be in the sys.modules list
 			# we use the sys.modules trick whenever we know amx is loaded and we need it from an unusual spot
@@ -70,6 +71,10 @@ def magic_importer(expt,instruct,**kwargs):
 			local_mods = dict([(k,v) for k,v in sysmods_this.items() if v!=None])
 			for mod in local_mods:
 				for key,val in distribute.items(): 
+					# very important to decorate *before* distributing to other modules
+					if key in reported_functions and callable(val): 
+						val = call_reporter(func=val)
+						already_reported.append(key)
 					setattr(local_mods[mod],key,val)
 	initializers = instruct.pop('initializers',None)
 	if initializers:
@@ -77,13 +82,13 @@ def magic_importer(expt,instruct,**kwargs):
 		for name in initializers:
 			if name not in outgoing: raise Exception('cannot find initializer function %s'%name)
 			else: imported['initializers'][name] = outgoing[name]
-
 	# decorate outgoing functions
 	for key,val in outgoing.items():
+		if key in already_reported: continue
 		if key not in reported_functions: continue
 		if val.__name__=='<lambda>': continue
 		#! cannot report class instantiation
-		outgoing[key] = call_reporter(func=val,state=state)
+		outgoing[key] = call_reporter(func=val)
 	imported['functions'] = outgoing
 	return imported
 

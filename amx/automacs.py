@@ -10,7 +10,6 @@ def make_step(name):
 	"""
 	Make a new step, with folder.
 	"""
-	#! need to refactor state.before
 	# note any previous states
 	if state.before:
 		# get step information from the last state
@@ -72,6 +71,7 @@ def automacs_refresh():
 	However, this is better achieved by reimporting (deleting and importing) amx when necessary. This occurs
 	when the go function runs the script.py directly in the same python call. See runner.execution.execute.
 	"""
+	#! make the state.json name more flexible
 	_has_state = os.path.isfile('state.json')
 	if _has_state: print('status','found a previous state at state.json')
 
@@ -87,7 +87,7 @@ def automacs_refresh():
 	- magic imports i.e. acme submodulator
 	"""
 
-	from .state import AMXState
+	from .amxstate import AMXState
 	settings = AMXState(me='settings',underscores=True)
 	state = AMXState(settings,me='state',upnames={0:'settings'})
 	# import of the amx package depends on expt.json and any functions that do not require special importing
@@ -112,7 +112,6 @@ def automacs_refresh():
 		for k in ['_up','_upnames']: 
 			if k in raw: setattr(state,k,raw.pop(k))
 		state.update(**raw)
-
 	return dict(_has_state=_has_state,settings=settings,state=state,expt=expt)
 
 def automacs_execution_handler(namespace):
@@ -247,7 +246,6 @@ def automacs_execution_handler(namespace):
 			#! how to name the states?
 			state._dump('state.json',overwrite=True)
 			# debugger will be interactive if we have a terminal
-			##!!! print('about to debug get the line number')
 			return debugger(type,value,tb)
 
 		# non-supervised execution uses the standard debugger with state dump
