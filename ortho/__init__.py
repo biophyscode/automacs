@@ -87,7 +87,7 @@ def prepare_print(override=False):
 			#   statements to be capitalized
 			#! note that we can retire all print('debug','message') statements
 			elif len(args)==1:
-				match = key_leads_regex.match(args[0])
+				match = key_leads_regex.match(str(args[0]))
 				if match: return _print(
 					'[%s]'%match.group(1).upper(),match.group(2),**kwargs)
 				else: return _print(*args,**kwargs)
