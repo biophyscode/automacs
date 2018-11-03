@@ -24,8 +24,7 @@ clarification on this design choice.
 
 from __future__ import print_function
 import ortho
-from ortho import read_config,bash,DotDict
-from amx.reporter import call_reporter
+from ortho import read_config,bash,DotDict,tracebacker
 import yaml
 import re,sys
 
@@ -44,7 +43,8 @@ class GMXShellMaster(object):
 		try: 
 			conf = ortho.read_config(hooks=True)
 			self.gmx = conf['gmx_call']
-		except: 
+		except Exception as e:
+			tracebacker(e) 
 			self.gmx = 'gmx'
 			print('warning','gromacs could not be located.')
 	def call(self,name,tail):
@@ -253,7 +253,6 @@ def gmx(name,**kwargs):
 	This function is the primary interface between python and GROMACS.
 	"""
 	global gmx_interface
-	# wrap the main interface function so the call_reporter output is elegant
 	try: return gmx_interface.gmx(name,**kwargs)
 	except Exception as e:
 		from ortho import tracebacker

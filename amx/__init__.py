@@ -18,36 +18,16 @@ globals().update(**result)
 #   hence we require both sets of imports below
 try:
 	from . import automacs,utils,importer,reporter
-	#! from .legacy import init
 	from .amxstate import AMXState
 	from .importer import magic_importer,get_import_instructions
-	from .reporter import call_reporter
 except:
 	import automacs,utils,importer,reporter
-	#! from legacy import init
-	from state import AMXState
+	from amxstate import AMXState
 	from importer import magic_importer,get_import_instructions
-
-# see amx.reporter.call_reporter for an explanation of why we must export this
-reporter.state = state
 
 # previously set excepthook to ortho.dev.debug_in_place
 # debug in-place by setting config "auto_debug" for ortho.cli
 sys.excepthook = ortho.dev.tracebacker
-
-"""
-external function refreshes globals
-note that this was designed so that we could reload the experiment
-  however that would require extra code in a simulation script
-  so loading a recently-written experiment when amx was already imported
-  was solved by deleting the amx module in the go function, which calls
-  the simulation script during supervised execution (i.e. `make go` versus non-supervised 
-  execution via `python script.py`). the module deletion is the only way to simulate
-  a fresh import of amx, and in this sense helps us to sidestep the convenient feature of 
-  python whereby one-loop execution of the prep and execution steps retains amx in memory
-  when we really want to simply supervise the script which should run as a standalone.
-  see ryan for more details
-"""
 
 # get import instructions from the config
 # previously we exported the state after this line. now it is imported
@@ -61,19 +41,14 @@ modules, performs any backwashing or side-washing, and then returns exposed func
 """
 
 decorate_calls = _import_instruct.pop('decorate',[])
-#! gromacs api is imported twice here!?
 imported = magic_importer(expt=expt,instruct=_import_instruct,
 	distribute=dict(state=state,settings=settings,expt=expt))
-print('status note that the magic importer distributes functions to all submodules: %s'%
-	', '.join(imported['functions'].keys()))
-print('status note that the magic importer also distributes state,settings,expt')
-#! globals().update(**imported['functions'])
-for key,val in imported['functions'].items(): globals()[key] = val
+globals().update(**imported['functions'])
 
-# run initializer functions on the state
+# run initializer functions (state should be distributed there)
 if 'initializers' in imported: 
 	for initializer_name in imported['initializers']: 
-		imported['initializers'][initializer_name](state=state)
+		imported['initializers'][initializer_name]()
 
 # supervised execution interrupts here
 from .automacs import automacs_execution_handler

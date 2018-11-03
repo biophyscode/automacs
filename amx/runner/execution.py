@@ -20,15 +20,23 @@ def execute(steps):
 		#   only once, and without the experiment. we delete the module here to ensure that it is imported
 		#   from scratch at the beginning of script.py below to ensure this mimics the usual execution of
 		#   the script from python at the terminal. note that execution by os.system would work equally well
-		#! amx not currently exported to sys.modules because not necessary
-		#! del_keys = ['amx']
-		#! for key in del_keys: del sys.modules[key]
+		#! note that the deletions here need to track the modules in the amx framework so that 
+		#!   we properly clean up the environment before running script.py. any changes to bootstrap.py or
+		#!   the modules list for importing automacs proper should 		
+		del_keys = ['amx']
+		for key in sys.modules:
+			if re.match(r'^amx\.',key): del_keys.append(key)
+		for key in del_keys: 
+			if key in sys.modules: 
+				#! python 2 has quirky imports: you cannot delete yourself!
+				if sys.version<(3,0) and key=='amx.runner.execution': continue
+				del sys.modules[key]
 		#! when we import amx it needs to get the experiment and state so we move the files
-		#! ... when there is only one step expt.json should exist but it would be good to handle except here
+		#!   when there is only one step expt.json should exist but it would be good to handle except here
 		#! previously started by running directly: os.system('python script.py')
 		import ortho
 		# this is the entire point at which the script is executed, and it is nearly identical to running it 
-		# ... at the terminal. the only difference is that we get the environment, and conf from ortho
+		#   at the terminal. the only difference is that we get the environment, and conf from ortho
 		mod = ortho.importer('script.py',strict=True)
 	else: 
 		raise Exception('dev')

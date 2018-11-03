@@ -21,7 +21,7 @@ def check_installed(**kwargs):
 	msg = (" To set the GROMACS executable directly, run "
 		"`make set gmx_call=\"gmx_command\"`, where the quoted string "
 		"is the correct executable.")
-	targets = ['gmxx','gmx_mpix']
+	targets = ['gmx','gmx_mpi']
 	for target in targets:
 		if is_terminal_command(target)==0: 
 			return target
