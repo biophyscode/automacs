@@ -78,7 +78,7 @@ def prepare_print(override=False):
 		key_leads = ['status','warning','error','note','usage',
 			'exception','except','question','run','tail','watch',
 			'bash','debug']
-		key_leads_regex = re.compile(r'^(%s)\s*(.+)$'%'|'.join(key_leads))
+		key_leads_regex = re.compile(r'^(?:(%s)\s)(.+)$'%'|'.join(key_leads))
 		def print_stylized(*args,**kwargs):
 			"""Custom print function."""
 			if len(args)>0 and args[0] in key_leads:
