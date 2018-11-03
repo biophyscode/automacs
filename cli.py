@@ -18,14 +18,13 @@ from .imports import importer,glean_functions
 from .unit_tester import unit_tester
 from .reexec import interact
 from .documentation import build_docs
-from .queue import qbasic
+#! from .queue import qbasic
 from .backrun import backrun,screen_background
 
 # any functions from ortho exposed to CLI must be noted here and imported above
 expose_funcs = {'set_config','setlist','set_list','unset','set_dict','environ',
 	'config','bootstrap','interact','unit_tester','import_check','locate',
-	'targets','build_docs','look',
-	'config_fold','debug_imports'} #'backrun','screen_background'}
+	'targets','build_docs','look','config_fold','debug_imports','set_hook'} #'backrun','screen_background'}
 expose_aliases = {'set_config':'set','environ':'env'}
 
 # collect functions once
@@ -132,6 +131,7 @@ def run_program(_do_debug=False,_no_run=False):
 			parname,parval = re.findall(regex_kwargs,arg)[0]
 			kwargs[parname] = parval
 		else:
+			#! this section is covered by ortho.handler.introspect function and should be replaced
 			if sys.version_info<(3,3): 
 				#! the following getargspec will be removed by python 3.6
 				if isinstance(funcs[funcname],str_types):

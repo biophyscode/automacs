@@ -57,13 +57,12 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 			#! note that some solutions can handle input
 			#!   see: https://stackoverflow.com/questions/17411966
 			#!   test with make_ndx at some point
-			stdout,stderr = proc.communicate(input=str(inpipe).encode())
+			stdout,stderr = proc.communicate(input=inpipe)
 		# no log and no input pipe
 		else: 
 			# scroll option pipes output to the screen
 			if scroll:
 				empty = '' if sys.version_info<(3,0) else b''
-				#! universal_newlines?
 				for line in iter(proc.stdout.readline,empty):
 					sys.stdout.write((tag if tag else '')+line.decode('utf-8'))
 					sys.stdout.flush()
@@ -74,27 +73,33 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 			else: stdout,stderr = proc.communicate()
 	# alternative scroll method via https://stackoverflow.com/questions/18421757
 	# special scroll is useful for some cases where buffered output was necessary
+	# this method can handle universal newlines while the threading method cannot
 	elif log and scroll=='special':
 		with io.open(log,'wb') as writes, io.open(log,'rb',1) as reads:
-		    proc = subprocess.Popen(command,stdout=writes,cwd=cwd,shell=True)
-		    while proc.poll() is None:
-		        sys.stdout.write(reads.read())
-		        time.sleep(0.5)
-		    # Read the remaining
-		    sys.stdout.write(reader.read())
+			proc = subprocess.Popen(command,stdout=writes,
+				cwd=cwd,shell=True,universal_newlines=True)
+			while proc.poll() is None:
+				sys.stdout.write(reads.read().decode('utf-8'))
+				time.sleep(0.5)
+			# read the remaining
+			sys.stdout.write(reads.read().decode('utf-8'))
 	# log to file and print to screen using the reader function above
 	elif log and scroll:
 		# via: https://stackoverflow.com/questions/31833897/
 		# note that this method also works if you remove output to a file
 		#   however I was not able to figure out how to identify which stream 
 		#   was which during iter, for obvious reasons
+		#! note that this fails with weird newlines i.e. when GROMACS supplies
+		#!   a "remaining wall clock time" and this problem cannot be overcome
+		#!   by setting universal_newlines with this scroll method. recommend
+		#!   that users instead try the special method above, which works fine
+		#!   with unusual newlines
 		proc = subprocess.Popen(command,cwd=cwd,shell=True,executable='/bin/bash',
 			stdout=subprocess.PIPE,stderr=subprocess.PIPE,bufsize=1)
 		qu = queue.Queue()
 		threading.Thread(target=reader,args=[proc.stdout,qu]).start()
 		threading.Thread(target=reader,args=[proc.stderr,qu]).start()
-		#empty = '' if sys.version_info<(3,0) else b''
-		empty = ''
+		empty = '' if sys.version_info<(3,0) else b''
 		with open(log,'ab') as fp:
 			for _ in range(2):
 				for _,line in iter(qu.get,None):
@@ -128,7 +133,7 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 		if inpipe: kwargs['stdin'] = subprocess.PIPE
 		proc = subprocess.Popen(command,**kwargs)
 		if not inpipe: stdout,stderr = proc.communicate()
-		else: stdout,stderr = proc.communicate(input=inpipe)
+		else: stdout,stderr = proc.communicate(input=inpipe.encode('utf-8'))
 	else: raise Exception('invalid options')
 	if not scroll and stderr: 
 		if stdout: print('error','stdout: %s'%stdout.decode('utf-8').strip('\n'))
