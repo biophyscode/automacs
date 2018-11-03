@@ -66,23 +66,25 @@ default_envs = dict([
 		'install_commands':[
 			"this = dict(sources_installer=self.sources['installer'],where=self.where,"+
 				"extra=' -u' if self.update else '')",
-			"bash('bash %(sources_installer)s -b -p %(where)s%(extra)s'%this,log='logs/log-anaconda-env')",
+			"bash('bash %(sources_installer)s -b -p %(where)s%(extra)s'%this,"+
+				"announce=True,log='logs/log-anaconda-env',)",
 			"bash('source %s && conda update -y conda'%os.path.join(self.where,'bin','activate'),"+
-				"log='logs/log-conda-update')",
+				"announce=True,log='logs/log-conda-update')",
 			"bash('source %(where_env)s && conda create "+
 				"python=%(version)s -y -n %(name)s'%dict(name=self.name,version=self.python_version,"+
 				"where_env=os.path.join(self.where,'bin','activate')),"+
-				"log='logs/log-create-%s'%self.name)",
+				"announce=True,log='logs/log-create-%s'%self.name)",
 			"bash('source %(where_env)s %(name)s && conda env update --file %(reqs)s'%"+
 				"dict(name=self.name,reqs=self.sources['reqs'],where_env=os.path.join("+
-				"self.where,'bin','activate')),"+
-				"log='logs/log-conda-refresh')",
-			"bash('make set activate_env=\"%s %s\"'%(os.path.join(self.where,'bin','activate'),self.name))",],
+				"self.where,'bin','activate'),version=self.python_version),"+
+				"announce=True,log='logs/log-conda-refresh')",
+			"bash('make set activate_env=\"%s %s\"'%(os.path.join(self.where,'bin','activate'),self.name),"+
+				"announce=True)",],
 		'refresh_commands':[
 			"bash('source %(where_env)s %(name)s && conda env update --file %(reqs)s'%"+
 				"dict(name=self.name,reqs=self.sources['reqs'],where_env=os.path.join("+
-				"self.where,'bin','activate')),"+
-				"log='logs/log-conda-refresh')",],}
+				"self.where,'bin','activate'),version=self.python_version),"+
+				"announce=True,log='logs/log-conda-refresh')",],}
 	# provide python 2 and python 3 environment options
 	) for v in [2,3]])
 

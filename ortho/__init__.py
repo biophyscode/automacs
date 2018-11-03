@@ -140,9 +140,7 @@ for mod,ups in expose.items():
 	# note the utility functions for screening later
 	globals()[mod].__dict__['_ortho_keys'] = _ortho_keys
 	for up in ups: 
-		try: globals()[up] = globals()[mod].__dict__[up]
-		except:
-			import pdb;pdb.set_trace()
+		globals()[up] = globals()[mod].__dict__[up]
 
 # if the tee flag is set then we dump stdout and stderr to a file
 tee_fn = conf.get('tee',False)

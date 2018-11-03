@@ -131,6 +131,7 @@ def run_program(_do_debug=False,_no_run=False):
 			parname,parval = re.findall(regex_kwargs,arg)[0]
 			kwargs[parname] = parval
 		else:
+			#! this section is covered by ortho.handler.introspect function and should be replaced
 			if sys.version_info<(3,3): 
 				#! the following getargspec will be removed by python 3.6
 				if isinstance(funcs[funcname],str_types):
