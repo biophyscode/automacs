@@ -28,13 +28,30 @@ def reader(pipe,queue):
 				queue.put((pipe, line))
 	finally: queue.put(None)
 
+def bash_newliner(line_decode,log=None):
+	"""Handle weird newlines in BASH streams."""
+	# note that sometimes we get a "\r\n" or "^M"-style newline
+	#   which makes the output appear inconsistent (some lines are prefixed) so we 
+	#   replace newlines, but only if we are also reporting the log file on the line next
+	#   to the output. this can get cluttered so you can turn off scroll_log if you want
+	line = re.sub('\r\n?',r'\n',line_decode)
+	if log:
+		line_subs = ['[LOG] %s | %s'%(log,l.strip(' ')) 
+			for l in line.strip('\n').splitlines() if l] 
+	else: line_subs = [l.strip(' ') for l in line.strip('\n').splitlines() if l] 
+	if not line_subs: return None # previously continue in a loop
+	line_here = ('\n'.join(line_subs)+'\n')
+	return line_here
+
 def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
-	announce=False,local=False,scroll_log=True):
+	announce=False,local=False,scroll_log=True,**kwargs):
 	"""
 	Run a bash command.
 	Development note: tee functionality would be useful however you cannot use pipes with subprocess here.
 	Vital note: log is relative to the current location and not the cwd.
 	"""
+	s_buffer = kwargs.pop('special_buffer',1) # speciall scrolling output buffer
+	if kwargs: raise Exception('unprocessed kwargs: %s'%kwargs)
 	if announce: 
 		print('status',
 			'ortho.bash%s runs command: %s'%(' (at %s)'%cwd if cwd else '',str(command)))
@@ -74,12 +91,23 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 	# alternative scroll method via https://stackoverflow.com/questions/18421757
 	# special scroll is useful for some cases where buffered output was necessary
 	# this method can handle universal newlines while the threading method cannot
+	# note that the docker appears to skip the stderr when this writes
 	elif log and scroll=='special':
-		with io.open(log,'wb') as writes, io.open(log,'rb',1) as reads:
-			proc = subprocess.Popen(command,stdout=writes,
+		s_buffer = 1 # buffer is nonzero for efficiency
+		with io.open(log,'wb') as writes, io.open(log,'rb',s_buffer) as reads:
+			proc = subprocess.Popen(command,stdout=writes,stderr=writes,
 				cwd=cwd,shell=True,universal_newlines=True)
 			while proc.poll() is None:
-				sys.stdout.write(reads.read().decode('utf-8'))
+				if False:
+					incoming = reads.read().decode('utf-8')
+					if log=='s01-protein/log-mdrun-vacuum-steep':
+						import ipdb;ipdb.set_trace()
+					outgoing = incoming
+					#outgoing = re.sub('\r+\n*?',r'\n',incoming)
+					#if re.search('\r',outgoing):
+					#	raise Exception('outging is foh: %s'%outgoing)
+				outgoing = bash_newliner(reads.read().decode('utf-8'))
+				if outgoing: sys.stdout.write(outgoing)
 				time.sleep(0.5)
 			# read the remaining
 			sys.stdout.write(reads.read().decode('utf-8'))
@@ -105,17 +133,8 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 				for _,line in iter(qu.get,None):
 					# decode early, encode late
 					line_decode = line.decode('utf-8')
-					# note that sometimes we get a "\r\n" or "^M"-style newline
-					#   which makes the output appear inconsistent (some lines are prefixed) so we 
-					#   replace newlines, but only if we are also reporting the log file on the line next
-					#   to the output. this can get cluttered so you can turn off scroll_log if you want
-					if scroll_log:
-						line = re.sub('\r\n?',r'\n',line_decode)
-						line_subs = ['[LOG] %s | %s'%(log,l.strip(' ')) 
-							for l in line.strip('\n').splitlines() if l] 
-						if not line_subs: continue
-						line_here = ('\n'.join(line_subs)+'\n')
-					else: line_here = re.sub('\r\n?',r'\n',line_decode)
+					if scroll_log: line_here = bash_newliner(line_decode,log=log)
+					else: line_here = bash_newliner(line_decode)
 					# encode on the way out to the file, otherwise print
 					# note that the encode/decode events in this loop work for ascii and unicode in both
 					#   python 2 and 3, however python 2 (where we recommend importing unicode_literals) will
