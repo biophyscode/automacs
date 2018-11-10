@@ -159,8 +159,9 @@ class GMXShellCall(yaml.YAMLObject):
 		"""Turn kwargs to an arguments list for the subcommand."""
 		# intercept base here
 		if hasattr(self,'base') and 'base' in kwargs: 
+			# self.base and hence base holds the substitutions
 			base = self.base
-			# save the base string to this dict for later
+			# the base keyword is the actual string we use as teh base
 			base['base'] = kwargs.pop('base')
 		else: base = {}
 		# kwargs_to_flag maps incoming keyword arguments to argument name
@@ -184,8 +185,9 @@ class GMXShellCall(yaml.YAMLObject):
 			requirements.pop(kwargs_to_flag[key])
 		possibly_missing = [i for i,j in requirements.items() if j]
 		required_missing = []
-		# see if missing values have defaults
-		for key in possibly_missing:
+		base_keys = [i for i in base if i!='base']
+		# see if missing values have defaults or we have supplied a base
+		for key in list(set(possibly_missing+base_keys)):
 			if key in self.arguments and 'default' in self.arguments[key]:
 				#! repeat argument building here
 				flag_this = flags[kwargs_to_flag[key]]
