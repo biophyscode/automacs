@@ -39,14 +39,9 @@ class GMXShellMaster(object):
 		# note that we allow GROMACS to be missing since this constructor
 		#   runs every time amx is loaded, since it always loads the gromacs
 		#   submodule. 
-		#! import ipdb;ipdb.set_trace()
-		try: 
-			conf = ortho.read_config(hooks=True)
-			self.gmx = conf['gmx_call']
-		except Exception as e:
-			tracebacker(e) 
-			self.gmx = 'gmx'
-			print('warning','gromacs could not be located.')
+		conf = ortho.read_config(hooks=True)
+		self.gmx = conf.get('gmx_call','gmx')
+		#! previously gave a warning that gromacs could not be loaded
 	def call(self,name,tail):
 		"""The master call only sends subcommands to a single command."""
 		# +++ a command is a master subcommand and arguments

@@ -69,15 +69,17 @@ def experiment(procname,run=False):
 	# send the experiment to the runner
 	runner(experiment,meta=metadata,run=run)
 
-def prep(procname=None,terse=False):
+def prep(procname=None,terse=False,json=False):
 	"""Prepare an experiment or show the list."""
+	import json as JSON
 	if procname==None: 
 		experiments = collect_experiments(conf=ortho.conf)
 		if terse: ortho.treeview(
 			dict(experiments=experiments['experiments'].keys()))
-		else:
-			#! visualizer 
-			ortho.treeview(dict(experiments=experiments))
+		elif json:
+			# format expected by interface.simulator.views.detail_simulation
+			print('json:\n%s'%JSON.dumps(experiments['experiments']))
+		else: ortho.treeview(dict(experiments=experiments))
 	else: experiment(procname=procname,run=False)
 
 def go(procname,clean=False): 
