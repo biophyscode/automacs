@@ -3,7 +3,7 @@
 """
 ORTHO
 Makefile interFACE (makeface) command-line interface
-Note that you should debug with `python -uBttc "import ortho;ortho.get_targets(verbose=True,strict=True)"`
+Note that you should debug with `make debug_imports`
 """
 
 from __future__ import print_function
@@ -18,13 +18,17 @@ from .imports import importer,glean_functions
 from .unit_tester import unit_tester
 from .reexec import interact
 from .documentation import build_docs
-#! from .queue import qbasic
-#! from .backrun import backrun,screen_background
+from .background import backrun,screen_background
+from .handler import introspect_function
+from .packman import packs,github_install
+from .queue.simple_queue import launch
 
 # any functions from ortho exposed to CLI must be noted here and imported above
 expose_funcs = {'set_config','setlist','set_list','unset','set_dict','environ',
 	'config','bootstrap','interact','unit_tester','import_check','locate',
-	'targets','build_docs','look','config_fold','debug_imports','set_hook'} #'backrun','screen_background'}
+	#! consider developing screen_background at some point to replace backrun?
+	'targets','build_docs','look','config_fold','debug_imports','set_hook',
+	'backrun','packs','github_install','launch'}
 expose_aliases = {'set_config':'set','environ':'env'}
 
 # collect functions once
@@ -39,8 +43,8 @@ def collect_functions(verbose=False,strict=False):
 	Note that strict in this context only prevents "glean_functions" from being used, and is distinct from
 	the strict import scheme in ortho.imports which is used to perform standard pythonic imports.
 	"""
-	global funcs
-	funcs = {}
+	global funcs,funcs_directory
+	funcs,funcs_directory = {},{}
 	# start with the basic utility functions specified at the top
 	funcs = dict([(expose_aliases.get(k,k),globals()[k]) for k in expose_funcs])
 	sources = conf.get('commands',[])  # pylint: disable=undefined-variable
@@ -58,7 +62,9 @@ def collect_functions(verbose=False,strict=False):
 					raise Exception('failed to import %s '%source+
 						'and cannot glean functions because it is not a file')
 				elif not strict: 
-					funcs.update(**glean_functions(source))
+					gleaned = glean_functions(source)
+					funcs.update(**gleaned)
+					for key in gleaned: funcs_directory[key] = source
 				else:
 					from dev import tracebacker
 					tracebacker(e)
@@ -73,6 +79,7 @@ def collect_functions(verbose=False,strict=False):
 				if verbose: print('status','trimming source %s to __all__ = %s'%(
 					source,incoming_exposed.keys()))
 				funcs.update(**incoming_exposed)
+				for key in incoming_exposed: funcs_directory[key] = source
 		else: raise Exception('cannot locate code source %s'%source)
 	# note which core functions are exposed so we can filter the rest
 	global _ortho_keys_exposed
@@ -89,18 +96,21 @@ def import_check():
 	print('status','see logs above for import details')
 	print('status','imported functions: %s'%funcs.keys())
 
-def get_targets(verbose=False,strict=False,silent=False):
+def get_targets(verbose=False,strict=False,silent=False,locations=True):
 	"""
 	Announce available function names.
 	Note that any printing that happens during the make call to get_targets is hidden by make.
 	"""
+	global funcs,funcs_directory
 	if not funcs: collect_functions(verbose=verbose,strict=strict)
 	targets = funcs
 	# filter out utility functions from ortho
 	target_names = list(set(targets.keys())-
 		(set(_ortho_keys)-_ortho_keys_exposed))  # pylint: disable=undefined-variable
 	if not silent: print("make targets: %s"%(' '.join(sorted(target_names))))
-	return target_names
+	if locations: return ['%s (%s)'%(k,funcs_directory.get(k,
+		os.path.relpath(__file__,os.getcwd()))) for k in sorted(targets)]
+	else: return target_names
 
 def run_program(_do_debug=False,_no_run=False):
 	"""
@@ -110,8 +120,8 @@ def run_program(_do_debug=False,_no_run=False):
 	ignore_flags = ['w','--','s','ws','sw']
 	arglist = [i for i in list(sys.argv) if i not in ignore_flags]
 	# previously wrote the backend script i.e. makeface.py from the makefile via:
-	# ... @test -f makeface.py || echo "$$MAKEFACE_BACKEND" > $(makeface)
-	# ... however now we pipe the script in from the environment and chop off the -c flag below
+	#   @test -f makeface.py || echo "$$MAKEFACE_BACKEND" > $(makeface)
+	#   however now we pipe the script in from the environment and chop off the -c flag below
 	# incoming arguments include a command (previously a script, makeface.py) which we ignore
 	if arglist[0]!='-c':
 		raise Exception('argument list must start with the command flag (`-c`) from makefile '
@@ -131,23 +141,13 @@ def run_program(_do_debug=False,_no_run=False):
 			parname,parval = re.findall(regex_kwargs,arg)[0]
 			kwargs[parname] = parval
 		else:
-			#! this section is covered by ortho.handler.introspect function and should be replaced
-			if sys.version_info<(3,3): 
-				#! the following getargspec will be removed by python 3.6
-				if isinstance(funcs[funcname],str_types):
-					raise Exception('run_program received a string instead of a function, indicating that '+
-						'we have gleaned function without importing them. this indicates an error in that '+
-						'script. the script is: "%s". try the following command to debug:\n%s'%(
-							funcs[funcname],message_debug_suggestion))
-				argspec = inspect.getargspec(funcs[funcname])
-				argspec_args = argspec.args
-			else:
-				sig = inspect.signature(funcs[funcname]) # pylint: disable=no-member
-				argspec_args = [name for name,value in sig.parameters.items() 
-					if value.default==inspect._empty or type(value.default)==bool] # pylint: disable=no-member
-			#! note that a function like runner.control.prep which uses an arg=None instead of just an
-			#! ...arg will need to make sure the user hasn't sent the wrong flags through.
-			#! needs protection
+			if isinstance(funcs[funcname],str_types):
+				raise Exception('run_program received a string instead of a function, indicating that '+
+					'we have gleaned function without importing them. this indicates an error in that '+
+					'script. the script is: "%s". try the following command to debug:\n%s'%(
+						funcs[funcname],message_debug_suggestion))
+			argspecs = introspect_function(funcs[funcname])
+			argspec_args = [k for k,v in argspecs['kwargs'].items() if isinstance(v,bool)]
 			if arg in argspec_args: kwargs[arg] = True
 			else: args.append(arg)
 	for k,v in kwargs.items():
@@ -198,7 +198,8 @@ def run_program(_do_debug=False,_no_run=False):
 def targets():
 	"""Print the make  targets."""
 	targets = get_targets(silent=True)
-	treeview(dict(targets=sorted(targets)))
+	from collections import OrderedDict as odict
+	treeview(dict(targets=targets))
 
 def debug_imports():
 	"""Check imports."""

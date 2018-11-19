@@ -20,7 +20,7 @@ def abspath(path):
 	"""Get the right path."""
 	return os.path.abspath(os.path.expanduser(path))
 
-def read_config(source=None,default=None,hooks=False):
+def read_config(source=None,default=None,hook=False,strict=True):
 	"""Read the configuration."""
 	global config_fn
 	source = source if source else config_fn
@@ -43,9 +43,16 @@ def read_config(source=None,default=None,hooks=False):
 		with open(found,'r') as fp: result = json.load(fp)
 		# configuration keys starting with the "@" sign are special hooks
 		#   which can either include a direct value or a function to get them
-		if hooks: hook_handler(result)
+		if hook==True: hook_handler(result)
+		elif isinstance(hook,str): 
+			hook_handler(result,this=hook,strict=strict)
 		return result
 
+def config_hook_get(hook,default):
+	"""Get a hook if it exists otherwise return a default."""
+	conf = read_config(hook=hook,strict=False)
+	return conf.get(hook,default)
+	
 def write_config(config,source=None):
 	"""Write the configuration."""
 	global config_fn
@@ -138,9 +145,7 @@ def unset(*args):
 	config = read_config()
 	for arg in args: 
 		if arg in config: del config[arg]
-		else: 
-			import ipdb;ipdb.set_trace()
-			print('[WARNING] cannot unset %s because it is absent'%arg)
+		else: print('[WARNING] cannot unset %s because it is absent'%arg)
 	write_config(config)
 
 def config(text=False):

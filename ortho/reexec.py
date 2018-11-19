@@ -58,7 +58,7 @@ class ReExec:
 			exec(compile(code_ready,filename='<ast>',mode='exec'),out,out)
 	if False:
 		def get_coda(self):
-			print('status','running coda')
+			print('status running coda')
 			if self.coda: 
 				out = self.namespace
 				exec(self.coda,out,out)
@@ -68,7 +68,7 @@ class ReExec:
 		self.get_changes()
 		#if coda: self.get_coda()
 	def do(self):
-		print('running the real do')
+		print('status rerunning the script')
 		out = self.namespace
 		self.get_text()
 		exec(self.text,out,out)

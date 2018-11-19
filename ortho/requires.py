@@ -15,6 +15,8 @@ def version_number_compare(v1,v2):
 	# via https://stackoverflow.com/questions/1714027
     def normalize(v):
         return [int(x) for x in re.sub(r'(\.0+)*$','', v).split(".")]
+    # cmp is gone in python 3
+    cmp = lambda a,b: (a > b) - (a < b)
     return cmp(normalize(v1),normalize(v2))
 
 def requires_program(*reqs):

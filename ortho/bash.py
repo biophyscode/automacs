@@ -7,6 +7,7 @@ import os,sys,subprocess,io,time,re
 import threading
 if (sys.version_info > (3, 0)): import queue  # pylint: disable=import-error
 else: import Queue as queue
+import ortho
 
 def command_check(command):
 	"""Run a command and see if it completes with returncode zero."""
@@ -204,5 +205,10 @@ def bash_basic(cmd,cwd,log=None):
 	to move to the right spot, and tee to pipe output.
 	Note that the log file for this function is local to the cwd, in contrast to the standard bash above.
 	"""
-	if log: os.system('cd %s && %s | tee %s 2>&1'%(cwd,cmd,log))
+	if log:
+		# bash can do tee with stdout and stderr with this technique
+		# via https://stackoverflow.com/questions/692000
+		cmd_tee =  '%(cmd)s > >(tee -a %(log)s) 2> >(tee -a %(log)s >&2)'%dict(
+			log=log,cmd=cmd)
+		ortho.bash(command=cmd_tee,cwd=cwd)
 	else: os.system('cd %s && %s'%(cwd,cmd))

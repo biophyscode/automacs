@@ -110,7 +110,11 @@ def importer(source,verbose=False,distribute=None,strict=False):
 		if verbose: print('status','standard import for %s'%source)
 		try:
 			if verbose: print('note','importing (importlib) from %s: %s'%(dn,fn))
-			mod = importlib.import_module(fn,package=dn)
+			# note that we choose a relative import with the dot in python 3 because
+			#   otherwise you could end up with a name collision with a standard module
+			#   and then get the standard module instead. tested with 2 and 3
+			mod = importlib.import_module('%s%s'%(
+				'.' if sys.version_info>=(3,0) else '',fn),package=dn)
 			if verbose: print('note','successfully imported')
 		# try import if path is in subdirectory
 		# note that we have to use the fn_alt below if we don't want to perturb paths
