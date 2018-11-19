@@ -38,7 +38,7 @@ git_addresses = {
 kickstarters = {
 
 'all':r"""
-make set_dict path=\""('modules','inputs/proteins',)"\" value=\""{'address':'%(github)s%(proteins)s/amx-proteins.git','branch':'ortho'}"\"
+make set_dict path=\""('modules','inputs/proteins',)"\" value=\""{'address':'%(github)s%(proteins)s/amx-proteins.git','branch':'ortho_clean'}"\"
 make set_dict path=\""('modules','inputs/bilayers',)"\" value=\""{'address':'%(github)s%(bilayers)s/amx-bilayers.git','branch':'ortho'}"\"
 make set_dict path=\""('modules','inputs/extras',)"\" value=\""{'address':'%(github)s%(extras)s/amx-extras.git','branch':'ortho'}"\"
 make set_dict path=\""('modules','inputs/charmm',)"\" value=\""{'address':'%(github)s%(charmm)s/amx-charmm.git'}"\"
