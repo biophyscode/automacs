@@ -78,7 +78,8 @@ def prep(procname=None,terse=False,json=False):
 			dict(experiments=experiments['experiments'].keys()))
 		elif json:
 			# format expected by interface.simulator.views.detail_simulation
-			print('json:\n%s'%JSON.dumps(experiments['experiments']))
+			# we dump sources and experiments
+			print('json:\n%s'%JSON.dumps(experiments))
 		else: ortho.treeview(dict(experiments=experiments))
 	else: experiment(procname=procname,run=False)
 
