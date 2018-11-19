@@ -8,7 +8,7 @@ class HookHandler(Handler):
 	#! remove from omni after port
 	# when calling this handler, send the kwargs from the compute function
 	#   through to the meta kwarg so the hook can access everything in compute
-	taxonomy = {'standard':{'import_target','function'}}
+	#! taxonomy = {'standard':{'import_target','function'}}
 	#! remove taxonomy on HookHandler update from current factor/dev.py
 	def standard(self,import_target,function):
 		from .imports import importer
@@ -16,9 +16,15 @@ class HookHandler(Handler):
 		#!!!! hardcoded in omni mod = importer(os.path.join('calcs',import_target))
 		mod = importer(import_target)
 		func = mod[function]
-		return func(kwargs=self.meta)
+		# some functions may not wish to receive meta or kwargs
+		if self.meta: kwargs = {'kwargs':self.meta}
+		else: kwargs = {}
+		return func(**kwargs)
+	def short(self,s,f): 
+		"""Alias for standard with shorter keys."""
+		return self.standard(import_target=s,function=f)
 
-def hook_handler(conf):
+def hook_handler(conf,this=None,strict=True):
 	"""
 	Convert hooks in the config.
 
@@ -47,6 +53,18 @@ def hook_handler(conf):
 	for i,j in hook_keys:
 		if j in conf: 
 			raise ValueError('cannot use keys %s and %s together'%(i,j))
+	# we request hooks without the @-syntax and add it here if missing
+	if not this.startswith('@'): this = '@'+this
+	if this!=None and this not in dict(hook_keys).keys(): 
+		if strict: 
+			raise Exception(
+				'cannot find the requested hook "%s" in the list: %s'%(
+				this,dict(hook_keys)))
+		else: 
+			print('warning failed to find hook "%s"'%this)
+			return None
+	# if we request a specific hook, we only process that hook
+	elif this: hook_keys = [(i,j) for i,j in hook_keys if i==this]
 	# loop over hooks
 	for key,key_simple in hook_keys:
 		hook_defn = conf.pop(key)
@@ -56,3 +74,4 @@ def hook_handler(conf):
 		elif isinstance(hook_defn,dict):
 			conf[key_simple] = HookHandler(**hook_defn).solve
 		else: raise Exception('dev')
+	return True
