@@ -28,7 +28,7 @@ expose = {
 		'json_type_fixer','dictsub','dictsub_strict','dictsub_sparse',
 		'unique_ordered'],
 	'dev':['tracebacker','debugger'],
-	'dictionary':['DotDict'],
+	'dictionary':['DotDict','MultiDict'],
 	'environments':['environ','env_list','register_extension','load_extension'],
 	'handler':['Handler'],
 	# note that you cannot have identical names for the module and a function

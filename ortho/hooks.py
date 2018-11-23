@@ -53,9 +53,9 @@ def hook_handler(conf,this=None,strict=True):
 	for i,j in hook_keys:
 		if j in conf: 
 			raise ValueError('cannot use keys %s and %s together'%(i,j))
-	# we request hooks without the @-syntax and add it here if missing
-	if not this.startswith('@'): this = '@'+this
 	if this!=None and this not in dict(hook_keys).keys(): 
+		# we request hooks without the @-syntax and add it here if missing
+		if not this.startswith('@'): this = '@'+this
 		if strict: 
 			raise Exception(
 				'cannot find the requested hook "%s" in the list: %s'%(
