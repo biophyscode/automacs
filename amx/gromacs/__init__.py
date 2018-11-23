@@ -29,8 +29,8 @@ else:
 	#   yaml is absent
 	try:
 		requires_python_check('yaml')
-		from .api import gmx
 	except: print('warning','GROMACS unavailable until YAML is loaded')
+	from .api import gmx
 
 	from .initializer import gromacs_initializer
 	from .mdp import write_mdp #!!! needs refactored

@@ -39,7 +39,7 @@ class GMXShellMaster(object):
 		# note that we allow GROMACS to be missing since this constructor
 		#   runs every time amx is loaded, since it always loads the gromacs
 		#   submodule. 
-		conf = ortho.read_config(hooks=True)
+		conf = ortho.read_config(hook=True)
 		self.gmx = conf.get('gmx_call','gmx')
 		#! previously gave a warning that gromacs could not be loaded
 	def call(self,name,tail):

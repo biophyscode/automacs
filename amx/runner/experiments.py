@@ -39,7 +39,11 @@ def apply_hooks(raw):
 	experiment_hooks = config.get('experiment_hooks',False)
 	if experiment_hooks:
 		for spot,name in experiment_hooks:
+			#try: 
 			this_hook = ortho.importer(spot)[name]
+			if False: # except Exception as e:
+				ortho.tracebacker(e)
+				import ipdb;ipdb.set_trace()
 			raw = this_hook(raw,config=config)
 	return raw
 

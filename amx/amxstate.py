@@ -8,7 +8,7 @@ That feature is currently not canon in ortho.dictionary.
 
 from __future__ import print_function
 import re,sys
-from ortho.dictionary import MultiDict,DotDict
+from ortho import MultiDict,DotDict
 
 class AMXState(MultiDict):
 	def __init__(self,*args,**kwargs):
