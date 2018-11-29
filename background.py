@@ -67,14 +67,20 @@ def backrun_old(**specs):
 	if scripted: os.chmod(kill_switch,0o744)
 	job.communicate()
 
-def backrun(cmd,lock,log,cwd='./',executable='/bin/bash',
+def backrun(cmd,lock,log,cwd='./',executable='/bin/bash',coda=None,block=False,
 	killsig='TERM',sudo=False,scripted=True,kill_switch_coda=None,notes=None):
 	"""Run something in the background with a lock file."""
 	if os.path.isfile(lock): raise Exception('lockfile %s exists'%lock)
+	kill_switch = os.path.join(cwd,lock)
 	script = tempfile.NamedTemporaryFile(delete=False)
-	cmd_full = "nohup %s > %s 2>&1 &"%(cmd,log)
+	if not block: cmd_full = "nohup %s > %s 2>&1 &"%(cmd,log)
+	# note that blocking really defeats the purpose of "background" running
+	#   but makes this code usable in other situations i.e. lockness.sh
+	else: cmd_full = "%s > 2>&1 %s"%(cmd,log)
 	with open(script.name,'w') as fp: 
-		fp.write('trap "rm -f %s %s" EXIT'+'\n'+cmd_full)
+		fp.write('trap "rm -f %s %s" EXIT'%(
+			script.name,kill_switch)+'\n'+cmd_full+(
+			'' if not coda else '\n# coda\n'+coda))
 	print('status running script %s'%script.name)
 	job = subprocess.Popen([executable,script.name],cwd=cwd,
 		preexec_fn=os.setsid,executable=executable)
@@ -86,7 +92,6 @@ def backrun(cmd,lock,log,cwd='./',executable='/bin/bash',
 		'%s\n'%notes if notes else '',
 		'sudo ' if sudo else '',
 		killsig,job.pid)
-	kill_switch = os.path.join(cwd,lock)
 	with open(kill_switch,'w') as fp: 
 		fp.write(term_command+'\n')
 		#! the following sudo on cleanup only works for a one-line command

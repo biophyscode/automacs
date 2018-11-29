@@ -124,12 +124,12 @@ def importer(source,verbose=False,distribute=None,strict=False):
 			if os.path.relpath(dn,os.getcwd())[:2]!='..':
 				fn_alt = '%s.%s'%(re.sub(os.path.sep,'.',rel_dn),fn)
 				if verbose: 
+					tracebacker(e1)
 					print('note','previous exception was: %s'%e1)
 					print('note','importing (local) from %s'%(fn_alt))
 				mod = importlib.import_module(fn_alt,package='./')
 			else: 
-				#! tracebacker(e1)
-				#!? print('go up to next try?')
+				#! debug more carefully with: tracebacker(e1)
 				raise Exception(e1)
 		if distribute: distribute_to_module(mod,distribute)
 		# always return the module as a dictionary
@@ -151,7 +151,10 @@ def importer(source,verbose=False,distribute=None,strict=False):
 		else: 
 			# note that you get this exception if you have a syntax error 
 			#   in amx core functionality for various reasons
-			#   and it is often useful to check exceptions e1,e2 above
+			#   and it is often useful to check exceptions e1/e2
+			#   with the tracebacker. we do this here automatically 
+			#   because we are throwing a real exception here to the user
+			if verbose: tracebacker(e2)
 			raise Exception('cannot find %s'%source)
 
 def glean_functions(source):

@@ -29,6 +29,21 @@ def reader(pipe,queue):
 				queue.put((pipe, line))
 	finally: queue.put(None)
 
+def bash_newliner(line_decode,log=None):
+	"""Handle weird newlines in BASH streams."""
+	# note that sometimes we get a "\r\n" or "^M"-style newline
+	#   which makes the output appear inconsistent (some lines are prefixed) so we 
+	#   replace newlines, but only if we are also reporting the log file on the line next
+	#   to the output. this can get cluttered so you can turn off scroll_log if you want
+	line = re.sub('\r\n?',r'\n',line_decode)
+	if log:
+		line_subs = ['[LOG] %s | %s'%(log,l.strip(' ')) 
+			for l in line.strip('\n').splitlines() if l] 
+	else: line_subs = [l.strip(' ') for l in line.strip('\n').splitlines() if l] 
+	if not line_subs: return None # previously continue in a loop
+	line_here = ('\n'.join(line_subs)+'\n')
+	return line_here
+
 def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 	announce=False,local=False,scroll_log=True):
 	"""
@@ -158,6 +173,9 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 		proc.stdout.close()
 		if not merge_stdout_stderr: proc.stderr.close()
 	if local: os.chdir(pwd)
+	if not scroll:
+		if stderr: stderr = stderr.decode('utf-8')
+		if stdout: stdout = stdout.decode('utf-8')
 	return None if scroll else {'stdout':stdout,'stderr':stderr}
 
 class TeeMultiplexer:
