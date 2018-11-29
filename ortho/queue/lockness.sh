@@ -1,7 +1,7 @@
 #!/bin/bash
 # run in a screen with specific log file
 tmp_screen_rc=$(mktemp $TMPDIR"screenrc.XXX")
-echo "[STATUS] temporary screenrc at $tmp_screen_rc"
+echo "[CLUSTER] temporary screenrc at $tmp_screen_rc"
 cat <<EOF> $tmp_screen_rc
 logfile ${SCREEN_LOG_QUEUE:-log-task-queue}
 EOF
@@ -39,7 +39,7 @@ END
 FLOCK_CMD=${flock:-$FLOCK_CMD}
 
 ### LOCKER begins here 
-echo "checking locks"
+echo "[CLUSTER] checking locks"
 set -e
 scriptname=$(basename $0)
 lock=${LOCK_FILE:-"LOCK.${scriptname}"}
@@ -53,7 +53,7 @@ echo "# run this script to kill" 1>&200
 echo "echo quit > $pipe_name" 1>&200
 
 ### LISTENER BEGINS HERE
-echo "beginning to listen"
+echo "[CLUSTER] beginning to listen"
 set -o errexit
 set -o nounset
 # create a named pipe
@@ -64,10 +64,13 @@ fi
 # read whatever from the named pipe.
 while read job < $pipe_name
 do
+  jobstamp=${JOB_NAME:-$(date +%Y%m%d%H%M)}
   if [[ $job = 'quit' ]]; then
-    echo "[STATUS] completed job at $(date +%Y%m%d%H%M)"
+    echo "[CLUSTER] complete $jobstamp"
     exit
   fi
-  echo "[STATUS] running job:" $job
+  echo "[CLUSTER] start job $jobstamp"
+  echo "[CLUSTER] job command is \"$job\""
   (eval "$job")
+  echo "[CLUSTER] end job $jobstamp"
 done
