@@ -76,11 +76,13 @@ def backrun(cmd,lock,log,cwd='./',executable='/bin/bash',coda=None,block=False,
 	if not block: cmd_full = "nohup %s > %s 2>&1 &"%(cmd,log)
 	# note that blocking really defeats the purpose of "background" running
 	#   but makes this code usable in other situations i.e. lockness.sh
-	else: cmd_full = "%s > 2>&1 %s"%(cmd,log)
-	with open(script.name,'w') as fp: 
-		fp.write('trap "rm -f %s %s" EXIT'%(
-			script.name,kill_switch)+'\n'+cmd_full+(
-			'' if not coda else '\n# coda\n'+coda))
+	else: cmd_full = "%s > %s 2>&1"%(cmd,log)
+	text = 'trap "rm -f %s %s" EXIT'%(
+		script.name,kill_switch)+'\n'+cmd_full+(
+		'' if not coda else '\n# coda\n'+coda)
+	with open(script.name,'w') as fp: fp.write(text)
+	print('status script text follows')
+	print('\n'.join(' | %s'%i for i in text.splitlines()))
 	print('status running script %s'%script.name)
 	job = subprocess.Popen([executable,script.name],cwd=cwd,
 		preexec_fn=os.setsid,executable=executable)
