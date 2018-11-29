@@ -9,21 +9,18 @@ from __future__ import print_function
 import os,sys,json,ast
 import ortho
 
-from .automacs import automacs_refresh
+if sys.version_info<(3,0): from automacs import automacs_refresh
+else: from .automacs import automacs_refresh
 result = automacs_refresh()
 # add the state,settings,expt variables here
 globals().update(**result)
 
 # python 3 requires relative imports and python 2 needs amx in the path
 #   hence we require both sets of imports below
-try:
-	from . import automacs,utils,importer,reporter
-	from .amxstate import AMXState
-	from .importer import magic_importer,get_import_instructions
-except:
-	import automacs,utils,importer,reporter
-	from amxstate import AMXState
+if sys.version_info<(3,0): 
 	from importer import magic_importer,get_import_instructions
+else: 
+	from .importer import magic_importer,get_import_instructions
 
 # previously set excepthook to ortho.dev.debug_in_place
 # debug in-place by setting config "auto_debug" for ortho.cli
