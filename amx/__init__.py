@@ -14,11 +14,11 @@ Note: import instructions for amx are below.
 import os
 _import_instruct = {
 	'special_import_targets':[('top',['automacs.py','cli.py','utils.py']),
-		('gromacs',['gromacs%s%s'%(os.path.sep,i) for i in 
+		('gromacs',['gromacs%s%s'%(os.path.sep,i) for i in [
 		#---! rename common and other generic names or conflict when you develop lammps
 		'generic.py','common.py','calls.py','gromacs_commands.py','mdp.py',
 		'topology_tools.py','structure_tools.py','continue_script.py','postprocess.py',
-		'restraints.py','force_field_tools.py']),
+		'restraints.py','force_field_tools.py']]),
 		('lammps',['lammps/lammps.py'])
 		,][:-1], #! lammps is on a branch for now
 	'import_rules':[('top','gromacs'),('top','lammps')][:-1], #! lammps is on a branch for now
