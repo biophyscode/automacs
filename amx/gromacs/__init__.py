@@ -42,6 +42,9 @@ else:
 	from .common import minimize,equilibrate
 	from .common import solvate_protein,counterions #! legacy needs updated
 
+	#! incoming functions
+	from .bookkeeping import Landscape
+
 	# import GROMACS functions for automacs 
 	#! from .mdp import write_mdp
 	#! from .calls import gmx,gmx_run
