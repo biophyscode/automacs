@@ -30,6 +30,20 @@ special_defs = {
 	'charmm':{'SOL':'W'},
 }
 
+def force_field_family():
+	"""
+	Get the family name for the force field i.e. charmm or martini.
+	"""
+	if not state.force_field: 
+		raise Exception('force_field_family needs to find force field in settings or state')
+	is_charmm = re.search('charmm',state.force_field)
+	is_martini = re.search('martini',state.force_field)
+	if is_charmm and is_martini: 
+		raise Exception('force field matches both charmm and martini somehow: %s'%state.force_field)
+	elif not is_charmm and not is_martini:
+		raise Exception('force field matches neither charmm nor martini: %s'%state.force_field)
+	else: return 'charmm' if is_charmm else 'martini'
+	
 class GMXTopology:
 	"""
 	Represent a molecule topology.
