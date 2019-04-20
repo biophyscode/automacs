@@ -608,7 +608,7 @@ def counterions(structure,top=None,includes=None,ff_includes=None,gro='counterio
 	write_top('counterions.top')
 	gmx('grompp',base='genion',structure=structure,
 		top='counterions',mdp='input-em-steep-in',
-		log='grompp-genion')
+		log='grompp-genion',maxwarn=state.q('maxwarn',0))
 	gmx('make_ndx',structure=structure,ndx='solvate-waters',
 		inpipe='keep 0\nr %s\nkeep 1\nq\n'%resname,
 		log='make-ndx-counterions-check')
