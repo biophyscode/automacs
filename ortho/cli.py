@@ -11,7 +11,8 @@ from __future__ import print_function
 import os,sys,re,importlib,inspect
 from .dev import tracebacker
 from .misc import str_types,locate,treeview
-from .config import set_config,setlist,set_list,unset,config,set_dict,look,config_fold,set_hook
+from .config import set_config,setlist,set_list,unset,config,set_dict,look
+from .config import config_fold,set_hook,config_hook_get
 from .environments import environ
 from .bootstrap import bootstrap
 from .imports import importer,glean_functions
@@ -22,13 +23,14 @@ from .background import backrun,screen_background
 from .handler import introspect_function
 from .packman import packs,github_install
 from .queue.simple_queue import launch
+from .replicator import pipeline,repl
 
 # any functions from ortho exposed to CLI must be noted here and imported above
 expose_funcs = {'set_config','setlist','set_list','unset','set_dict','environ',
 	'config','bootstrap','interact','unit_tester','import_check','locate',
 	#! consider developing screen_background at some point to replace backrun?
 	'targets','build_docs','look','config_fold','debug_imports','set_hook',
-	'backrun','packs','github_install','launch'}
+	'backrun','packs','github_install','launch','repl','pipeline'}
 expose_aliases = {'set_config':'set','environ':'env'}
 
 # collect functions once
@@ -186,6 +188,10 @@ def run_program(_do_debug=False,_no_run=False):
 		funcs[funcname](*args,**kwargs)
 	#? catch a TypeError in case the arguments are not formulated properly
 	except Exception as e: 
+		docstring = funcs[funcname].__doc__
+		if docstring:
+			print('note the docstring for this function: "%s"'%funcname)
+			print(docstring)
 		tracebacker(e)
 		if conf.get('auto_debug',_do_debug): # pylint: disable=undefined-variable
 			_,value,tb = sys.exc_info()

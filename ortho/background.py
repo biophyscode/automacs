@@ -82,7 +82,7 @@ def backrun(cmd,lock,log,cwd='./',executable='/bin/bash',coda=None,block=False,
 		'' if not coda else '\n# coda\n'+coda)
 	with open(script.name,'w') as fp: fp.write(text)
 	print('status script text follows')
-	print('\n'.join(' | %s'%i for i in text.splitlines()))
+	print('\n'.join('[STATUS] | %s'%i for i in text.splitlines()))
 	print('status running script %s'%script.name)
 	job = subprocess.Popen([executable,script.name],cwd=cwd,
 		preexec_fn=os.setsid,executable=executable)

@@ -52,7 +52,6 @@ def asciitree(obj,depth=0,wide=2,last=[],recursed=False):
 		if depth == 0: print(spacer+str(obj)+'\n'+horizo*len(obj))
 		else: print(spacer+str(obj))
 	elif isinstance(obj,dict) and all([type(i) in [str,float,int,bool] for i in obj.values()]) and depth==0:
-		print('call 1')
 		asciitree({'HASH':obj},depth=1,recursed=True)
 	elif type(obj) in [list,tuple]:
 		for ind,item in enumerate(obj):
@@ -60,7 +59,6 @@ def asciitree(obj,depth=0,wide=2,last=[],recursed=False):
 			if type(item) in [float,int,bool]+str_types_list: print(spacer_this+str(item))
 			elif item != {}:
 				print(spacer_this+'('+str(ind)+')')
-				print('call 2')
 				asciitree(item,depth=depth+1,
 					last=last+([depth] if ind==len(obj)-1 else []),
 					recursed=True)
@@ -211,8 +209,10 @@ def ctext(*args,**kwargs):
 	printer = ColorPrinter(back=True).printer
 	return printer(*args,**kwargs)
 
-def confirm(sure=False,*msgs):
+def confirm(*msgs,**kwargs):
 	"""Check with the user."""
+	sure = kwargs.pop('sure',False)
+	if kwargs: raise Exception('unprocessed kwargs: %s'%kwargs)
 	return sure or all(
 		re.match('^(y|Y)',(input if sys.version_info>(3,0) else raw_input)
 		('[QUESTION] %s (y/N)? '%msg))!=None for msg in msgs)
@@ -233,10 +233,18 @@ class Hook(object):
 		return self._function
 
 def mkdirs(path):
-	# https://stackoverflow.com/questions/600268
-	try: os.makedirs(path)
+	"""
+	Equivalent of `mkdir -p` for making directories.
+	"""
+	# via https://stackoverflow.com/questions/600268
+	# note that you must protect against tilde or you get non-symbolic links
+	#   to home which depend on the mounting system and are difficult to 
+	#   delete properly
+	path_real = os.path.abspath(os.path.expanduser(path))
+	try: os.makedirs(path_real)
 	except OSError as exc:
-		if exc.errno == errno.EEXIST and os.path.isdir(path): pass
+		import errno
+		if exc.errno == errno.EEXIST and os.path.isdir(path_real): pass
 		else: raise
 
 def status(string,i=0,loop=None,bar_character=None,width=None,spacer='.',
@@ -318,7 +326,7 @@ def lowest_common_dict_denominator(data):
 	# possibly via: https://stackoverflow.com/questions/1254454/
 	if isinstance(data,basestring): return str(data)
 	elif isinstance(data,collections.Mapping): 
-		return dict(map(lowest_common_dict_denominator,data.iteritems()))
+		return dict(map(lowest_common_dict_denominator,data.items()))
 	elif isinstance(data,collections.Iterable): 
 		return type(data)(map(lowest_common_dict_denominator,data))
 	else: return data

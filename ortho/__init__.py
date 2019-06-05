@@ -31,6 +31,7 @@ expose = {
 	'dictionary':['DotDict','MultiDict'],
 	'environments':['environ','env_list','register_extension','load_extension'],
 	'handler':['Handler'],
+	'hooks':['hook_merge'],
 	# note that you cannot have identical names for the module and a function
 	'hypos':['hypothesis','sweeper'],
 	'imports':['importer'],

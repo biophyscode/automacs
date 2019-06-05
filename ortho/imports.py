@@ -21,13 +21,18 @@ def strip_builtins(mod):
 	# .. so instead we pass along a copy of the relevant functions for the caller
 	return dict([(key,obj[key]) for key in keys])
 
-def remote_import_script(source,distribute=None):
+def remote_import_script(source,distribute=None,source_short=None):
 	"""
 	Import the functions in a single script.
 	This code is cross-compatible with python2.7-3.6 and we use it because there is basically no way to do 
 	this from the standard library.
 	"""
 	mod = {}
+	if source_short:
+		# try to add __name__ which is necessary in some cases i.e. 'from .formula import *' in replicator
+		path_to_module_name = re.sub(r'/','.',re.sub(r'\.py$','',source_short))
+		try: mod = {'__name__':path_to_module_name}
+		except: pass
 	#! check whether this is working?
 	if distribute: mod.update(**distribute)
 	with open(source) as f:
@@ -124,12 +129,15 @@ def importer(source,verbose=False,distribute=None,strict=False):
 			if os.path.relpath(dn,os.getcwd())[:2]!='..':
 				fn_alt = '%s.%s'%(re.sub(os.path.sep,'.',rel_dn),fn)
 				if verbose: 
-					tracebacker(e1)
+					# do not use tracebacker here, only in final failure below
 					print('note','previous exception was: %s'%e1)
 					print('note','importing (local) from %s'%(fn_alt))
 				mod = importlib.import_module(fn_alt,package='./')
 			else: 
-				#! debug more carefully with: tracebacker(e1)
+				# you can use tracebacker here on a temporary basis for 
+				#   debugging, however do not commit it because it is a false
+				#   alarm if the exception below works
+				#! tracebacker(e1,)
 				raise Exception(e1)
 		if distribute: distribute_to_module(mod,distribute)
 		# always return the module as a dictionary
@@ -137,13 +145,22 @@ def importer(source,verbose=False,distribute=None,strict=False):
 	# fallback methods for importing remotely
 	except Exception as e2: 
 		if verbose: 
+			# do not use tracebacker here, only in final failure below
 			print('warning','standard import failed for "%s" at "%s"'%(fn,dn))
 			print('exception',e2)
-			#! tracebacker(e2)
+			tracebacker(e2)
 		# import the script remotely if import_module fails above
 		if os.path.isfile(source_full): 
 			if verbose: print('status','remote_import_script for %s'%source)
-			return remote_import_script(source_full,distribute=distribute)
+			try: outgoing = remote_import_script(source_full,
+				distribute=distribute,source_short=source)
+			except Exception as e3:
+				# this message encourages the author to look to the 
+				#   exception above that causes e1 above
+				print('error in the import loop may be caused by '
+					'failed standard import with warning above')
+				raise Exception(e3)
+			return outgoing
 		# import the module remotely
 		elif os.path.isdir(source_full): 
 			if verbose: print('status','remote_import_module for %s'%source)

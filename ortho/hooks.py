@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import re,os
 from .handler import Handler
-from .misc import str_types
+from .misc import str_types,listify
+from .imports import importer
 
 class HookHandler(Handler):
 	#! remove from omni after port
@@ -23,6 +25,11 @@ class HookHandler(Handler):
 	def short(self,s,f): 
 		"""Alias for standard with shorter keys."""
 		return self.standard(import_target=s,function=f)
+	def merger(self,s,collect=True):
+		mod = importer(s)
+		return mod
+		#!! import ipdb;ipdb.set_trace()
+		#!! raise Exception('!!!! YAYYY')
 
 def hook_handler(conf,this=None,strict=True):
 	"""
@@ -50,6 +57,7 @@ def hook_handler(conf,this=None,strict=True):
 	regex_hook = r'^@(.+)$'
 	hook_keys = [(i,re.match(regex_hook,i).group(1))
 		for i in conf.keys() if re.match(regex_hook,i)]
+	# prevent @-syntax collisions
 	for i,j in hook_keys:
 		if j in conf: 
 			raise ValueError('cannot use keys %s and %s together'%(i,j))
@@ -66,12 +74,30 @@ def hook_handler(conf,this=None,strict=True):
 	# if we request a specific hook, we only process that hook
 	elif this: hook_keys = [(i,j) for i,j in hook_keys if i==this]
 	# loop over hooks
+	# note that we assign the result to key and key_simple so the user
+	#   does not have to use the @-syntax to look things up. we prevent
+	#   collisions above, so this assignment does not cause problems
 	for key,key_simple in hook_keys:
 		hook_defn = conf.pop(key)
 		# if the value of the hook is a string, then this is the result
 		if isinstance(hook_defn,str_types):
-			conf[key_simple] = hook_defn
+			conf[key] = conf[key_simple] = hook_defn
 		elif isinstance(hook_defn,dict):
-			conf[key_simple] = HookHandler(**hook_defn).solve
+			conf[key] = conf[key_simple] = HookHandler(**hook_defn).solve
+		# ignore hooks that are False
+		elif isinstance(hook_defn,bool) and not hook_defn: 
+			conf[key] = conf[key_simple] = hook_defn
 		else: raise Exception('dev')
 	return True
+
+def hook_merge(hook,namespace):
+	"""
+	This is also a minimal working example of using a hook.
+	"""
+	#! for some reason this has to be imported here?
+	from .config import config_hook_get
+	collected = config_hook_get(hook,None)
+	if collected: 
+		print('status hook_merge collected hooks for "%s": %s'%(hook,list(collected.keys())))
+		namespace.update(**collected)
+	return 
