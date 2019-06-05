@@ -11,6 +11,7 @@ def sync(**kwargs):
 	Ensure modules are fresh.
 	"""
 	modules = kwargs.pop('modules',{})
+	current = kwargs.pop('current',False)
 	if kwargs: raise Exception(kwargs)
 	# check each module
 	for spot,mod in modules.items():
@@ -36,6 +37,11 @@ def sync(**kwargs):
 				print('bash',cmd)
 				bash(cmd,tag='[BASH] | ')
 				cmd = 'git -C %s checkout %s'%(spot,branch)
+				print('bash',cmd)
+				bash(cmd,tag='[BASH] | ')
+			else: pass
+			if current:
+				cmd = 'git -C %s pull origin %s'%(spot,branch)
 				print('bash',cmd)
 				bash(cmd,tag='[BASH] | ')
 			else: pass

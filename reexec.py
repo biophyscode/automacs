@@ -2,6 +2,7 @@
 
 from __future__ import print_function
 import os,sys,ast
+from .dev import tracebacker
 
 class ReExec:
 	me = None
@@ -55,7 +56,8 @@ class ReExec:
 			code_ready = ast.fix_missing_locations(CodeSurgery().visit(ast.parse(self.text)))
 			# run the remainder
 			out = self.namespace
-			exec(compile(code_ready,filename='<ast>',mode='exec'),out,out)
+			#! exec to eval for python <2.7.15
+			eval(compile(code_ready,filename='<ast>',mode='exec'),out,out)
 	if False:
 		def get_coda(self):
 			print('status running coda')
@@ -71,7 +73,9 @@ class ReExec:
 		print('status rerunning the script')
 		out = self.namespace
 		self.get_text()
-		exec(self.text,out,out)
+		#! testing out exception handling. you always get failure on this line
+		try: exec(self.text,out,out)
+		except Exception as e: tracebacker(e)
 		#if coda: self.get_coda()
 
 def iteratively_execute():
@@ -117,20 +121,25 @@ def interact(script='dev.py',hooks=None,**kwargs):
 	if coda: 
 		print('status','executing %s with __name__ = %s'%(script,out['__name__']))
 		# compatible version of execfile
-		exec(compile(open(script).read(),filename=script,mode='exec'),out,out)
+		#! exec to eval for python <2.7.15
+		eval(compile(open(script).read(),filename=script,mode='exec'),out,out)
 		# run the coda once here and note that future execution by ie also runs
 		#   the coda afterwards. we run the coda before running as __main__
 		#! print('status','interact is running the coda function')
-		exec(coda,out,out)
+		#! exec to eval for python <2.7.15
+		#! exec(coda,out,out)
+		eval(compile(coda,'<string>','exec'),out,out)
 		out['__name__'] = '__main__'
 		print('status','executing %s with __name__ = %s'%(script,out['__name__']))
 		#! second execution is a bit redundant, however if we put script code
 		#!   inside of a __main__ section per convention, then 
-		exec(compile(open(script).read(),filename=script,mode='exec'),out,out)
+		#! exec to eval for python <2.7.15
+		eval(compile(open(script).read(),filename=script,mode='exec'),out,out)
 	else:
 		out['__name__'] = '__main__'
 		# compatible version of execfile
-		exec(compile(open(script).read(),filename=script,mode='exec'),out,out)
+		#! exec to eval for python <2.7.15
+		eval(compile(open(script).read(),filename=script,mode='exec'),out,out)
 	# prepare the interactive session
 	import code
 	class InteractiveCommand:
@@ -145,7 +154,10 @@ def interact(script='dev.py',hooks=None,**kwargs):
 			# briefly considered doing this with @property but this works fine
 			# currently the prelim feature is deprecated by a subclassed ReExec
 			#   but we retain it here as an option
-			if self.prelim: exec(self.prelim,out,out)
+			if self.prelim: 
+				#! exec to eval for python <2.7.15
+				#! exec(self.prelim,out,out)
+				eval(compile(self.prelim,'<string>','exec'),out,out)
 			self.func()
 			# return empty string but we always get a newline
 			return ''

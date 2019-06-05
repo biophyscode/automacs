@@ -56,17 +56,13 @@ ifeq ($(filter $(controller_function),$(TARGETS)),)
 endif
 endif
 
-# dummy file for always executing
-checkfile=.pipeline_up_to_date
 touchup:
 ifeq ($(RUN_ARGS),)
 	@echo "[STATUS] makefile targets: \"$(TARGETS)\""
-	@touch $(checkfile)
 endif
-$(checkfile): touchup
 
-# make without arguments
-default: $(checkfile)
+# always execute
+.PHONY: touchup
 
 # route (only) the controller function to checkfile so it runs
 $(controller_function): $(checkfile)
