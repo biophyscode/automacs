@@ -244,7 +244,8 @@ functions need ported:
 gmx_interface = yaml.load(
 	open(read_config().get(
 	'gromacs_command_templates',
-	'amx/gromacs/commands.yaml')).read())
+	'amx/gromacs/commands.yaml')).read(),
+	Loader=yaml.Loader)
 
 def gmx(name,**kwargs):
 	"""

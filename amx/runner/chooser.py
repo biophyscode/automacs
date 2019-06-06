@@ -42,7 +42,7 @@ def cleanup(sure=False):
 	for pat in config['cleanup']: fns.extend(glob.glob(pat))
 	if not sure: print('note','cleaning: %s'%', '.join(fns))
 	from ortho import confirm
-	if confirm('okay to remove','confirm'):
+	if sure or confirm('okay to remove','confirm'):
 		for fn in fns: 
 			if os.path.isfile(fn): os.remove(fn)
 			else: shutil.rmtree(fn)

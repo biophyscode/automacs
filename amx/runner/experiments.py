@@ -76,7 +76,7 @@ def intepret_experiment_file_yaml(fn,toc,sources):
 	import yaml
 	with open(fn) as fp: raw = fp.read()
 	raw = apply_hooks(raw)
-	spec = yaml.load(raw)
+	spec = yaml.load(raw,Loader=yaml.Loader)
 	for key,val in spec.items():
 		if key in toc: raise Exception('input file %s contains a key "%s" that we already found!'%(fn,key))
 		else: toc[key],sources[key] = val,fn

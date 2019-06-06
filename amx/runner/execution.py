@@ -104,11 +104,13 @@ def standardize_metarun(seq,namer=None,sorter=None):
 class ExperimentHandler(Handler):
 	# note that the meta keywrord is routed separately in the handler
 	# hence the taxonomy keys match the yaml file exactly
-	taxonomy = {
-		'run':{'base':{'settings','script'},'opts':{'extensions','tags','params','extends'}},
-		'quick':{'base':{'quick'},'opts':{'params','tags','extensions','settings'}},
-		'metarun':{'base':{'metarun'},'opts':{'random'}}}
-	def prep_step(self,expt,meta,no=None):
+	#! retiring the taxonomy because the Handler is updated
+	#!   note that the run, quick, metarun functions all need updated and tested
+	#! taxonomy = {
+	#!	'run':{'base':{'settings','script'},'opts':{'extensions','tags','params','extends'}},
+	#!	'quick':{'base':{'quick'},'opts':{'params','tags','extensions','settings'}},
+	#!	'metarun':{'base':{'metarun'},'opts':{'random'}}}
+	def _prep_step(self,expt,meta,no=None):
 		"""
 		Prepare a single step in an experiment.
 		"""
@@ -122,15 +124,21 @@ class ExperimentHandler(Handler):
 		# collect the script
 		shutil.copyfile(os.path.join(meta['cwd'],expt['script']),
 			'script_%d.py'%no if no!=None else 'script.py')
-	def run(self,**kwargs):
+	def run(self,settings,script,extends=None,tags=None,params=None,extensions=[]):
 		"""Prepare a single run without numbering."""
-		extends = kwargs.pop('extends',None)
+		#! see taxonomy above, retired opts
+		#! we need kwargs for the _prep_step function
+		#!   this is an artefact of a Handler update
+		kwargs = dict(tags=tags,extends=extends,settings=settings,
+			script=script,extensions=extensions,params=params)
+		# extends = kwargs.pop('extends',None)
 		# use settings from one experiment as a base for the other
 		if extends: populate_experiment(extends,kwargs,self.meta)
-		self.prep_step(expt=kwargs,meta=self.meta,no=None)
+		self._prep_step(expt=kwargs,meta=self.meta,no=None)
 		return [None]
-	def quick(self,**kwargs): 
+	def quick(self,quick): 
 		"""Run without writing experiment or script files."""
+		#! see taxonomy above, retired opts
 		# write the settings directly to the experiment
 		# as with the magic importer, we know amx is in modules at this point
 		import amx
@@ -140,8 +148,9 @@ class ExperimentHandler(Handler):
 		if 'settings' in kwargs: settings.update(**kwargs['settings'])
 		amx.state = state
 		return state
-	def metarun(self,**kwargs):
+	def metarun(self,metarun):
 		"""Handle metaruns i.e. a sequence of runs."""
+		#! see taxonomy above, retired opts
 		order,seq = standardize_metarun(kwargs.pop('metarun'))
 		seq_out = []
 		if kwargs: raise Exception('unprocessed kwargs: %s'%kwargs)
@@ -159,7 +168,7 @@ class ExperimentHandler(Handler):
 				if not expt: expt = {}
 				populate_experiment(key,expt)
 				seq_out.append(expt)
-				self.prep_step(expt=expt,meta=self.meta,no=num)
+				self._prep_step(expt=expt,meta=self.meta,no=num)
 			import pdb;pdb.set_trace()
 
 def runner(expt,meta,run=True):

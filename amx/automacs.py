@@ -206,7 +206,7 @@ def automacs_execution_handler(namespace):
 
 		from ortho.dev import tracebacker
 		namespace['last_lineno'] = -1
-		try: exec(compile(code_ready,filename='<ast>',mode='exec'),namespace,namespace)
+		try: eval(compile(code_ready,filename='<ast>',mode='exec'),namespace,namespace)
 		except (KeyboardInterrupt,Exception) as e: 
 			if isinstance(e,KeyboardInterrupt):
 				print()
