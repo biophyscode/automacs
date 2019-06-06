@@ -18,8 +18,6 @@ also the gmx function. This saves a lot of effort in moving those around via
 imports. We prefer not to import gmx, state, settings in the usual way because
 these are provided "live" during the execution loop. Ask Ryan if you need more
 clarification on this design choice. 
-
-
 """
 
 from __future__ import print_function
@@ -244,7 +242,9 @@ functions need ported:
 gmx_interface = yaml.load(
 	open(read_config().get(
 	'gromacs_command_templates',
-	'amx/gromacs/commands.yaml')).read(),
+	# custom commands spec with: make set commands_spec=commands.yaml 
+	#! should this be a hook? similar to @gmx_call?
+	ortho.conf.get('commands_spec','amx/gromacs/commands.yaml'))).read(),
 	Loader=yaml.Loader)
 
 def gmx(name,**kwargs):

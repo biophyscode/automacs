@@ -29,7 +29,7 @@ def execute(steps):
 		for key in del_keys: 
 			if key in sys.modules: 
 				#! python 2 has quirky imports: you cannot delete yourself!
-				if sys.version<(3,0) and key=='amx.runner.execution': continue
+				if sys.version_info<(3,0) and key=='amx.runner.execution': continue
 				del sys.modules[key]
 		#! when we import amx it needs to get the experiment and state so we move the files
 		#!   when there is only one step expt.json should exist but it would be good to handle except here
