@@ -86,7 +86,14 @@ class GMXReverseAPI(yaml.YAMLObject):
 		log_fn = 'log-%s'%log
 		if name not in self.__dict__: 
 			raise Exception('cannot find command: %s'%name)
+		# note that this is the special sauce in which we get the subordinate
+		#   objects e.g. GMXShellCall also processed via yaml_tag
 		subcommand = self.__dict__[name]
+		# allow commands to override the gmx call useful for mpi
+		if hasattr(subcommand,'gmx_override'):
+			# the override call can refer to the detected gmx binary
+			self.master_call.gmx = (subcommand.gmx_override
+				%dict(gmx_call=self.master_call.gmx))
 		# the call is the master call prepended to the formulated subcommand
 		cmd = GMXReverseAPI.master_call.call(
 			name=name,tail=subcommand.formulate(**kwargs))
@@ -96,18 +103,22 @@ class GMXReverseAPI(yaml.YAMLObject):
 		# note that scroll_log is wonky in the docker, hence off here
 		kwargs_bash = {'scroll':'special','scroll_log':True}
 		if inpipe!=None: kwargs_bash.update(scroll=False,inpipe=inpipe)
-		bash(cmd,log=state.here+log_fn,cwd=here,**kwargs_bash)
+		bash(cmd,log=state.here+log_fn,cwd=here,announce=True,**kwargs_bash)
 		return cmd
 
 class GMXShellCall(yaml.YAMLObject):
 	yaml_tag = '!bash_gromacs'
 	# all shell calls use the same master, a class attribute
 	master_call = GMXReverseAPI.master_call
+	#! do not try to overload a constructor here to handle defaults for 
+	#!   keys which are omitted. this is ignored for some reason realted to yaml
 	# note that init is not used by YAMLObject and we found that it is far
 	#   more clumsy to make instances of GMXShellCall have their own information
 	#   about the master call. much more elegant to have a single GMXShellMaster
 	#   object which is an attribute so all GMXShellCall can see it
-	def call(self): return GMXShellCall.master_call.call(self.formulate())
+	def call(self): 
+		#!!! we never get here?
+		return GMXShellCall.master_call.call(self.formulate())
 	def get_kwargs_to_flag(self):
 		"""
 		Incoming keyword arguments are mapped to the names (parent) of each 
