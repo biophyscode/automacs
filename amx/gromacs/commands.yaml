@@ -65,7 +65,7 @@ mdrun: !bash_gromacs
       required: true
     checkpoint:
       flag: cpo
-      required: true
+      required: false
     trajectory:
       flag: o
     compressed:
@@ -76,12 +76,19 @@ mdrun: !bash_gromacs
       flag: g
     structure: 
       flag: c
-      required: true
+      required: false
     verbose:
       flag: v
       bool: true
       required: true
       default: true
+    procs: 
+      flag: nt
+      required: true
+      default: 4
+    checkpoint_in:
+      flag: cpi
+    noappend: {}
   base:
     energy: '%s.edr'
     logfile: '%s.log'
@@ -132,4 +139,22 @@ trjconv: !bash_gromacs
       flag: s
     out:
       flag: o
+dump: !bash_gromacs
+  arguments:
+    checkpoint:
+      flag: cp
+    input:
+      flag: s
+convert-tpr: !bash_gromacs
+  arguments:
+    input:
+      flag: s
+      required: true
+    index:
+      flag: n
+    extend: {}
+    until: {}
+    out: 
+      flag: o
+    nsteps: {} 
 #! duplicate keys are not given an error!
