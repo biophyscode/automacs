@@ -81,9 +81,11 @@ class GMXReverseAPI(yaml.YAMLObject):
 		#! add protection for log and inpipe
 		log = kwargs.pop('log',None)
 		inpipe = kwargs.pop('inpipe',None)
-		if not log: raise Exception('every gromacs call gets a log')
+		outpipe = kwargs.pop('outpipe',False)
+		if not log and not outpipe: 
+			raise Exception('every gromacs call gets a log')
 		# +++ all log files are prepended
-		log_fn = 'log-%s'%log
+		if not outpipe: log_fn = 'log-%s'%log
 		if name not in self.__dict__: 
 			raise Exception('cannot find command: %s'%name)
 		# note that this is the special sauce in which we get the subordinate
@@ -105,7 +107,12 @@ class GMXReverseAPI(yaml.YAMLObject):
 		# note that scroll_log is wonky in the docker, hence off here
 		kwargs_bash = {'scroll':'special','scroll_log':True}
 		if inpipe!=None: kwargs_bash.update(scroll=False,inpipe=inpipe)
-		bash(cmd,log=state.here+log_fn,cwd=here,announce=True,**kwargs_bash)
+		if not outpipe:
+			bash(cmd,log=state.here+log_fn,cwd=here,announce=True,**kwargs_bash)
+		else:
+			kwargs_bash['scroll'] = False
+			result = bash(cmd,cwd=here,announce=True,**kwargs_bash)
+			return result
 		# reset the gmx call if override
 		if previous_gmx: self.master_call.gmx = previous_gmx
 		return cmd
@@ -262,7 +269,9 @@ def gmx(name,**kwargs):
 	This function is the primary interface between python and GROMACS.
 	"""
 	global gmx_interface
-	try: return gmx_interface.gmx(name,**kwargs)
+	try: 
+		if name=='dump': kwargs['outpipe'] = True
+		return gmx_interface.gmx(name,**kwargs)
 	except Exception as e:
 		from ortho import tracebacker
 		# we traceback manually here or else the exception is irrelevant

@@ -68,7 +68,7 @@ def gitcheck():
 	from ortho import ctext
 	# loop over modules and check the status
 	#for far,near in [('.','.')]+conf['modules']:
-	for spot,mod in conf.get('modules',{}).items()+[('.','.')]:
+	for spot,mod in list(conf.get('modules',{}).items())+[('.','.')]:
 		print('status','checking `git status` of %s'%ctext(
 			'automacs root (.)' if spot=='.' else spot,'angry'))
 		subprocess.check_call('git status',cwd=spot,shell=True)

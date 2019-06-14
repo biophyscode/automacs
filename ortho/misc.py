@@ -174,7 +174,8 @@ class ColorPrinter:
 	schemes = dict(angry=('red','bold'),
 		red_black=('red','b_black'),cyan_black=('cyan','b_black'))
 	def _syntax(self,text,how=None): 
-		return b'\033[%sm%s\033[0m'%(
+		#! removed bytes prefix below which might break python 2 compatibility
+		return '\033[%sm%s\033[0m'%(
 			';'.join([str(i) for i in how]) if how else '',
 			text if not self.tag else '%s%s'%(self.tag,text))
 	def __init__(self,scheme=None,tag=None,back=False):

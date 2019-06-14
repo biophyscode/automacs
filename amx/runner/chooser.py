@@ -54,7 +54,7 @@ def clean(sure=False): cleanup(sure=sure)
 
 ### CHOOSE EXPERIMENTS
 
-def experiment(procname,run=False):
+def experiment(procname,run=False,get=False):
 	"""
 	Prepare an experiment from inputs specified by the config.
 	There are two modes: a "metarun" or a single program.
@@ -66,8 +66,10 @@ def experiment(procname,run=False):
 	# save metadata for later, including the experiment name and location
 	metadata = dict(experiment_name=procname,experiment_source=sources[procname],
 		cwd=os.path.dirname(sources[procname]))
+	#! 
+	if get: return experiment
 	# send the experiment to the runner
-	runner(experiment,meta=metadata,run=run)
+	else: runner(experiment,meta=metadata,run=run)
 
 def prep(procname=None,terse=False,json=False):
 	"""Prepare an experiment or show the list."""

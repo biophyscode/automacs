@@ -25,7 +25,6 @@ def make_step(name):
 	# note automatic fallback to settings but returns None if no match
 	step_name = state.step
 	if not step_name: 
-		print('error state: %s'%state)
 		raise Exception('state or settings must supply a step')
 	state.step = 's%02d-%s'%(state.stepno,name)
 	os.mkdir(state.step)
