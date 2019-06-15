@@ -52,6 +52,8 @@ grompp: !bash_gromacs
     topology:
       flag: p
       required: true
+    groups:
+      flag: n
     maxwarn:
       required: true
       default: 1
