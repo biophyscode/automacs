@@ -67,5 +67,5 @@ gmx convert-tpr \
 
 gmx mdrun \
 -cpi $prev_name.cpt -s $base_name.tpr \
--deffnm $base_name \
+-deffnm $base_name -noappend \
 > log-mdrun-$name_ints 1>&2
