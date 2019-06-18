@@ -105,7 +105,7 @@ class GMXReverseAPI(yaml.YAMLObject):
 		# note that the special scroll method works better with weird newlines
 		#   whereas scroll=True and scroll_log=True prints log file names
 		# note that scroll_log is wonky in the docker, hence off here
-		kwargs_bash = {'scroll':'special','scroll_log':True}
+		kwargs_bash = {'scroll':'special_alt','scroll_log':True}
 		if inpipe!=None: kwargs_bash.update(scroll=False,inpipe=inpipe)
 		if not outpipe:
 			bash(cmd,log=state.here+log_fn,cwd=here,announce=True,**kwargs_bash)
