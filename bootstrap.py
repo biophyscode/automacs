@@ -9,7 +9,7 @@ BOOTSTRAP the AUTOMACS configuration
 # default configuration is written to config.json on first make
 default_configuration = {
 	'commands':['amx/runner','amx/cli.py'][:],
-	'cleanup': ['exec.py','s\d+-*','state*.json',
+	'cleanup': ['exec.py',{'regex':'^s\d+-.+$'},'state*.json',
 		'expt*.json','script*.py','log-*','*.log','v*-*','*.ipynb'],
 	'inputs': '@regex^.*?_expts\\.(yaml)$',
 	'install_check':'make gromacs_config',

@@ -39,7 +39,12 @@ def cleanup(sure=False):
 	config = ortho.conf
 	if 'cleanup' not in config: raise Exception('configuration is missing cleanup instructions')
 	fns = []
-	for pat in config['cleanup']: fns.extend(glob.glob(pat))
+	for pat in config['cleanup']: 
+		if isinstance(pat,dict):
+			if set(pat.keys())=={'regex'}:
+				fns.extend([i for i in glob.glob('*') if re.match(pat['regex'],i)])
+			else: raise Exception('unclear cleanup rule: %s'%str(pat))
+		else: fns.extend(glob.glob(pat))
 	if not sure: print('note','cleaning: %s'%', '.join(fns))
 	from ortho import confirm
 	if sure or confirm('okay to remove','confirm'):
