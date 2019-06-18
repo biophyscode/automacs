@@ -91,6 +91,7 @@ mdrun: !bash_gromacs
     checkpoint_in:
       flag: cpi
     noappend: {}
+    deffnm: {}
   base:
     energy: '%s.edr'
     logfile: '%s.log'
