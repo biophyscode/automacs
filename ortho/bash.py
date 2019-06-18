@@ -31,6 +31,7 @@ def reader(pipe,queue):
 
 def bash_newliner(line_decode,log=None):
 	"""Handle weird newlines in BASH streams."""
+	#! is this redundant i.e. not used in the bash function?
 	# note that sometimes we get a "\r\n" or "^M"-style newline
 	#   which makes the output appear inconsistent (some lines are prefixed) so we 
 	#   replace newlines, but only if we are also reporting the log file on the line next
@@ -90,17 +91,21 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 	# alternative scroll method via https://stackoverflow.com/questions/18421757
 	# special scroll is useful for some cases where buffered output was necessary
 	# this method can handle universal newlines while the threading method cannot
+	#! note that this method is not writing to files on gmx mdrun for some reason
 	elif log and scroll=='special':
 		with io.open(log,'wb') as writes, io.open(log,'rb',1) as reads:
 			proc = subprocess.Popen(command,stdout=writes,
 				cwd=cwd,shell=True,universal_newlines=True)
 			while proc.poll() is None:
 				sys.stdout.write(reads.read().decode('utf-8'))
+				sys.stdout.flush()
 				time.sleep(0.5)
 			# read the remaining
 			sys.stdout.write(reads.read().decode('utf-8'))
+			sys.stdout.flush()
 	# log to file and print to screen using the reader function above
 	elif log and scroll:
+		#! note that scroll_log is only used here. this needs organized
 		# via: https://stackoverflow.com/questions/31833897/
 		# note that this method also works if you remove output to a file
 		#   however I was not able to figure out how to identify which stream 
@@ -138,7 +143,8 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 					#   behave weird if you print from a script called through ortho.bash due to locale issues
 					#   described here: https://pythonhosted.org/kitchen/unicode-frustrations.html
 					#   so just port your unicode-printing python 2 code or use a codecs.getwriter
-					print(line_here,end='')
+					sys.stdout.write(line_here)
+					sys.stdout.flush()
 					# do not write the log file in the final line
 					fp.write(line.encode('utf-8'))
 	# log to file and suppress output
@@ -176,6 +182,7 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 	if not scroll:
 		if stderr: stderr = stderr.decode('utf-8')
 		if stdout: stdout = stdout.decode('utf-8')
+	import ipdb;ipdb.set_trace()
 	return None if scroll else {'stdout':stdout,'stderr':stderr}
 
 class TeeMultiplexer:
