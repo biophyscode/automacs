@@ -51,6 +51,7 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 	Run a bash command.
 	Development note: tee functionality would be useful however you cannot use pipes with subprocess here.
 	Vital note: log is relative to the current location and not the cwd.
+	Note that the flush behavior should be altered depending on the filesystem.
 	"""
 	if announce: 
 		print('status',
@@ -103,7 +104,21 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 			# read the remaining
 			sys.stdout.write(reads.read().decode('utf-8'))
 			sys.stdout.flush()
-	# log to file and print to screen using the reader function above
+	# composite of several methods developed after the special method above was 
+	#   not logging and the scroll method was not real-time
+	#! note some inspiration from https://stackoverflow.com/questions/34989601
+	#!   however that method had a number of problems
+	elif log and scroll=='special_alt':
+		#! got binary mode doesn't take an encoding argument
+		#! several other modifications: 
+		with open(log,mode="wb") as fp:
+			proc = subprocess.Popen(command,bufsize=512,shell=True,
+				stdout=subprocess.PIPE,stderr=subprocess.PIPE,
+				universal_newlines=True,cwd=cwd)
+			for line in proc.stderr:
+				fp.write(line.encode('utf-8'))
+				fp.flush()
+				print(line,flush=True,end='')
 	elif log and scroll:
 		#! note that scroll_log is only used here. this needs organized
 		# via: https://stackoverflow.com/questions/31833897/
@@ -116,12 +131,12 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 		#!   that users instead try the special method above, which works fine
 		#!   with unusual newlines
 		proc = subprocess.Popen(command,cwd=cwd,shell=True,executable='/bin/bash',
-			stdout=subprocess.PIPE,stderr=subprocess.PIPE,bufsize=1)
+			stdout=subprocess.PIPE,stderr=subprocess.PIPE,bufsize=0)
 		qu = queue.Queue()
 		threading.Thread(target=reader,args=[proc.stdout,qu]).start()
 		threading.Thread(target=reader,args=[proc.stderr,qu]).start()
 		empty = '' if sys.version_info<(3,0) else b''
-		with open(log,'ab') as fp:
+		with open(log,'ab',buffering=0) as fp:
 			for _ in range(2):
 				for _,line in iter(qu.get,None):
 					# decode early, encode late
@@ -147,6 +162,7 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 					sys.stdout.flush()
 					# do not write the log file in the final line
 					fp.write(line.encode('utf-8'))
+					sys.stdout.flush()
 	# log to file and suppress output
 	elif log and not scroll:
 		output = open(log,'w')
@@ -182,7 +198,6 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 	if not scroll:
 		if stderr: stderr = stderr.decode('utf-8')
 		if stdout: stdout = stdout.decode('utf-8')
-	import ipdb;ipdb.set_trace()
 	return None if scroll else {'stdout':stdout,'stderr':stderr}
 
 class TeeMultiplexer:
