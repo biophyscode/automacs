@@ -92,22 +92,26 @@ def bash(command,log=None,cwd=None,inpipe=None,scroll=True,tag=None,
 	# alternative scroll method via https://stackoverflow.com/questions/18421757
 	# special scroll is useful for some cases where buffered output was necessary
 	# this method can handle universal newlines while the threading method cannot
-	#! note that this method is not writing to files on gmx mdrun for some reason
+	#! issue: it cannot handle newlines from gmx mdrun properly. the stdout looks fine
+	#!   but the log file has carrot-M characters
 	elif log and scroll=='special':
-		with io.open(log,'wb') as writes, io.open(log,'rb',1) as reads:
-			proc = subprocess.Popen(command,stdout=writes,
-				cwd=cwd,shell=True,universal_newlines=True)
+		with io.open(log,'wb',0) as writes, io.open(log,'rb',0) as reads:
+			# note that we collapse stdout and stderr by using the same stream
+			# some programs (e.g. gmx mdrun) write without carriage return to stderr
+			proc = subprocess.Popen(command,stdout=writes,stderr=writes,
+				cwd=cwd,shell=True)
 			while proc.poll() is None:
 				sys.stdout.write(reads.read().decode('utf-8'))
 				sys.stdout.flush()
 				time.sleep(0.5)
-			# read the remaining
+			# read the remaining in case exit during the loop
 			sys.stdout.write(reads.read().decode('utf-8'))
 			sys.stdout.flush()
 	# composite of several methods developed after the special method above was 
 	#   not logging and the scroll method was not real-time
 	#! note some inspiration from https://stackoverflow.com/questions/34989601
 	#!   however that method had a number of problems
+	#! this method is deprecated after fixing the special method above
 	elif log and scroll=='special_alt':
 		#! got binary mode doesn't take an encoding argument
 		#! several other modifications: 
