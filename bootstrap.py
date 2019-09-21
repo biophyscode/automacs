@@ -9,7 +9,7 @@ BOOTSTRAP the AUTOMACS configuration
 # default configuration is written to config.json on first make
 default_configuration = {
 	'commands':['amx/runner','amx/cli.py'][:],
-	'cleanup': ['exec.py',{'regex':'^s\d+-.+$'},'state*.json',
+	'cleanup': ['exec.py',{'regex':r'^s\d+-.+$'},'state*.json',
 		'expt*.json','script*.py','log-*','*.log','v*-*','*.ipynb'],
 	'inputs': '@regex^.*?_expts\\.(yaml)$',
 	'install_check':'make gromacs_config',
@@ -43,6 +43,7 @@ make set_dict path=\""('modules','inputs/bilayers',)"\" value=\""{'address':'%(g
 make set_dict path=\""('modules','inputs/extras',)"\" value=\""{'address':'%(github)s%(extras)s/amx-extras.git','branch':'ortho'}"\"
 make set_dict path=\""('modules','inputs/charmm',)"\" value=\""{'address':'%(github)s%(charmm)s/amx-charmm.git'}"\"
 make set_dict path=\""('modules','inputs/structure-repo',)"\" value=\""{'address':'%(github)s%(structures)s/amx-structures.git'}"\"
+make set_dict path=\""('modules','inputs/martini',)"\" value=\""{'address':'%(github)s%(proteins)s/amx-martini.git','branch':'master'}"\"
 """%git_addresses,
 
 }

@@ -56,7 +56,8 @@ def intepret_experiment_file_python(fn,toc,sources):
 	with open(fn) as fp: 
 		text_spec = fp.read()
 	if experiment_hooks:
-		import pdb;pdb.set_trace()
+		pass
+		#! import pdb;pdb.set_trace()
 	if not check_repeated_keys(text_spec):
 		raise Exception(controlmsg['json']+' error is located in: %s'%fn)
 	inputlib_ins = eval(text_spec)
