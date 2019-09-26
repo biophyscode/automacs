@@ -6,10 +6,12 @@ from ortho.misc import listify
 
 _shared_extensions = ['make_step','copy_file','copy_files','move_file']
 
-def make_step(name):
+def make_step(name=None):
 	"""
 	Make a new step, with folder.
 	"""
+	# name is optional and usually comes from step
+	if not name: name = settings.step
 	# note any previous states
 	if state.before:
 		# get step information from the last state
@@ -19,9 +21,9 @@ def make_step(name):
 		state.steps = list(prev_state['steps'])
 	# no previous states
 	else:
-		if 'stepno' not in state: state.stepno = 1
-		if 'steps' not in state: state.steps = []
-		else: state.stepno += 1
+		#! note that we do not advance the stepno automatically here
+		stepno = state.get('stepno',1)
+		state.steps = state.get('steps',[])
 	# note automatic fallback to settings but returns None if no match
 	step_name = state.step
 	if not step_name: 

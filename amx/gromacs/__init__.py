@@ -39,6 +39,7 @@ else:
 	from .gmx_tools import extract_itp,write_top,write_structure_pdb # used by @proteins/protein.py
 	from .bash import write_continue_script # used by @proteins/protein.py
 	from .generic import get_start_structure  # used by @proteins/protein.py
+	from .generic import interpret_start_structure  # used by @proteins/protein.py @proteins/homology_basic.py
 	from .common import minimize,equilibrate
 	from .common import solvate_protein,counterions #! legacy needs updated
 

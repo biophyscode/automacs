@@ -1,18 +1,22 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
-import sys,json,shutil,os,glob,re
+import sys,json,shutil,os,glob,re,copy
 import ortho
 from ortho.handler import Handler
 from ortho.imports import importer
 from ortho.misc import listify,str_types
 from .chooser import collect_experiments
 
-
 ### CLASSIFY EXPERIMENTS
 
-def execute(steps):
+classify_fail = \
+	'cannot find an experiment handler that accepts these keys: %(args)s'
+
+def execute(steps,script='script.py',metarun_num=-1):
 	"""Call the execution routines."""
+	#! steps needs to be retired. currently setting metarun_num to manage metaruns
+
 	#! developing standard running now and then later supervised execution
 	if steps==[None]: 
 		# arriving at the execute function via `make go` means that we used a single python execution loop
@@ -37,7 +41,11 @@ def execute(steps):
 		import ortho
 		# this is the entire point at which the script is executed, and it is nearly identical to running it 
 		#   at the terminal. the only difference is that we get the environment, and conf from ortho
-		mod = ortho.importer('script.py',strict=True)
+		if metarun_num>=0:
+			if os.path.islink('expt.json'): os.unlink('expt.json')
+			os.symlink('expt_%d.json'%metarun_num,'expt.json')
+		mod = ortho.importer(script,strict=True)
+	#! note that this is dealing with "steps" but it is really one step only
 	else: 
 		raise Exception('dev')
 
@@ -55,7 +63,7 @@ def populate_experiment(extends,details,meta):
 	new_settings.update(**details.get('settings',{}))
 	details['settings'] = new_settings
 	# inherit some items from the parent
-	for key in ['params','extensions','tags']:
+	for key in ['params','extensions','tags','script']:
 		if (key not in details 
 			and key in expts['experiments'][extends]):
 			details[key] = expts['experiments'][extends][key]
@@ -102,7 +110,7 @@ def standardize_metarun(seq,namer=None,sorter=None):
 	return order,reseq
 
 class ExperimentHandler(Handler):
-	# note that the meta keywrord is routed separately in the handler
+	# note that the meta keyword is routed separately in the handler
 	# hence the taxonomy keys match the yaml file exactly
 	#! retiring the taxonomy because the Handler is updated
 	#!   note that the run, quick, metarun functions all need updated and tested
@@ -124,7 +132,8 @@ class ExperimentHandler(Handler):
 		# collect the script
 		shutil.copyfile(os.path.join(meta['cwd'],expt['script']),
 			'script_%d.py'%no if no!=None else 'script.py')
-	def run(self,settings,script,extends=None,tags=None,params=None,extensions=[]):
+	def run(self,settings,script,extends=None,tags=None,
+		params=None,extensions=[],notes=None,no=None):
 		"""Prepare a single run without numbering."""
 		#! see taxonomy above, retired opts
 		#! we need kwargs for the _prep_step function
@@ -134,7 +143,7 @@ class ExperimentHandler(Handler):
 		# extends = kwargs.pop('extends',None)
 		# use settings from one experiment as a base for the other
 		if extends: populate_experiment(extends,kwargs,self.meta)
-		self._prep_step(expt=kwargs,meta=self.meta,no=None)
+		self._prep_step(expt=kwargs,meta=self.meta,no=no)
 		return [None]
 	def quick(self,quick): 
 		"""Run without writing experiment or script files."""
@@ -148,37 +157,27 @@ class ExperimentHandler(Handler):
 		if 'settings' in kwargs: settings.update(**kwargs['settings'])
 		amx.state = state
 		return state
-	def metarun(self,metarun):
+	def metarun(self,metarun,notes=None):
 		"""Handle metaruns i.e. a sequence of runs."""
 		#! see taxonomy above, retired opts
-		order,seq = standardize_metarun(kwargs.pop('metarun'))
+		order,seq = standardize_metarun(metarun)
 		seq_out = []
-		if kwargs: raise Exception('unprocessed kwargs: %s'%kwargs)
 		expts = [{} for s in seq]
-		import pdb;pdb.set_trace()
 		for ss,s in enumerate(seq):
+			expts[ss].update(**s)
 			populate_experiment(s['extends'],expts[ss],self.meta)
-		import pdb;pdb.set_trace()
-		handlers = [ExperimentHandler(meta=self.meta,classify_fail=
-			'cannot find an experiment handler that accepts these keys: %(args)s',
-			**expt_this) for expt_this in expts]
-		import pdb;pdb.set_trace()
-		if False:
-			for num,(key,expt) in enumerate(seq.items()):
-				if not expt: expt = {}
-				populate_experiment(key,expt)
-				seq_out.append(expt)
-				self._prep_step(expt=expt,meta=self.meta,no=num)
-			import pdb;pdb.set_trace()
+			#! previously self._prep_step(expt=expt,meta=self.meta,no=num)
+			#!   this might make more sense since it queues everything up
+			# add a number (use natural numbering from 1 instead of 0)
+			expts[ss]['no'] = ss+1
+		return list(zip(order,expts))
 
 def runner(expt,meta,run=True):
 	"""
 	Prepare and/or run a simulation.
 	"""
 	# handler completes the preparation
-	handler = ExperimentHandler(meta=meta,classify_fail=
-		'cannot find an experiment handler that accepts these keys: %(args)s',
-		**expt)
+	handler = ExperimentHandler(meta=meta,classify_fail=classify_fail,**expt)
 	steps = handler.solve
 	# after preparation we may run directly
 	if run:
@@ -196,5 +195,18 @@ def runner(expt,meta,run=True):
 		elif handler.style=='run': 
 			execute(steps)
 		elif handler.style=='metarun':
-			for step in steps:
-				execute(steps)
+			for snum,(name,step) in enumerate(steps):
+				# number from 1 instead of 0
+				snum_this = snum + 1
+				# pass along a step number for make_step
+				step['settings']['stepno'] = snum_this
+				# this handles the recursion
+				#! note that the cwd and experiment_source might be wrong 
+				#!   if the metarun components came from elsewhere?
+				meta_this = copy.deepcopy(meta)
+				meta_this['experiment_name'] = name
+				handler = ExperimentHandler(meta=meta_this,
+					classify_fail=classify_fail,**step).solve
+				#! hacking the expt and script file handling
+				execute(handler,script='script_%d.py'%
+					snum_this,metarun_num=snum_this)

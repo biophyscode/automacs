@@ -39,6 +39,9 @@ def cleanup(sure=False):
 	config = ortho.conf
 	if 'cleanup' not in config: raise Exception('configuration is missing cleanup instructions')
 	fns = []
+	#! special handling for links
+	if os.path.islink('expt.json'): 
+		os.unlink('expt.json')
 	for pat in config['cleanup']: 
 		if isinstance(pat,dict):
 			if set(pat.keys())=={'regex'}:
