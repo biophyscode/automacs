@@ -188,8 +188,11 @@ def run_program(_do_debug=False,_no_run=False):
 		funcs[funcname](*args,**kwargs)
 	#? catch a TypeError in case the arguments are not formulated properly
 	except Exception as e: 
+		# this setting is not easily available to the user
+		report_docstring_on_failure = False
 		docstring = funcs[funcname].__doc__
-		if docstring:
+		# the docstring can clutter things so we hide it here
+		if docstring and report_docstring_on_failure:
 			print('note the docstring for this function: "%s"'%funcname)
 			print(docstring)
 		tracebacker(e)
