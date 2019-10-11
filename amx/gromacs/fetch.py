@@ -11,7 +11,7 @@ def get_pdb(code,path=None):
 	#!   this might be worth adding back in. it also extracted the sequence 
 	if sys.version_info<(3,0): from urllib2 import urlopen
 	else: from urllib.request import urlopen
-	response = urlopen('http://www.rcsb.org/pdb/files/'+code+'.pdb')
+	response = urlopen('http://www.rcsb.org/pdb/files/'+code.strip()+'.pdb')
 	pdbfile = response.read()
 	if path==None: dest = state.here+'start-structure.pdb'
 	else: 

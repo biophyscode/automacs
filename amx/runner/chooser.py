@@ -39,6 +39,9 @@ def cleanup(sure=False):
 	config = ortho.conf
 	if 'cleanup' not in config: raise Exception('configuration is missing cleanup instructions')
 	fns = []
+	#! special handling for links
+	if os.path.islink('expt.json'): 
+		os.unlink('expt.json')
 	for pat in config['cleanup']: 
 		if isinstance(pat,dict):
 			if set(pat.keys())=={'regex'}:
@@ -105,7 +108,7 @@ def tether(path):
 	if os.path.isdir(path):
 		raise Exception('already exists: %s'%path)
 	else: os.mkdir(path)
-	for fn in ['makefile','config.json','amx','ortho']:
+	for fn in ['makefile','config.json','amx','ortho','inputs']:
 		os.symlink(os.path.join(os.getcwd(),fn),os.path.join(path,fn))
 	# write the location of the root automacs for the remote function
 	with open(os.path.join(path,'source'),'w') as fp: fp.write(os.getcwd())
