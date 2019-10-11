@@ -59,7 +59,7 @@ def clean(sure=False): cleanup(sure=sure)
 
 ### CHOOSE EXPERIMENTS
 
-def experiment(procname,run=False,get=False):
+def experiment(procname,run=False,get=False,remote=None):
 	"""
 	Prepare an experiment from inputs specified by the config.
 	There are two modes: a "metarun" or a single program.
@@ -71,12 +71,12 @@ def experiment(procname,run=False,get=False):
 	# save metadata for later, including the experiment name and location
 	metadata = dict(experiment_name=procname,experiment_source=sources[procname],
 		cwd=os.path.dirname(sources[procname]))
-	#! 
+	if remote: metadata['remote'] = remote
 	if get: return experiment
 	# send the experiment to the runner
 	else: runner(experiment,meta=metadata,run=run)
 
-def prep(procname=None,terse=False,json=False):
+def prep(procname=None,terse=False,json=False,remote=None):
 	"""Prepare an experiment or show the list."""
 	import json as JSON
 	if procname==None: 
@@ -88,9 +88,35 @@ def prep(procname=None,terse=False,json=False):
 			# we dump sources and experiments
 			print('json:\n%s'%JSON.dumps(experiments))
 		else: ortho.treeview(dict(experiments=experiments))
-	else: experiment(procname=procname,run=False)
+	else: experiment(procname=procname,run=False,remote=remote)
 
-def go(procname,clean=False): 
+def go(procname,clean=False,remote=None): 
 	"""Typical method for running an experiment."""
 	if clean: cleanup(sure=True)
-	experiment(procname,run=True)
+	experiment(procname,run=True,remote=remote)
+
+def tether(path):
+	"""
+	Create a remote link to this copy of automacs.
+	Using this requires the following command:
+		make -C $AMXROOT tether $PWD/name
+	"""
+	print('status making a tether to automacs')
+	if os.path.isdir(path):
+		raise Exception('already exists: %s'%path)
+	else: os.mkdir(path)
+	for fn in ['makefile','config.json','amx','ortho']:
+		os.symlink(os.path.join(os.getcwd(),fn),os.path.join(path,fn))
+	# write the location of the root automacs for the remote function
+	with open(os.path.join(path,'source'),'w') as fp: fp.write(os.getcwd())
+
+def remote(procname,clean=False):
+	"""
+	Remote execution.
+	"""
+	# get the amxroot
+	with open('source') as fp: amxroot = fp.read().strip()
+	here = os.getcwd()
+	os.chdir(amxroot)
+	# fake the system call so remote acts like prep
+	go(procname=procname,clean=clean,remote=here)

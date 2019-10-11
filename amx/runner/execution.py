@@ -11,7 +11,7 @@ from .chooser import collect_experiments
 
 ### CLASSIFY EXPERIMENTS
 
-def execute(steps):
+def execute(steps,remote=None):
 	"""Call the execution routines."""
 	#! developing standard running now and then later supervised execution
 	if steps==[None]: 
@@ -37,7 +37,10 @@ def execute(steps):
 		import ortho
 		# this is the entire point at which the script is executed, and it is nearly identical to running it 
 		#   at the terminal. the only difference is that we get the environment, and conf from ortho
-		mod = ortho.importer('script.py',strict=True)
+		fn = 'script.py'
+		if remote: fn = os.path.join(remote,fn)
+		print('fn is %s'%fn)
+		mod = ortho.importer(fn,strict=True)
 	else: 
 		raise Exception('dev')
 
@@ -119,11 +122,16 @@ class ExperimentHandler(Handler):
 		# make sure the expt gets the tags
 		expt.update(**meta)
 		# write the experiment file
-		with open('expt_%d.json'%no if no!=None else 'expt.json','w') as fp: 
+		json_fn = 'expt_%d.json'%no if no!=None else 'expt.json'
+		if meta.get('remote'):
+			json_fn = os.path.join(meta.get('remote'),json_fn)
+		with open(json_fn,'w') as fp: 
 			fp.write(json.dumps(data))
+		script_fn = 'script_%d.py'%no if no!=None else 'script.py'
+		if meta.get('remote'):
+			script_fn = os.path.join(meta.get('remote'),script_fn)
 		# collect the script
-		shutil.copyfile(os.path.join(meta['cwd'],expt['script']),
-			'script_%d.py'%no if no!=None else 'script.py')
+		shutil.copyfile(os.path.join(meta['cwd'],expt['script']),script_fn)
 	def run(self,settings,script,extends=None,tags=None,params=None,extensions=[]):
 		"""Prepare a single run without numbering."""
 		#! see taxonomy above, retired opts
@@ -162,7 +170,6 @@ class ExperimentHandler(Handler):
 		handlers = [ExperimentHandler(meta=self.meta,classify_fail=
 			'cannot find an experiment handler that accepts these keys: %(args)s',
 			**expt_this) for expt_this in expts]
-		import pdb;pdb.set_trace()
 		if False:
 			for num,(key,expt) in enumerate(seq.items()):
 				if not expt: expt = {}
@@ -180,6 +187,7 @@ def runner(expt,meta,run=True):
 		'cannot find an experiment handler that accepts these keys: %(args)s',
 		**expt)
 	steps = handler.solve
+	remote = meta.get('remote',None)
 	# after preparation we may run directly
 	if run:
 		if handler.style=='quick':
@@ -194,7 +202,7 @@ def runner(expt,meta,run=True):
 			outgoing.update(**imported['functions'])
 			exec(handler.kwargs['quick'],outgoing,outgoing)
 		elif handler.style=='run': 
-			execute(steps)
+			execute(steps,remote=remote)
 		elif handler.style=='metarun':
 			for step in steps:
-				execute(steps)
+				execute(steps,remote=remote)

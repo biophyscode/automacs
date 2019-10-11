@@ -7,7 +7,7 @@ AUTOMACS RUNNER
 Supervise execution.
 """
 
-from .chooser import prep,go,clean
+from .chooser import prep,go,clean,tether,remote
 
 # it is best to expose functions this way instead of decorating them
 #   manually in a function call which prevents you from using arguments as flags
