@@ -84,10 +84,12 @@ mdrun: !bash_gromacs
       bool: true
       required: true
       default: true
-    procs: 
-      flag: nt
-      required: true
-      default: 4
+    #! spack testing compiles gmx without thread-mpi
+    #procs: 
+    #  flag: nt
+    #  required: true
+    #  q
+    #  default: 4
     checkpoint_in:
       flag: cpi
     noappend: {}
