@@ -6,12 +6,15 @@ def get_start_structure(path):
 	"""
 	Get a start structure or auto-detect a single PDB in the inputs folder.
 	"""
+	# note that passing islink without isfile means broken link
 	if path: 
 		altpath = os.path.join(globals().get(
 			'expt',{}).get('cwd_source','./'),path)
 	else: altpath = None
-	if path and os.path.isfile(path): fn = path
-	elif altpath and os.path.isfile(altpath): fn = altpath
+	if path and os.path.isfile(path):
+		fn = path
+	elif altpath and os.path.isfile(altpath): 
+		fn = altpath
 	else: 
 		fns = glob.glob('inputs/*.pdb')
 		if len(fns)>1: raise Exception('multiple PDBs in inputs')
@@ -26,15 +29,14 @@ def interpret_start_structure():
 	see if it's a PDB or copies it from a relative path. The default value will
 	trigger a check for a single PDB file in the inputs folder.
 	"""
+	# note that passing islink without isfile means broken link
 	# check for PDB code or path
 	#! port this to protein.py
 	is_pdb = (settings.start_structure!=None 
 		and re.match('^[A-Za-z0-9]{4}$',settings.start_structure.strip())!=None)
 	is_path = (settings.start_structure==None 
-		or os.path.isfile(settings.start_structure)
-		or os.path.islink(settings.start_structure))
+		or os.path.isfile(settings.start_structure))
 	if is_path + is_pdb != 1:
-		import ipdb;ipdb.set_trace()
 		raise Exception(
 			'is_pdb = %s, is_path = %s, settings.start_structure = %s'%(
 			is_path,is_pdb,settings.start_structure))
