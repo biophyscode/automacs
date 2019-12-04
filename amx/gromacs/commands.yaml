@@ -49,6 +49,9 @@ grompp: !bash_gromacs
     structure:
       flag: c
       required: true
+    restraints:
+      flag: r
+      required: false
     topology:
       flag: p
       required: true
@@ -144,6 +147,9 @@ trjconv: !bash_gromacs
       flag: s
     out:
       flag: o
+    periodic_boundaries:
+      flag: pbc
+      required: false
 dump: !bash_gromacs
   arguments:
     checkpoint:

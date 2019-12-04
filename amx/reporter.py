@@ -8,7 +8,7 @@ import time
 from amx import state
 
 # functions which do not need to be logged
-_not_logged = ['make_step','gromacs_initializer','init']
+_not_logged = ['make_step','gromacs_initializer','init','martini_lipidome']
 
 def call_reporter(func,force=True):
 	"""Every function reports itself."""

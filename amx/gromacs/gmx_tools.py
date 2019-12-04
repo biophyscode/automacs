@@ -1,6 +1,17 @@
 #!/usr/bin/env python
 
-import os,re
+import os,re,json,glob
+
+def unique(items):
+	"""
+	Enforce uniqueness on a list.
+	!! used only once in this file otherwise np.unique (try: find . -name "*.py" | xargs grep "[^\.]unique(")
+	!! hence this is soon to move to the trash bin
+	"""
+	try: (element,) = items
+	except ValueError: 
+		raise Exception('expecting only one item in this list: %s'%str(items))
+	return element
 
 def extract_itp(topfile,cwd=None,itp='protein.itp'):
 	"""
