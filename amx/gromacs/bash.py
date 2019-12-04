@@ -10,7 +10,9 @@ def write_continue_script(**kwargs):
 	until = kwargs.pop('until',1000000)
 	extend = kwargs.pop('extend',1000000)
 	if kwargs: raise Exception('unprocessed kwargs: %s'%kwargs)
-	template = os.path.join(__file__,'continue-gmx-2018.sh')
+	#! this path is failing because we are in inputs/bilayers/codes
+	#! template = os.path.join(__file__,'continue-gmx-2018.sh')
+	template = os.path.join('amx','gromacs','continue-gmx-2018.sh')
 	with open(template) as fp: raw = fp.read()
 	sub = '\n'.join([
 		'# settings injected by write_continue_script',
