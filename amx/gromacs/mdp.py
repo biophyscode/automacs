@@ -62,6 +62,8 @@ def write_mdp(param_file=None,rootdir='./',outdir='',extras=None,verbose=False):
 	mdpfile = {}
 	#---figure out the path to the parameter file
 	if not param_file: 
+		if expt.params==None:
+			raise Exception('need parameters in the experiment')
 		if re.match('^@',expt.params): 
 			from runner.acme import get_path_to_module
 			param_file = get_path_to_module(expt.params)
