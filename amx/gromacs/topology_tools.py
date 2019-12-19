@@ -120,8 +120,8 @@ class GMXTopology:
 		#---first we detect any ifdef/ifndef statements
 		ifdefs = re.findall(self._regex_ifdef_block%'',self.itp_raw,flags=re.DOTALL+re.M)
 		ifndefs = re.findall(self._regex_ifdef_block%'n',self.itp_raw,flags=re.DOTALL+re.M)
-		defnames_ja = list(set(list(zip(*ifdefs)[0]))) if ifdefs else []
-		defnames_no = list(set(list(zip(*ifndefs)[0]))) if ifndefs else []
+		defnames_ja = list(set(list(zip(*ifdefs))[0])) if ifdefs else []
+		defnames_no = list(set(list(zip(*ifndefs))[0])) if ifndefs else []
 		defs = {}
 		for key in defnames_ja: defs[key] = True
 		#---default is NOT to include a block (we run this second)
