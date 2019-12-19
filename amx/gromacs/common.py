@@ -12,15 +12,17 @@ def minimize(name,structure=None,method='steep',top=None,restraints=False):
 	"""
 	log_base = 'grompp-%s-%s'%(name,method)
 	grompp_kwargs = {}
+	restraints = True # override this here because gromacs 2018 requires this flag
+	#! note that restraints are now controlled from the MDP entirely
 	if restraints==True: grompp_kwargs['r'] = '%s.gro'%name
 	elif restraints: grompp_kwargs['r'] = restraints
 	base = 'em-%s-%s'%(name,method)
 	gmx('grompp',
 		out=base+'.tpr',
 		topology=name+'.top' if not top else top,
-		structure=name+'.gro' if not structure else structure,
+		structure=name+'.gro' if not structure else structure+'.gro',
 		log=log_base,
-		parameters='input-em-%s-in'%method,
+		parameters='input-em-%s-in.mdp'%method,
 		parameters_out=base+'.mdp',
 		**grompp_kwargs)
 	tpr = state.here+'em-%s-%s.tpr'%(name,method)
@@ -131,6 +133,8 @@ def counterions(structure=None,top=None,includes=None,ff_includes=None,gro='coun
 		out='genion.tpr',
 		topology='counterions.top',
 		structure=structure,
+		# repeat the restraints argument for gromacs 2018, a new
+		restraints=structure,
 		log='grompp-genion',
 		parameters='input-em-%s-in'%'steep',
 		parameters_out='genion.mdp',
@@ -208,6 +212,9 @@ def equilibrate(groups=None,structure='system',top='system.top',
 				out=base+'.tpr',
 				topology=top,
 				structure=structure_this,
+				# the following is now required
+				#!!! should we hard-code this somehow?
+				restraints=structure_this,
 				log='grompp-%s'%name,
 				parameters='input-md-%s-eq-in'%name,
 				parameters_out=base+'.mdp',
@@ -232,6 +239,7 @@ def equilibrate(groups=None,structure='system',top='system.top',
 				base=name,
 				topology=top,
 				structure=structure_this,
+				restraints=structure_this,
 				parameters='input-md-in',
 				maxwarn=state.get('maxwarn',0),
 				log='grompp-0001',
@@ -239,3 +247,21 @@ def equilibrate(groups=None,structure='system',top='system.top',
 			gmx('mdrun',
 				base=name,
 				log='mdrun-0001')
+
+#! hacked in when testing bilayer-flat.py
+
+def restart_clean(part,structure,groups,posres_coords=None,mdp='input-md-in'):
+	"""
+	Perform a hard-restart that mimics the md.part0001 naming scheme.
+	"""
+	if type(part)!=int: raise Exception('part must be an integer')
+	#---! other validations here? check for overwrites
+	name = 'md.part%04d'%part
+	flags = {'n':groups} if groups else {}
+	#---! needs systematic restraint additions for all grompp !!!!!!!!!!!!
+	if posres_coords: flags['r'] = posres_coords
+	gmx('grompp',base=name,topology='system',
+		restraints=structure, # now required since 2018
+		structure=structure,log='grompp-%04d'%part,parameters=mdp,
+		maxwarn=state.q('maxwarn',0),**flags)
+	gmx('mdrun',base=name,log='mdrun-%04d'%part)

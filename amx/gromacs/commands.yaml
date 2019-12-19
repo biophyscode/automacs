@@ -35,6 +35,8 @@ editconf: !bash_gromacs
     distance:
       flag: d
     resnr: {}
+    translate:
+      required: false
 grompp: !bash_gromacs
   arguments:
     out: # counterintuitive: this is a "run input" file for mdrun
@@ -150,6 +152,8 @@ trjconv: !bash_gromacs
     periodic_boundaries:
       flag: pbc
       required: false
+    trans:
+      required: false
 dump: !bash_gromacs
   arguments:
     checkpoint:
@@ -169,3 +173,10 @@ convert-tpr: !bash_gromacs
       flag: o
     nsteps: {} 
 #! duplicate keys are not given an error!
+genconf: !bash_gromacs
+  arguments: 
+    structure:
+      flag: f
+    out:
+      flag: o
+    nbox: {}

@@ -256,3 +256,32 @@ def automacs_execution_handler(namespace):
 	# note that non-supervised execution continues here, at the end of amx/__init__.py
 	#   while supervised execution exits above
 	return
+
+#! temporarily hacked in
+
+def register_file(fn):
+	"""
+	Maintain a list of new, essential files. 
+	These have no specific categories (in contrast to e.g. ITP files).
+	New steps copy all files in the registry.
+	"""
+	if not state.file_registry: state.file_registry = []
+	if not os.path.isfile(state.here+fn):
+		raise Exception('cannot register file because it does not exist: %s'%fn)
+	if fn in state.file_registry:
+		raise Exception('file %s is already in the file registry'%fn)
+	state.file_registry.append(fn)
+
+def gmx_register_call(command,flag,value):
+	"""
+	Register an automatic rule for adding flags to gromacs calls.
+	"""
+	if 'gmx_call_rules' not in state: state.gmx_call_rules = []
+	conflicting_rules = [ii for ii,i in enumerate(state.gmx_call_rules) 
+		if i['command']==command and i['flag']==flag]
+	if any(conflicting_rules):
+		print('[NOTE] the rules list is: %s'%conflicting_rules)
+		raise Exception('incoming item in gmx_call_rules conflicts with the list (see rules list above): '+
+			'command="%s",flag="%s",value="%s"'%(command,flag,value))
+	state.gmx_call_rules.append(dict(command=command,flag=flag,value=value))
+	#---! somehow this gets propagated to the next step, which is pretty cool. explain how this happens

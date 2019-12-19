@@ -11,6 +11,121 @@ _not_reported = ['dotplace']
 #! from topology_tools import GMXTopology
 #! from force_field_tools import Landscape
 from amx.gromacs.bookkeeping import Landscape,GMXTopology
+#! centralize this
+dotplace = lambda n: re.compile(r'(\d)0+$').sub(r'\1',"%8.3f"%float(n)).ljust(8)
+
+# START PULL in extra functions from deprecated amx/gromacs/common.py
+
+def trim_waters(structure='solvate-dense',gro='solvate',gap=3,
+	boxvecs=None,method='aamd',boxcut=True):
+	"""
+	ABSOLUTE FINAL VERSION OF THIS FUNCTION HOPEFULLY GOD WILLING
+	trim_waters(structure='solvate-dense',gro='solvate',gap=3,boxvecs=None)
+	Remove waters within a certain number of Angstroms of the protein.
+	#### water and all (water and (same residue as water within 10 of not water))
+	note that we vided the solvate.gro as a default so this can be used with any output gro file
+	IS IT A PROBLEM THAT THIS DOESN'T TOUCH THE IONS??
+	"""
+	use_vmd = state.q('use_vmd',False)
+	if (gap != 0.0 or boxcut) and use_vmd:
+		if method == 'aamd': watersel = "water"
+		elif method == 'cgmd': watersel = "resname %s"%state.q('sol')
+		else: raise Exception("\n[ERROR] unclear method %s"%method)
+		#---! gap should be conditional and excluded if zero
+		vmdtrim = [
+			'package require pbctools',
+			'mol new %s.gro'%structure,
+			'set sel [atomselect top \"(all not ('+\
+			'%s and (same residue as %s and within '%(watersel,watersel)+str(gap)+\
+			' of not %s)))'%watersel]
+		#---box trimming is typical for e.g. atomstic protein simulations but discards anything outside
+		if boxcut:
+			vmdtrim += [' and '+\
+			'same residue as (x>=0 and x<='+str(10*boxvecs[0])+\
+			' and y>=0 and y<= '+str(10*boxvecs[1])+\
+			' and z>=0 and z<= '+str(10*boxvecs[2])+')']
+		vmdtrim += ['"]','$sel writepdb %s-vmd.pdb'%gro,'exit',]			
+		with open(state.here+'script-vmd-trim.tcl','w') as fp:
+			for line in vmdtrim: fp.write(line+'\n')
+		vmdlog = open(state.here+'log-script-vmd-trim','w')
+		#vmd_path = state.gmxpaths['vmd']
+		vmd_path = 'vmd'
+
+		#---previously used os.environ['VMDNOCUDA'] = "1" but this was causing segfaults on green
+		p = subprocess.Popen('VMDNOCUDA=1 '+vmd_path+' -dispdev text -e script-vmd-trim.tcl',
+			stdout=vmdlog,stderr=vmdlog,cwd=state.here,shell=True,executable='/bin/bash')
+		p.communicate()
+		#---!
+		#with open(wordspace['bash_log'],'a') as fp:
+		#	fp.write(gmxpaths['vmd']+' -dispdev text -e script-vmd-trim.tcl &> log-script-vmd-trim\n')
+		gmx_run(state.gmxpaths['editconf']+' -f %s-vmd.pdb -o %s.gro -resnr 1'%(gro,gro),
+			log='editconf-convert-vmd')
+	#---scipy is more reliable than VMD
+	elif gap != 0.0 or boxcut:
+		import scipy
+		import scipy.spatial
+		import numpy as np
+		#---if "sol" is not in the state we assume this is atomistic and use the standard "SOL"
+		watersel = state.q('sol','SOL')
+
+		#! incoming = read_gro(structure+'.gro')
+		#! hacking with the dict to replace read_gro
+		#! deprecated from amx import read_gro
+		from amx.gromacs.structure_tools import GMXStructure
+		struct = GMXStructure(state.here+structure+'.gro')
+		incoming = struct.__dict__
+		is_water = np.array(incoming['residue_names'])==watersel
+		is_not_water = np.array(incoming['residue_names'])!=watersel
+		water_inds = np.where(is_water)[0]
+		not_water_inds = np.where(np.array(incoming['residue_names'])!=watersel)[0]
+		points = np.array(incoming['points'])
+		residue_indices = np.array(incoming['residue_indices'])
+		if gap>0:
+			#---previous method used clumsy/slow cdist (removed)
+			#---use scipy KDTree to find atom names inside the gap
+			#---note that order matters: we wish to find waters too close to not_waters
+			close_dists,neighbors = scipy.spatial.KDTree(points[not_water_inds]).query(points[water_inds],
+				distance_upper_bound=gap/10.0)
+			#---use the distances to find the residue indices for waters that are too close 
+			excludes = np.array(incoming['residue_indices'])[is_water][np.where(close_dists<=gap/10.0)[0]]
+			#---get residues that are water and in the exclude list
+			#---note that the following step might be slow
+			exclude_res = [ii for ii,i in enumerate(incoming['residue_indices']) if i in excludes and is_water[ii]]
+			#---copy the array that marks the waters
+			surviving_water = np.array(is_water)
+			#---remove waters that are on the exclude list
+			surviving_water[exclude_res] = False
+		else: 
+			excludes = np.array([])
+			surviving_water = np.ones(len(residue_indices)).astype(bool)
+		#---we must remove waters that lie outside the box if there is a boxcut
+		insiders = np.ones(len(points)).astype(bool)
+		if boxcut:
+			#---remove waters that lie outside the box
+			#---get points that are outside of the box
+			outsiders = np.any([np.any((points[:,ii]<0,points[:,ii]>i),axis=0) 
+				for ii,i in enumerate(boxvecs)],axis=0)
+			#---get residue numbers for the outsiders
+			outsiders_res = np.array(incoming['residue_indices'])[np.where(outsiders)[0]]
+			#---note that this is consonant with the close-water exclude step above (and also may be slow)
+			exclude_outsider_res = [ii for ii,i in 
+				enumerate(incoming['residue_indices']) if i in outsiders_res]
+			insiders[exclude_outsider_res] = False
+		surviving_indices = np.any((is_not_water,np.all((surviving_water,insiders),axis=0)),axis=0)
+		if 0:
+			lines = incoming['lines']
+			lines = lines[:2]+list(np.array(lines[2:-1])[surviving_indices])+lines[-1:]
+			xyzs = list(points[surviving_indices])
+			write_gro(lines=lines,xyzs=xyzs,output_file=state.here+'%s.gro'%gro)
+		struct.points = struct.points[surviving_indices]
+		struct.residue_names = struct.residue_names[surviving_indices]
+		struct.residue_indices = struct.residue_indices[surviving_indices]
+		struct.atom_names = struct.atom_names[surviving_indices]
+		struct.write(state.here+'%s.gro'%gro)
+	else: raise Exception('you need to either trim the box or remove waters in a gap')
+
+
+# END PULL
 
 #---SELECTIONS
 

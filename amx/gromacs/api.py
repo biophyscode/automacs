@@ -273,9 +273,7 @@ def gmx(name,**kwargs):
 		if name=='dump': kwargs['outpipe'] = True
 		return gmx_interface.gmx(name,**kwargs)
 	except Exception as e:
-		from ortho import tracebacker
-		# we traceback manually here or else the exception is irrelevant
-		tracebacker(e)
 		print('[ERROR] failed to prepare gromacs command: "%s" with '
 			'kwargs: %s. see exception above. exiting.'%(name,kwargs))
-		sys.exit(0)
+		# removed an exit code zero here so we can see the full traceback
+		raise e

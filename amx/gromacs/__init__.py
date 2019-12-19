@@ -42,6 +42,7 @@ else:
 	from .generic import interpret_start_structure  # used by @proteins/protein.py @proteins/homology_basic.py
 	from .common import minimize,equilibrate
 	from .common import solvate_protein,counterions #! legacy needs updated
+	from .common import restart_clean
 
 	#! incoming functions
 	from .bookkeeping import Landscape
