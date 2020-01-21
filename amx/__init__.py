@@ -34,7 +34,8 @@ _import_instruct = {
 		#---! move the machine configuration to amx and generalize it?
 		{'source':'calls.py','target':'lammps.py','name':'gmx_get_machine_config'},],
 	#---! need more central handling of the command templates
-	'coda':"exec(open('amx/gromacs/command_templates.py','r').read(),subs['automacs.py'].__dict__)"}
+	##### MAJOR HACK FOR USE IN OMNICALC
+	'coda':"exec(open('amx/amx/gromacs/command_templates.py','r').read(),subs['automacs.py'].__dict__)"}
 
 #---import the runner and auto-import this module (if not sphinx)
 import os,sys,shutil
