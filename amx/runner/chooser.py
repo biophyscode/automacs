@@ -19,7 +19,7 @@ import ortho
 experiment_handler_path = ortho.conf.get('experiment_handler',None)
 # custom experiment handler can be specified in config.json and remotely imported
 if experiment_handler_path:
-	experiment_handler = ortho.importer(experiment_handler_path,verbose=True)	
+	experiment_handler = ortho.importer(experiment_handler_path,verbose=True)
 	collect_experiments = experiment_handler['collect_experiments']
 # standard import for the local module so it can use ortho
 else: from .experiments import collect_experiments
