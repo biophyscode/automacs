@@ -11,10 +11,10 @@ def get_start_structure(path):
 		altpath = os.path.join(globals().get(
 			'expt',{}).get('cwd_source','./'),path)
 	else: altpath = None
-	if path and os.path.isfile(path):
-		fn = path
-	elif altpath and os.path.isfile(altpath): 
-		fn = altpath
+	if path and os.path.isfile(os.path.expanduser(path)):
+		fn = os.path.expanduser(path)
+	elif altpath and os.path.isfile(os.path.expanduser(altpath)): 
+		fn = os.path.expanduser(altpath)
 	else: 
 		fns = glob.glob('inputs/*.pdb')
 		if len(fns)>1: raise Exception('multiple PDBs in inputs')
@@ -35,7 +35,7 @@ def interpret_start_structure():
 	is_pdb = (settings.start_structure!=None 
 		and re.match('^[A-Za-z0-9]{4}$',settings.start_structure.strip())!=None)
 	is_path = (settings.start_structure==None 
-		or os.path.isfile(settings.start_structure))
+		or os.path.isfile(os.path.expanduser(settings.start_structure)))
 	if is_path + is_pdb != 1:
 		raise Exception(
 			'is_pdb = %s, is_path = %s, settings.start_structure = %s'%(
